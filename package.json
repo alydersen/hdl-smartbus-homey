@@ -1,0 +1,11 @@
+{
+  "name": "com.github.alydersen.homey-smartbus",
+  "version": "0.0.1",
+  "main": "app.js",
+  "devDependencies": {
+    "homey": "^2.0.9"
+  },
+  "dependencies": {
+    "smart-bus": "^0.5.0"
+  }
+}

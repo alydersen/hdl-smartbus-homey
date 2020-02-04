@@ -1,0 +1,76 @@
+{
+  "id": "com.github.alydersen.hdl-smartbus-homey",
+  "version": "0.0.1",
+  "compatibility": ">=3.0.0",
+  "sdk": 2,
+  "name": {
+    "en": "HDL SmartBus"
+  },
+  "description": {
+    "en": "HDL SmartBus support for Homey"
+  },
+  "category": ["lights"],
+  "permissions": [],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Andreas Lydersen",
+    "email": "andreas.lydersen@gmail.com"
+  },
+  "drivers": [
+    {
+      "id": "dimmer",
+      "name": {
+        "en": "Dimmer"
+      },
+      "class": "light",
+      "capabilities": ["dim", "onoff"],
+      "icon": "/drivers/dimmer/assets/icon.svg",
+      "images": {
+        "large": "/drivers/dimmer/assets/images/large.png",
+        "small": "/drivers/dimmer/assets/images/small.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    },
+    {
+      "id": "relay",
+      "name": {
+        "en": "Relay"
+      },
+      "class": "socket",
+      "capabilities": ["onoff"],
+      "icon": "/drivers/relay/assets/icon.svg",
+      "images": {
+        "large": "/drivers/relay/assets/images/large.png",
+        "small": "/drivers/relay/assets/images/small.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    }
+  ]
+}

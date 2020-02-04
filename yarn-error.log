@@ -1,0 +1,41 @@
+Arguments: 
+  /usr/local/Cellar/node@12/12.13.1/bin/node /usr/local/Cellar/yarn/1.21.1/libexec/bin/yarn.js
+
+PATH: 
+  /usr/local/opt/node@12/bin:/Users/andreaslydersen/.rbenv/shims:/Users/andreaslydersen/miniconda3/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/andreaslydersen/.rvm/bin
+
+Yarn version: 
+  1.21.1
+
+Node version: 
+  12.13.1
+
+Platform: 
+  darwin x64
+
+Trace: 
+  SyntaxError: /Users/andreaslydersen/Documents/Workspace/com.github.alydersen.homey-smartbus/package.json: Unexpected string in JSON at position 144
+      at JSON.parse (<anonymous>)
+      at /usr/local/Cellar/yarn/1.21.1/libexec/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/usr/local/Cellar/yarn/1.21.1/libexec/lib/cli.js:310:30)
+      at /usr/local/Cellar/yarn/1.21.1/libexec/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "com.github.alydersen.homey-smartbus",
+    "version": "0.0.1",
+    "main": "app.js",
+    "devDependencies": {
+      "homey": "^2.0.9"
+    }
+    "dependencies": {
+      "smart-bus": "^0.5.0"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

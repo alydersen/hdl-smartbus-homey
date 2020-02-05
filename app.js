@@ -2,17 +2,11 @@
 
 const Homey = require("homey");
 const SmartBus = require("smart-bus");
-const relayDriverName = "relay";
-const dimmerDriverName = "dimmer";
 
 class HDLSmartBus extends Homey.App {
   onInit() {
     this._busConnected = false;
     this._bus = null;
-    this._homeyRelayDriver = Homey.ManagerDrivers.getDriver(relayDriverName);
-    this._homeyDimmerDriver = Homey.ManagerDrivers.getDriver(dimmerDriverName);
-    this._relays = {};
-    this._dimmers = {};
 
     (async (args, callback) => {
       try {
@@ -50,7 +44,29 @@ class HDLSmartBus extends Homey.App {
         command.sender.subnet ==
         parseInt(Homey.ManagerSettings.get("hdl_subnet"))
       ) {
-        this._deviceUpdated.bind(command);
+        if (
+          Homey.app.devicelist["dimmers"][command.sender.type.toString()] !=
+          undefined
+        ) {
+          if (command.data["success"] != undefined) {
+            Homey.ManagerDrivers.getDriver("dimmer").updateDimmerValue(
+              command.sender.id,
+              command.data.channel,
+              command.data.level / 100
+            );
+          }
+        } else if (
+          Homey.app.devicelist["relays"][command.sender.type.toString()] !=
+          undefined
+        ) {
+          if (command.data["success"] != undefined) {
+            Homey.ManagerDrivers.getDriver("relay").updateRelayValue(
+              command.sender.id,
+              command.data.channel,
+              command.data.level / 100
+            );
+          }
+        }
       }
       //.on("device updated", this._deviceUpdated.bind(this))
     });
@@ -61,25 +77,15 @@ class HDLSmartBus extends Homey.App {
   }
 
   isBusConnected() {
+    if (this._bus() === null) {
+      return false;
+    }
+
     return this._busConnected;
   }
 
   bus() {
     return this._bus;
-  }
-
-  _deviceUpdated(command) {
-    console.log(command.sender.id);
-    console.log(command.data);
-    if (
-      this.devicelist["dimmers"][command.sender.type.toString()] != undefined
-    ) {
-      this.log("Message from a dimmer");
-    } else if (
-      this.devicelist["relays"][command.sender.type.toString()] != undefined
-    ) {
-      this.log("Message from a relay");
-    }
   }
 
   get devicelist() {

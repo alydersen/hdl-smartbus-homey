@@ -7,13 +7,34 @@ class DimmerDriver extends Homey.Driver {
     this.log("HDL DimmerDriver has been initiated");
   }
 
+  updateDimmerValue(id, channel, level) {
+    let combinedId = `${Homey.ManagerSettings.get(
+      "hdl_subnet"
+    )}.${id}.${channel}`;
+    let address = `${Homey.ManagerSettings.get("hdl_subnet")}.${id}`;
+    let homeyDevice = this.getDevice({
+      id: combinedId,
+      address: address,
+      channel: channel
+    });
+    if (homeyDevice instanceof Error) return;
+    homeyDevice.setCapabilityValue("dim", level).catch(this.error);
+    if (level == 0) {
+      homeyDevice.setCapabilityValue("onoff", false).catch(this.error);
+    } else {
+      homeyDevice.setCapabilityValue("onoff", true).catch(this.error);
+    }
+  }
+
   onPairListDevices(data, callback) {
-    if (this.isBusConnected == false) {
+    // Check that the bus is connected
+    if (this.isBusConnected === false) {
       this.error(
         "The bus is not connected. Make sure you have defined the settings"
       );
       return;
     }
+
     this.log("onPairListDevices from Dimmer");
 
     const devices = [];

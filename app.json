@@ -9,7 +9,9 @@
   "description": {
     "en": "HDL SmartBus support for Homey"
   },
-  "category": ["lights"],
+  "category": [
+    "lights"
+  ],
   "permissions": [],
   "images": {
     "large": "/assets/images/large.png",
@@ -26,7 +28,10 @@
         "en": "Dimmer"
       },
       "class": "light",
-      "capabilities": ["dim", "onoff"],
+      "capabilities": [
+        "dim",
+        "onoff"
+      ],
       "icon": "/drivers/dimmer/assets/icon.svg",
       "images": {
         "large": "/drivers/dimmer/assets/images/large.png",
@@ -52,7 +57,9 @@
         "en": "Relay"
       },
       "class": "socket",
-      "capabilities": ["onoff"],
+      "capabilities": [
+        "onoff"
+      ],
       "icon": "/drivers/relay/assets/icon.svg",
       "images": {
         "large": "/drivers/relay/assets/images/large.png",

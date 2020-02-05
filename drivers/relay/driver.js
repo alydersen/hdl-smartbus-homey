@@ -4,7 +4,25 @@ const Homey = require("homey");
 
 class RelayDriver extends Homey.Driver {
   onInit() {
-    this.log("HDL RelayDriver has been inited");
+    this.log("HDL RelayDriver has been initiated");
+  }
+
+  updateRelayValue(id, channel, level) {
+    let combinedId = `${Homey.ManagerSettings.get(
+      "hdl_subnet"
+    )}.${id}.${channel}`;
+    let address = `${Homey.ManagerSettings.get("hdl_subnet")}.${id}`;
+    let homeyDevice = this.getDevice({
+      id: combinedId,
+      address: address,
+      channel: channel
+    });
+    if (homeyDevice instanceof Error) return;
+    if (level == 0) {
+      homeyDevice.setCapabilityValue("onoff", false).catch(this.error);
+    } else {
+      homeyDevice.setCapabilityValue("onoff", true).catch(this.error);
+    }
   }
 
   onPairListDevices(data, callback) {

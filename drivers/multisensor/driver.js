@@ -30,34 +30,23 @@ class MultisensorDriver extends Homey.Driver {
       const devices = [];
       this._bus().on("command", function(command) {
         if (
-          Homey.app.devicelist["dimmers"][command.sender.type.toString()] !=
-          undefined
+          Homey.app.devicelist["multisensors"][
+            command.sender.type.toString()
+          ] != undefined
         ) {
-          var i;
-          for (
-            i = 1;
-            i <
-            Homey.app.devicelist["dimmers"][command.sender.type.toString()][
-              "channels"
-            ] +
-              1;
-            i++
-          ) {
-            devices.push({
-              name: `HDL Dimmer (${Homey.ManagerSettings.get("hdl_subnet")}.${
+          devices.push({
+            name: `HDL Multisensor (${Homey.ManagerSettings.get(
+              "hdl_subnet"
+            )}.${command.sender.id})`,
+            data: {
+              id: `${Homey.ManagerSettings.get("hdl_subnet")}.${
                 command.sender.id
-              } ch ${i})`,
-              data: {
-                id: `${Homey.ManagerSettings.get("hdl_subnet")}.${
-                  command.sender.id
-                }.${i}`,
-                address: `${Homey.ManagerSettings.get("hdl_subnet")}.${
-                  command.sender.id
-                }`,
-                channel: i
-              }
-            });
-          }
+              }.${i}`,
+              address: `${Homey.ManagerSettings.get("hdl_subnet")}.${
+                command.sender.id
+              }`
+            }
+          });
         }
       });
 

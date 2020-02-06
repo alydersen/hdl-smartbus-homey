@@ -156,6 +156,23 @@ class HDLSmartBus extends Homey.App {
         468: { channels: 6 },
         469: { channels: 4 },
         470: { channels: 6 }
+      },
+      multisensors: {
+        305: { temperature: true, movement: true },
+        307: { temperature: true, movement: true },
+        308: { temperature: true, movement: true },
+        312: { temperature: true, movement: true },
+        314: { temperature: true, movement: true },
+        315: { temperature: true, movement: true },
+        316: { temperature: true, movement: true },
+        318: { temperature: true, movement: true },
+        321: { temperature: true, movement: true },
+        322: { temperature: true, movement: true },
+        328: { temperature: true, movement: true },
+        329: { temperature: true, movement: true },
+        336: { temperature: true, movement: true },
+        337: { temperature: true, movement: true },
+        340: { temperature: true, movement: true }
       }
     };
   }

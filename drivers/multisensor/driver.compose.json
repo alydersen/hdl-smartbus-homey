@@ -1,0 +1,15 @@
+{
+  "id": "multisensor",
+  "name": {
+    "en": "multisensor"
+  },
+  "class": "sensor",
+  "capabilities": [
+    "alarm_motion",
+    "measure_temperature"
+  ],
+  "images": {
+    "large": "/drivers/multisensor/assets/images/large.png",
+    "small": "/drivers/multisensor/assets/images/small.png"
+  }
+}

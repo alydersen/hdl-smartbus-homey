@@ -26,58 +26,56 @@ class RelayDriver extends Homey.Driver {
   }
 
   onPairListDevices(data, callback) {
-    if (this.isBusConnected == false) {
-      this.error(
-        "The bus is not connected. Make sure you have defined the settings"
-      );
-      return;
-    }
+    // Check that the bus is connected
+    if (!Homey.app.isBusConnected()) {
+      callback(new Error("Please configure the app settings first."));
+    } else {
+      this.log("onPairListDevices from Dimmer");
 
-    this.log("onPairListDevices from Dimmer");
-
-    const devices = [];
-    this._bus().on("command", function(command) {
-      if (
-        Homey.app.devicelist["relays"][command.sender.type.toString()] !=
-        undefined
-      ) {
-        var i;
-        for (
-          i = 1;
-          i <
-          Homey.app.devicelist["relays"][command.sender.type.toString()][
-            "channels"
-          ] +
-            1;
-          i++
+      const devices = [];
+      this._bus().on("command", function(command) {
+        if (
+          Homey.app.devicelist["relays"][command.sender.type.toString()] !=
+          undefined
         ) {
-          devices.push({
-            name: `HDL Relay (${Homey.ManagerSettings.get("hdl_subnet")}.${
-              command.sender.id
-            } ch ${i})`,
-            data: {
-              id: `${Homey.ManagerSettings.get("hdl_subnet")}.${
+          var i;
+          for (
+            i = 1;
+            i <
+            Homey.app.devicelist["relays"][command.sender.type.toString()][
+              "channels"
+            ] +
+              1;
+            i++
+          ) {
+            devices.push({
+              name: `HDL Relay (${Homey.ManagerSettings.get("hdl_subnet")}.${
                 command.sender.id
-              }.${i}`,
-              address: `${Homey.ManagerSettings.get("hdl_subnet")}.${
-                command.sender.id
-              }`,
-              channel: i
-            }
-          });
+              } ch ${i})`,
+              data: {
+                id: `${Homey.ManagerSettings.get("hdl_subnet")}.${
+                  command.sender.id
+                }.${i}`,
+                address: `${Homey.ManagerSettings.get("hdl_subnet")}.${
+                  command.sender.id
+                }`,
+                channel: i
+              }
+            });
+          }
         }
-      }
-    });
+      });
 
-    this._bus().send("255.255", 0x000e, function(err) {
-      if (err) {
-        console.log(err);
-      }
-    });
+      this._bus().send("255.255", 0x000e, function(err) {
+        if (err) {
+          console.log(err);
+        }
+      });
 
-    setTimeout(() => {
-      callback(null, devices);
-    }, 10000);
+      setTimeout(() => {
+        callback(null, devices);
+      }, 10000);
+    }
   }
 
   _bus() {

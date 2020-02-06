@@ -1,66 +1,67 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-    <head>
-
-        <!-- The '/homey.js' script must be included in your settings view to work -->
-        <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
-
-    </head>
-    <body>
-
-        <h1 data-i18n="settings.title">
-            <!--
+  <head>
+    <!-- The '/homey.js' script must be included in your settings view to work -->
+    <script
+      type="text/javascript"
+      src="/homey.js"
+      data-origin="settings"
+    ></script>
+  </head>
+  <body>
+    <h1 data-i18n="settings.title">
+      <!--
             This field will automatically be filled by a translated string with key 'settings.title'.
             Read more about translations at Internationalization.
             -->
-        </h1>
+    </h1>
 
-        <fieldset>
-            <legend>HDL Smartbus settings</legend>
-            <div class="field row">
-                <label for="hdl_ip_address">IP address</label>
-                <input id="hdl_ip_address" type="text" value="" />
-            </div>
-            <div class="field row">
-                <label for="hdl_subnet">Subnet</label>
-                <input id="hdl_subnet" type="text" value="" />
-            </div>
-        </fieldset>
+    <fieldset>
+      <legend>HDL Smartbus settings</legend>
+      <div class="field row">
+        <label for="hdl_ip_address">IP address</label>
+        <input id="hdl_ip_address" type="text" value="" />
+      </div>
+      <div class="field row">
+        <label for="hdl_subnet">Subnet</label>
+        <input id="hdl_subnet" type="text" value="" />
+      </div>
+    </fieldset>
 
-        <button id="save" class="right">Save changes</button>
+    <button id="save" class="right">Save changes</button>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
+      function onHomeyReady(Homey) {
+        var ipElement = document.getElementById("hdl_ip_address");
+        var subnetElement = document.getElementById("hdl_subnet");
+        var saveElement = document.getElementById("save");
 
-        function onHomeyReady( Homey ){
+        Homey.get("hdl_ip_address", function(err, hdl_ip_address) {
+          if (err) return Homey.alert(err);
+          ipElement.value = hdl_ip_address;
+        });
 
-            Homey.ready();
+        Homey.get("hdl_subnet", function(err, hdl_subnet) {
+          if (err) return Homey.alert(err);
+          subnetElement.value = hdl_subnet;
+        });
 
-            var ipElement = document.getElementById('hdl_ip_address');
-            var subnetElement = document.getElementById('hdl_subnet');
-            var saveElement = document.getElementById('save');
+        saveElement.addEventListener("click", function(e) {
+          Homey.set("hdl_ip_address", ipElement.value, function(err) {
+            if (err) return Homey.alert(err);
+          });
 
-            Homey.get('hdl_ip_address', function( err, hdl_ip_address ) {
-               if( err ) return Homey.alert( err );
-               ipElement.value = hdl_ip_address;
-            });
+          Homey.set("hdl_subnet", subnetElement.value, function(err) {
+            if (err) return Homey.alert(err);
+          });
 
-            Homey.get('hdl_subnet', function( err, hdl_subnet ) {
-               if( err ) return Homey.alert( err );
-               subnetElement.value = hdl_subnet;
-            });
+          Homey.alert(
+            "Settings saved. You need to restart the app to connect the bus (or restart your Homey)"
+          );
+        });
 
-            saveElement.addEventListener('click', function(e) {
-
-                Homey.set('hdl_ip_address', ipElement.value, function( err ){
-                    if( err ) return Homey.alert( err );
-                });
-
-                Homey.set('hdl_subnet', subnetElement.value, function( err ){
-                    if( err ) return Homey.alert( err );
-                });
-            });
-        }
-        </script>
-
-    </body>
+        Homey.ready();
+      }
+    </script>
+  </body>
 </html>

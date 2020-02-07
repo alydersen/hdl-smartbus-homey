@@ -39,8 +39,8 @@ class RelayDriver extends Homey.Driver {
         let type = Homey.app.devicelist["relays"][device.type.toString()];
         let channelsAvailable = type["channels"];
 
-        var channels;
-        for (channels = 1; channels < channelsAvailable + 1; i++) {
+        var channel;
+        for (channel = 1; channel < channelsAvailable + 1; channel++) {
           devices.push({
             name: `HDL Relay (${hdl_subnet}.${device.id} ch ${channel})`,
             data: {

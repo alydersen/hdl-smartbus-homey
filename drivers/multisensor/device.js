@@ -1,13 +1,14 @@
-'use strict';
+"use strict";
 
-const Homey = require('homey');
+const Homey = require("homey");
 
-class MyDevice extends Homey.Device {
-	
-	onInit() {
-		this.log('MyDevice has been inited');
-	}
-	
+class MultisensorDevice extends Homey.Device {
+  onInit() {
+    this.log("Device init");
+    this.log("Name:", this.getName());
+    this.log("Class:", this.getClass());
+    this.log("Id:", this.getData().id);
+  }
 }
 
-module.exports = MyDevice;
+module.exports = MultisensorDevice;

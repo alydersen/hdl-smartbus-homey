@@ -10,9 +10,13 @@
     "en": "HDL SmartBus support for Homey"
   },
   "tags": {
-    "en": ["smart-bus"]
+    "en": [
+      "smart-bus"
+    ]
   },
-  "category": ["lights"],
+  "category": [
+    "lights"
+  ],
   "permissions": [],
   "images": {
     "large": "/assets/images/large.png",
@@ -37,11 +41,42 @@
         "en": "Dimmer"
       },
       "class": "light",
-      "capabilities": ["dim", "onoff"],
+      "capabilities": [
+        "dim",
+        "onoff"
+      ],
       "icon": "/drivers/dimmer/assets/icon.svg",
       "images": {
         "large": "/drivers/dimmer/assets/images/large.png",
         "small": "/drivers/dimmer/assets/images/small.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    },
+    {
+      "id": "multisensor",
+      "name": {
+        "en": "multisensor"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "alarm_motion",
+        "measure_temperature"
+      ],
+      "images": {
+        "large": "/drivers/multisensor/assets/images/large.png",
+        "small": "/drivers/multisensor/assets/images/small.png"
       },
       "pair": [
         {
@@ -63,7 +98,9 @@
         "en": "Relay"
       },
       "class": "socket",
-      "capabilities": ["onoff"],
+      "capabilities": [
+        "onoff"
+      ],
       "icon": "/drivers/relay/assets/icon.svg",
       "images": {
         "large": "/drivers/relay/assets/images/large.png",

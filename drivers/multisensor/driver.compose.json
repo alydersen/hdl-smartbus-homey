@@ -4,12 +4,22 @@
     "en": "multisensor"
   },
   "class": "sensor",
-  "capabilities": [
-    "alarm_motion",
-    "measure_temperature"
-  ],
+  "capabilities": ["alarm_motion", "measure_temperature"],
   "images": {
     "large": "/drivers/multisensor/assets/images/large.png",
     "small": "/drivers/multisensor/assets/images/small.png"
-  }
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
 }

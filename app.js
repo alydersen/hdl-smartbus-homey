@@ -7,12 +7,15 @@ class HDLSmartBus extends Homey.App {
   onInit() {
     this._busConnected = false;
     this._bus = null;
+    this._dimmers = {};
+    this._relays = {};
+    this._multisensors = {};
 
     (async (args, callback) => {
       try {
         await this.connect();
       } catch (err) {
-        this.log(err.message);
+        Homey.app.log(err.message);
       }
     })();
 
@@ -20,55 +23,41 @@ class HDLSmartBus extends Homey.App {
   }
 
   async connect() {
-    this._busConnected = false;
+    let hdl_ip_address = Homey.ManagerSettings.get("hdl_ip_address");
+    let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
     // Return if settings are not defined
-    if (Homey.ManagerSettings.get("hdl_ip_address") == undefined) return;
-    if (Homey.ManagerSettings.get("hdl_ip_address") == "") return;
-    if (Homey.ManagerSettings.get("hdl_subnet") == undefined) return;
-    if (Homey.ManagerSettings.get("hdl_subnet") == "") return;
+    if (
+      hdl_ip_address == undefined ||
+      hdl_ip_address == "" ||
+      hdl_subnet == undefined ||
+      hdl_subnet == ""
+    )
+      return;
 
     // Close if the bus is already is running
+    this._busConnected = false;
     if (this._bus != null) {
       this._bus.close();
       this._bus = null;
     }
 
     // Connect the bus
-    this._bus = new SmartBus(
-      `hdl://${Homey.ManagerSettings.get("hdl_ip_address")}:6000`
-    );
+    this._bus = new SmartBus(`hdl://${hdl_ip_address}:6000`);
+
+    // Send out a discovery ping
+    this._bus.send("255.255", 0x000e, function(err) {
+      if (err) {
+        Homey.app.log(err);
+      }
+    });
 
     // Listen to bus
-    this._bus.on("command", function(command) {
-      if (
-        command.sender.subnet ==
-        parseInt(Homey.ManagerSettings.get("hdl_subnet"))
-      ) {
-        if (
-          Homey.app.devicelist["dimmers"][command.sender.type.toString()] !=
-          undefined
-        ) {
-          if (command.data["success"] != undefined) {
-            Homey.ManagerDrivers.getDriver("dimmer").updateDimmerValue(
-              command.sender.id,
-              command.data.channel,
-              command.data.level / 100
-            );
-          }
-        } else if (
-          Homey.app.devicelist["relays"][command.sender.type.toString()] !=
-          undefined
-        ) {
-          if (command.data["success"] != undefined) {
-            Homey.ManagerDrivers.getDriver("relay").updateRelayValue(
-              command.sender.id,
-              command.data.channel,
-              command.data.level / 100
-            );
-          }
-        }
-      }
-      //.on("device updated", this._deviceUpdated.bind(this))
+    this._bus.on("command", function(signal) {
+      Homey.app._signalReceived(signal);
+    });
+
+    this._bus.on(49, function(signal) {
+      Homey.app._motionReceived(signal);
     });
 
     // Set the bus as connected
@@ -77,7 +66,7 @@ class HDLSmartBus extends Homey.App {
   }
 
   isBusConnected() {
-    if (this._bus() === null) {
+    if (this._bus === null) {
       return false;
     }
 
@@ -86,6 +75,67 @@ class HDLSmartBus extends Homey.App {
 
   bus() {
     return this._bus;
+  }
+
+  getDimmers() {
+    return this._dimmers;
+  }
+
+  getRelays() {
+    return this._relays;
+  }
+
+  getMultisensors() {
+    return this._multisensors;
+  }
+
+  _signalReceived(signal) {
+    // Check to see that the subnet is the same
+    if (
+      signal.sender.subnet != parseInt(Homey.ManagerSettings.get("hdl_subnet"))
+    )
+      return;
+
+    let senderType = signal.sender.type.toString();
+    if (
+      // DIMMERS
+      this.devicelist["dimmers"][senderType] != undefined
+    ) {
+      this._dimmers[signal.sender.id] = signal.sender;
+      Homey.ManagerDrivers.getDriver("dimmer").updateValues(signal);
+    } else if (
+      // RELAYS
+      this.devicelist["relays"][senderType] != undefined
+    ) {
+      this._relays[signal.sender.id] = signal.sender;
+      Homey.ManagerDrivers.getDriver("relay").updateValues(signal);
+    } else if (
+      // MULTISENSORS
+      this.devicelist["multisensors"][senderType] != undefined
+    ) {
+      this._multisensors[signal.sender.id] = signal.sender;
+      Homey.ManagerDrivers.getDriver("multisensor").updateValues(signal);
+    }
+  }
+
+  _motionReceived(signal) {
+    // Check to see that the subnet is the same
+    if (
+      signal.sender.subnet != parseInt(Homey.ManagerSettings.get("hdl_subnet"))
+    )
+      return;
+
+    let senderType = signal.sender.type.toString();
+    if (
+      // MULTISENSORS
+      this.devicelist["multisensors"][senderType] != undefined
+    ) {
+      this._multisensors[signal.sender.id] = signal.sender;
+      Homey.ManagerDrivers.getDriver("multisensor").updateValues(
+        signal,
+        "motion"
+      );
+    }
   }
 
   get devicelist() {
@@ -158,21 +208,22 @@ class HDLSmartBus extends Homey.App {
         470: { channels: 6 }
       },
       multisensors: {
-        305: { temperature: true, movement: true },
-        307: { temperature: true, movement: true },
-        308: { temperature: true, movement: true },
-        312: { temperature: true, movement: true },
-        314: { temperature: true, movement: true },
-        315: { temperature: true, movement: true },
-        316: { temperature: true, movement: true },
-        318: { temperature: true, movement: true },
-        321: { temperature: true, movement: true },
-        322: { temperature: true, movement: true },
-        328: { temperature: true, movement: true },
-        329: { temperature: true, movement: true },
-        336: { temperature: true, movement: true },
-        337: { temperature: true, movement: true },
-        340: { temperature: true, movement: true }
+        305: { temperature: true, motion: true },
+        307: { temperature: true, motion: true },
+        308: { temperature: true, motion: true },
+        309: { temperature: true, motion: true },
+        312: { temperature: true, motion: true },
+        314: { temperature: true, motion: true },
+        315: { temperature: true, motion: true },
+        316: { temperature: true, motion: true },
+        318: { temperature: true, motion: true },
+        321: { temperature: true, motion: true },
+        322: { temperature: true, motion: true },
+        328: { temperature: true, motion: true },
+        329: { temperature: true, motion: true },
+        336: { temperature: true, motion: true },
+        337: { temperature: true, motion: true },
+        340: { temperature: true, motion: true }
       }
     };
   }

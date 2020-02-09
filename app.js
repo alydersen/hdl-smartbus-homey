@@ -10,6 +10,7 @@ class HDLSmartBus extends Homey.App {
     this._dimmers = {};
     this._relays = {};
     this._multisensors = {};
+    this._tempsensors = {};
 
     (async (args, callback) => {
       try {
@@ -89,6 +90,10 @@ class HDLSmartBus extends Homey.App {
     return this._multisensors;
   }
 
+  getTempsensors() {
+    return this._tempsensors;
+  }
+
   _signalReceived(signal) {
     // Check to see that the subnet is the same
     if (
@@ -115,6 +120,12 @@ class HDLSmartBus extends Homey.App {
     ) {
       this._multisensors[signal.sender.id] = signal.sender;
       Homey.ManagerDrivers.getDriver("multisensor").updateValues(signal);
+    } else if (
+      // TEMPSENSORS
+      this.devicelist["tempsensors"][senderType] != undefined
+    ) {
+      this._tempsensors[signal.sender.id] = signal.sender;
+      Homey.ManagerDrivers.getDriver("tempsensor").updateValues(signal);
     }
   }
 
@@ -224,6 +235,10 @@ class HDLSmartBus extends Homey.App {
         336: { temperature: true, motion: true },
         337: { temperature: true, motion: true },
         340: { temperature: true, motion: true }
+      },
+      tempsensors: {
+        124: { channels: 2 },
+        134: { channels: 4 }
       }
     };
   }

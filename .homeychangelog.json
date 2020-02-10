@@ -3,6 +3,9 @@
     "en": "First release"
   },
   "0.0.2": {
-    "en": "Better error handling for the bus if no settings defined"
+    "en": "Better error handling for the bus if no settings defined. Added support for multisensors"
+  },
+  "0.0.3": {
+    "en": "Added support for temperature sensors. Fixed bug when more than one unit available for pairing."
   }
 }

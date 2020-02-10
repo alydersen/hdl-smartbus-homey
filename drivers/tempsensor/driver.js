@@ -2,27 +2,23 @@
 
 const Homey = require("homey");
 
-class DimmerDriver extends Homey.Driver {
+class TempsensorDriver extends Homey.Driver {
   onInit() {
-    this.log("HDL DimmerDriver has been initiated");
+    this.log("HDL TempsensorDriver has been initiated");
   }
 
   updateValues(command) {
-    if (command.data["success"] != undefined) {
+    if (command.data["temperature"] != undefined) {
       let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
-      let level = command.data.level / 100;
       let homeyDevice = this.getDevice({
         id: `${hdl_subnet}.${command.sender.id}.${command.data.channel}`,
         address: `${hdl_subnet}.${command.sender.id}`,
         channel: command.data.channel
       });
       if (homeyDevice instanceof Error) return;
-      homeyDevice.setCapabilityValue("dim", level).catch(this.error);
-      if (level == 0) {
-        homeyDevice.setCapabilityValue("onoff", false).catch(this.error);
-      } else {
-        homeyDevice.setCapabilityValue("onoff", true).catch(this.error);
-      }
+      homeyDevice
+        .setCapabilityValue("measure_temperature", command.data.temperature)
+        .catch(this.error);
     }
   }
 
@@ -34,17 +30,17 @@ class DimmerDriver extends Homey.Driver {
     if (!Homey.app.isBusConnected()) {
       callback(new Error("Please configure the app settings first."));
     } else {
-      this.log("onPairListDevices from Dimmer");
-      let dimmers = Homey.app.getDimmers();
+      this.log("onPairListDevices from Tempsensor");
+      let tempsensors = Homey.app.getTempsensors();
 
-      for (const device of Object.values(dimmers)) {
-        let type = Homey.app.devicelist["dimmers"][device.type.toString()];
+      for (const device of Object.values(tempsensors)) {
+        let type = Homey.app.devicelist["tempsensors"][device.type.toString()];
         let channelsAvailable = type["channels"];
 
         var channel;
         for (channel = 1; channel < channelsAvailable + 1; channel++) {
           devices.push({
-            name: `HDL Dimmer (${hdl_subnet}.${device.id} ch ${channel})`,
+            name: `HDL Temp Sensor (${hdl_subnet}.${device.id} ch ${channel})`,
             data: {
               id: `${hdl_subnet}.${device.id}.${channel}`,
               address: `${hdl_subnet}.${device.id}`,
@@ -53,7 +49,7 @@ class DimmerDriver extends Homey.Driver {
           });
         }
       }
-      callback(null, devices.sort(DimmerDriver._compareHomeyDevice));
+      callback(null, devices.sort(TempsensorDriver._compareHomeyDevice));
     }
   }
 
@@ -64,4 +60,4 @@ class DimmerDriver extends Homey.Driver {
   }
 }
 
-module.exports = DimmerDriver;
+module.exports = TempsensorDriver;

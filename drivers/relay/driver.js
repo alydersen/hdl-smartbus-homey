@@ -50,8 +50,8 @@ class RelayDriver extends Homey.Driver {
             }
           });
         }
-        callback(null, devices.sort(RelayDriver._compareHomeyDevice));
       }
+      callback(null, devices.sort(RelayDriver._compareHomeyDevice));
     }
   }
 

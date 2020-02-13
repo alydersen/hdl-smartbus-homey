@@ -10,5 +10,8 @@
   },
   "0.0.4": {
     "en": "Extended the app description"
+  },
+  "0.0.5": {
+    "en": "Added error check for settings input"
   }
 }

@@ -35,6 +35,12 @@ class HDLSmartBus extends Homey.App {
     )
       return;
 
+    // Return if not proper ip or subnet
+    const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/g;
+    const subnetRegex = /^\d{1,3}$/g;
+    if (!hdl_ip_address.match(ipRegex)) return;
+    if (!hdl_subnet.match(subnetRegex)) return;
+
     // Close if the bus is already is running
     this._busConnected = false;
     if (this._bus != null) {
@@ -222,7 +228,7 @@ class HDLSmartBus extends Homey.App {
         305: { temperature: true, motion: true },
         307: { temperature: true, motion: true },
         308: { temperature: true, motion: true },
-        309: { temperature: true, motion: true },
+        309: { temperature: false, motion: true },
         312: { temperature: true, motion: true },
         314: { temperature: true, motion: true },
         315: { temperature: true, motion: true },

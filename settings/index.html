@@ -23,7 +23,7 @@
         <input id="hdl_ip_address" type="text" value="" />
       </div>
       <div class="field row">
-        <label for="hdl_subnet">Subnet</label>
+        <label for="hdl_subnet">Subnet (in HDL, 1-255)</label>
         <input id="hdl_subnet" type="text" value="" />
       </div>
     </fieldset>
@@ -47,17 +47,29 @@
         });
 
         saveElement.addEventListener("click", function(e) {
-          Homey.set("hdl_ip_address", ipElement.value, function(err) {
-            if (err) return Homey.alert(err);
-          });
+          const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/g;
+          if (!ipElement.value.match(ipRegex)) {
+            return Homey.alert("Not a valid IP address");
+          } else {
+            const subnetRegex = /^\d{1,3}$/g;
+            if (!subnetElement.value.match(subnetRegex)) {
+              return Homey.alert(
+                "Not a valid HDL Subnet. Please use 1-254 (usually 1)"
+              );
+            } else {
+              Homey.set("hdl_ip_address", ipElement.value, function(err) {
+                if (err) return Homey.alert(err);
+              });
 
-          Homey.set("hdl_subnet", subnetElement.value, function(err) {
-            if (err) return Homey.alert(err);
-          });
+              Homey.set("hdl_subnet", subnetElement.value, function(err) {
+                if (err) return Homey.alert(err);
+              });
 
-          Homey.alert(
-            "Settings saved. You need to restart the app to connect the bus (or restart your Homey)"
-          );
+              Homey.alert(
+                "Settings saved. You need to restart the app to connect the bus (or restart your Homey)"
+              );
+            }
+          }
         });
 
         Homey.ready();

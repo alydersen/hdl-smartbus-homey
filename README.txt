@@ -1,1 +1,1 @@
-HDL SmartBus support for Homey
+With the HDL SmartBus support for Homey, you can control your HDL relays and dimmers directly or from flows, making sure your existing smart home installation gets the logic it deserves. Your HDL IP-module needs to be on the same network as your Homey.

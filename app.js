@@ -26,6 +26,13 @@ class HDLSmartBus extends Homey.App {
   async connect() {
     let hdl_ip_address = Homey.ManagerSettings.get("hdl_ip_address");
     let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
+    let hdl_motion = Homey.ManagerSettings.get("hdl_universal_motion");
+
+    // Set the universal motion if not set
+    if (hdl_motion == undefined || hdl_motion == "") {
+      Homey.ManagerSettings.set("hdl_universal_motion", "212");
+    }
+
     // Return if settings are not defined
     if (
       hdl_ip_address == undefined ||
@@ -40,6 +47,9 @@ class HDLSmartBus extends Homey.App {
     const subnetRegex = /^\d{1,3}$/g;
     if (!hdl_ip_address.match(ipRegex)) return;
     if (!hdl_subnet.match(subnetRegex)) return;
+    let hdl_subnet_int = parseInt(hdl_subnet);
+    if (hdl_subnet_int < 1) return;
+    if (hdl_subnet_int > 254) return;
 
     // Close if the bus is already is running
     this._busConnected = false;
@@ -61,10 +71,6 @@ class HDLSmartBus extends Homey.App {
     // Listen to bus
     this._bus.on("command", function(signal) {
       Homey.app._signalReceived(signal);
-    });
-
-    this._bus.on(49, function(signal) {
-      Homey.app._motionReceived(signal);
     });
 
     // Set the bus as connected
@@ -132,26 +138,6 @@ class HDLSmartBus extends Homey.App {
     ) {
       this._tempsensors[signal.sender.id] = signal.sender;
       Homey.ManagerDrivers.getDriver("tempsensor").updateValues(signal);
-    }
-  }
-
-  _motionReceived(signal) {
-    // Check to see that the subnet is the same
-    if (
-      signal.sender.subnet != parseInt(Homey.ManagerSettings.get("hdl_subnet"))
-    )
-      return;
-
-    let senderType = signal.sender.type.toString();
-    if (
-      // MULTISENSORS
-      this.devicelist["multisensors"][senderType] != undefined
-    ) {
-      this._multisensors[signal.sender.id] = signal.sender;
-      Homey.ManagerDrivers.getDriver("multisensor").updateValues(
-        signal,
-        "motion"
-      );
     }
   }
 

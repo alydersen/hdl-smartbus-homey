@@ -21,7 +21,8 @@ If you want more equipment to be supported. Create an issue or contribute by cre
 
 ### About multisensors
 
-Currently, only motion and temperature readings are collected from the multisensors. For motion, the sensor needs to have logic set up to activate another device. I'm currently working on getting this to function differently.
+As the multisensors from HDL does not publish any motion status on its own, you have to create this yourself.
+You do this by adding a piece of logic to the sensor. When motion is detected, you let a universal switch number be `true` and then `false` when you want to turn the motion status to off. The default universal switch number is 212, but you can change this in the apps settings. Do this on every sensor, and then this app will see who the sender of the switch is and then activate/deactivate that sensor.
 
 ### Thanks
 

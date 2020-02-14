@@ -13,6 +13,17 @@ class DimmerDevice extends Homey.Device {
     // register a capability listener
     this.registerCapabilityListener("onoff", this.onCapabilityOnoff.bind(this));
     this.registerCapabilityListener("dim", this.onCapabilityDim.bind(this));
+
+    // Ask for channel status
+    if (Homey.app.isBusConnected()) {
+      this._bus().send(this.getData().address, 0x0033);
+    }
+  }
+
+  updateLevel(level) {
+    let corrected_level = level / 100;
+    this.setCapabilityValue("dim", corrected_level).catch(this.error);
+    this.setCapabilityValue("onoff", corrected_level != 0).catch(this.error);
   }
 
   _bus() {
@@ -40,11 +51,7 @@ class DimmerDevice extends Homey.Device {
       channel: this.getData().channel,
       level: value * 100
     });
-    if (value < 0.01) {
-      this.setCapabilityValue("onoff", false).catch(this.error);
-    } else {
-      this.setCapabilityValue("onoff", true).catch(this.error);
-    }
+    this.setCapabilityValue("onoff", value > 0).catch(this.error);
   }
 }
 

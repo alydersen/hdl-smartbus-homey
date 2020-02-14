@@ -7,20 +7,34 @@ class RelayDriver extends Homey.Driver {
     this.log("HDL RelayDriver has been initiated");
   }
 
-  updateValues(command) {
-    if (command.data["success"] != undefined) {
-      let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
+  updateValues(signal) {
+    if (signal.data == undefined) return;
+    if (signal.data.level == undefined) return;
+    if (signal.data.id == undefined) return;
+
+    let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
+    if (signal.data.channel != undefined) {
       let homeyDevice = this.getDevice({
-        id: `${hdl_subnet}.${command.sender.id}.${command.data.channel}`,
-        address: `${hdl_subnet}.${command.sender.id}`,
-        channel: command.data.channel
+        id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
+        address: `${hdl_subnet}.${signal.sender.id}`,
+        channel: signal.data.channel
       });
       if (homeyDevice instanceof Error) return;
-      if (command.data.level == 0) {
-        homeyDevice.setCapabilityValue("onoff", false).catch(this.error);
-      } else {
-        homeyDevice.setCapabilityValue("onoff", true).catch(this.error);
-      }
+
+      homeyDevice.updateLevel(signal.data.level);
+    }
+
+    if (signal.data.channels != undefined) {
+      signal.data.channels.forEach(function(element) {
+        let homeyDevice = this.getDevice({
+          id: `${hdl_subnet}.${signal.sender.id}.${element.number}`,
+          address: `${hdl_subnet}.${signal.sender.id}`,
+          channel: element.number
+        });
+        if (homeyDevice instanceof Error) return;
+
+        homeyDevice.updateLevel(element.level);
+      });
     }
   }
 

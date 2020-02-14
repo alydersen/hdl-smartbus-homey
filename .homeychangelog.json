@@ -13,5 +13,8 @@
   },
   "0.0.5": {
     "en": "Added error check for settings input"
+  },
+  "0.0.6": {
+    "en": "Better support for multisensors, more robust update of initial status on loading of devices"
   }
 }

@@ -7,32 +7,36 @@ class MultisensorDriver extends Homey.Driver {
     this.log("HDL MultisensorDriver has been initiated");
   }
 
-  updateValues(signal, context = "generic") {
+  updateValues(signal) {
+    if (signal.data == undefined) return;
+    if (signal.data.channel == undefined) return;
+    if (signal.data.id == undefined) return;
+
     let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
     let homeyDevice = this.getDevice({
       id: `${hdl_subnet}.${signal.sender.id}`
     });
     if (homeyDevice instanceof Error) return;
 
-    if (context == "generic") {
-      // Update temperature
-      if (signal.data.temperature != undefined) {
+    // Set motion status
+    if (
+      signal.data.switch != undefined &&
+      signal.data.switch ==
+        parseInt(Homey.ManagerSettings.get("hdl_universal_motion"))
+    ) {
+      if (homeyDevice.hasCapability("alarm_motion")) {
         homeyDevice
-          .setCapabilityValue("measure_temperature", signal.data.temperature)
+          .setCapabilityValue("alarm_motion", signal.data.switch)
           .catch(this.error);
       }
-    } else if (context == "motion") {
-      // Update motion
-      if (signal.data.level != undefined) {
-        if (signal.data.level == 100) {
-          homeyDevice
-            .setCapabilityValue("alarm_motion", true)
-            .catch(this.error);
-        } else {
-          homeyDevice
-            .setCapabilityValue("alarm_motion", false)
-            .catch(this.error);
-        }
+    }
+
+    // Set temperature
+    if (signal.data.temperature != undefined) {
+      if (homeyDevice.hasCapability("measure_temperature")) {
+        homeyDevice
+          .setCapabilityValue("alarm_motion", signal.data.switch)
+          .catch(this.error);
       }
     }
   }

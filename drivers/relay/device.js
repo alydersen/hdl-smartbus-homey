@@ -12,6 +12,15 @@ class RelayDevice extends Homey.Device {
 
     // register a capability listener
     this.registerCapabilityListener("onoff", this.onCapabilityOnoff.bind(this));
+
+    // Ask for channel status
+    if (Homey.app.isBusConnected()) {
+      this._bus().send(this.getData().address, 0x0033);
+    }
+  }
+
+  updateLevel(level) {
+    this.setCapabilityValue("onoff", level != 0).catch(this.error);
   }
 
   _bus() {

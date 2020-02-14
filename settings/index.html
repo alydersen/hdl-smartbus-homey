@@ -28,12 +28,29 @@
       </div>
     </fieldset>
 
+    <fieldset>
+      <legend>Motion Sensor Universal Switch</legend>
+      <p>
+        To catch motion and no motion from a motion sensor, you need create
+        logic that sends a universal switch broadcast with true if motion and
+        false if no motion. The default universal switch number is 212. Change
+        it here if you need to.
+      </p>
+      <div class="field row">
+        <label for="hdl_universal_motion">
+          Universal Switch Number (1-254)
+        </label>
+        <input id="hdl_universal_motion" type="text" value="" />
+      </div>
+    </fieldset>
+
     <button id="save" class="right">Save changes</button>
 
     <script type="text/javascript">
       function onHomeyReady(Homey) {
         var ipElement = document.getElementById("hdl_ip_address");
         var subnetElement = document.getElementById("hdl_subnet");
+        var motionElement = document.getElementById("hdl_universal_motion");
         var saveElement = document.getElementById("save");
 
         Homey.get("hdl_ip_address", function(err, hdl_ip_address) {
@@ -46,30 +63,74 @@
           subnetElement.value = hdl_subnet;
         });
 
+        Homey.get("hdl_universal_motion", function(err, hdl_universal_motion) {
+          if (err) return Homey.alert(err);
+          motionElement.value = hdl_universal_motion;
+        });
+
         saveElement.addEventListener("click", function(e) {
           const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/g;
-          if (!ipElement.value.match(ipRegex)) {
+          const subnetRegex = /^\d{1,3}$/g;
+
+          // Verify IP-address
+          if (!ipElement.value.match(ipRegex))
             return Homey.alert("Not a valid IP address");
-          } else {
-            const subnetRegex = /^\d{1,3}$/g;
-            if (!subnetElement.value.match(subnetRegex)) {
-              return Homey.alert(
-                "Not a valid HDL Subnet. Please use 1-254 (usually 1)"
-              );
-            } else {
-              Homey.set("hdl_ip_address", ipElement.value, function(err) {
-                if (err) return Homey.alert(err);
-              });
 
-              Homey.set("hdl_subnet", subnetElement.value, function(err) {
-                if (err) return Homey.alert(err);
-              });
-
-              Homey.alert(
-                "Settings saved. You need to restart the app to connect the bus (or restart your Homey)"
-              );
-            }
+          // Verify subnet
+          if (!subnetElement.value.match(subnetRegex)) {
+            return Homey.alert(
+              "Not a valid HDL Subnet (not up to 3 numbers). Please use 1-254 (usually 1)"
+            );
           }
+
+          let subnet = parseInt(subnetElement.value);
+          if (subnet < 1) {
+            return Homey.alert(
+              "Not a valid HDL Subnet (less than 0). Please use 1-254 (usually 1)"
+            );
+          }
+
+          if (subnet > 254) {
+            return Homey.alert(
+              `Not a valid HDL Subnet (more than 254 - ${subnet}). Please use 1-254 (usually 1)`
+            );
+          }
+
+          // Verify motion universal switch number
+          if (!motionElement.value.match(subnetRegex)) {
+            return Homey.alert(
+              "Not a valid Universal Switch Number. Please use 1-254"
+            );
+          }
+
+          let motion = parseInt(motionElement.value);
+          if (motion < 1) {
+            return Homey.alert(
+              "Not a valid Universal Switch Number. Please use 1-254 "
+            );
+          }
+
+          if (motion > 254) {
+            return Homey.alert(
+              "Not a valid Universal Switch Number. Please use 1-254"
+            );
+          }
+
+          Homey.set("hdl_ip_address", ipElement.value, function(err) {
+            if (err) return Homey.alert(err);
+          });
+
+          Homey.set("hdl_subnet", subnetElement.value, function(err) {
+            if (err) return Homey.alert(err);
+          });
+
+          Homey.set("hdl_universal_motion", subnetElement.value, function(err) {
+            if (err) return Homey.alert(err);
+          });
+
+          Homey.alert(
+            "Settings saved. You need to restart the app to connect the bus (or restart your Homey)"
+          );
         });
 
         Homey.ready();

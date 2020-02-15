@@ -16,5 +16,8 @@
   },
   "0.0.6": {
     "en": "Better support for multisensors, more robust update of initial status on loading of devices"
+  },
+  "0.0.7": {
+    "en": "Fixed bug in multisensor. Added framework for future recurring refresh."
   }
 }

@@ -21,6 +21,17 @@ class HDLSmartBus extends Homey.App {
     })();
 
     this.log("Homey HDL SmartBus app has been initialized...");
+
+    if (this._busConnected == true) {
+      this.log("Initializing recurring update...");
+      setInterval(async () => {
+        this.callForUpdate();
+      }, 30000);
+    }
+  }
+
+  async callForUpdate() {
+    this.log("Update called - functionality to be added later");
   }
 
   async connect() {

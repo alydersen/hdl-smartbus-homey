@@ -9,8 +9,7 @@ class MultisensorDriver extends Homey.Driver {
 
   updateValues(signal) {
     if (signal.data == undefined) return;
-    if (signal.data.channel == undefined) return;
-    if (signal.data.id == undefined) return;
+    if (signal.sender.id == undefined) return;
 
     let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
     let homeyDevice = this.getDevice({
@@ -26,7 +25,7 @@ class MultisensorDriver extends Homey.Driver {
     ) {
       if (homeyDevice.hasCapability("alarm_motion")) {
         homeyDevice
-          .setCapabilityValue("alarm_motion", signal.data.switch)
+          .setCapabilityValue("alarm_motion", signal.data.status)
           .catch(this.error);
       }
     }
@@ -35,7 +34,7 @@ class MultisensorDriver extends Homey.Driver {
     if (signal.data.temperature != undefined) {
       if (homeyDevice.hasCapability("measure_temperature")) {
         homeyDevice
-          .setCapabilityValue("alarm_motion", signal.data.switch)
+          .setCapabilityValue("measure_temperature", signal.data.temperature)
           .catch(this.error);
       }
     }

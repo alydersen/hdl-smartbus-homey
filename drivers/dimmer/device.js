@@ -26,6 +26,10 @@ class DimmerDevice extends Homey.Device {
     this.setCapabilityValue("onoff", corrected_level != 0).catch(this.error);
   }
 
+  updateTrueFalse(status) {
+    this.setCapabilityValue("onoff", status).catch(this.error);
+  }
+
   _bus() {
     return Homey.app.bus();
   }

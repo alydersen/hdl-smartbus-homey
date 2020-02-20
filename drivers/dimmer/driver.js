@@ -21,7 +21,13 @@ class DimmerDriver extends Homey.Driver {
       });
       if (homeyDevice instanceof Error) return;
 
-      homeyDevice.updateLevel(signal.data.level);
+      if (signal.data.level != undefined) {
+        homeyDevice.updateLevel(signal.data.level);
+      }
+
+      if (signal.data.status != undefined) {
+        homeyDevice.updateTrueFalse(signal.data.status);
+      }
     }
 
     if (signal.data.channels != undefined) {
@@ -33,7 +39,13 @@ class DimmerDriver extends Homey.Driver {
         });
         if (homeyDevice instanceof Error) return;
 
-        homeyDevice.updateLevel(element.level);
+        if (element.level != undefined) {
+          homeyDevice.updateLevel(element.level);
+        }
+
+        if (element.status != undefined) {
+          homeyDevice.updateTrueFalse(element.status);
+        }
       });
     }
   }

@@ -19,5 +19,8 @@
   },
   "0.0.7": {
     "en": "Fixed bug in multisensor. Added framework for future recurring refresh."
+  },
+  "0.0.8": {
+    "en": "Updated smart-bus library. Better parsing of broadcasted updates for relays and switches on the bus."
   }
 }

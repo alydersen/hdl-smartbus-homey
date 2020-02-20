@@ -11,6 +11,9 @@ class HDLSmartBus extends Homey.App {
     this._relays = {};
     this._multisensors = {};
     this._tempsensors = {};
+    this._activeunits = {};
+
+    this.log("Homey HDL SmartBus app has been initialized...");
 
     (async (args, callback) => {
       try {
@@ -19,8 +22,6 @@ class HDLSmartBus extends Homey.App {
         Homey.app.log(err.message);
       }
     })();
-
-    this.log("Homey HDL SmartBus app has been initialized...");
 
     if (this._busConnected == true) {
       this.log("Initializing recurring update...");
@@ -43,6 +44,10 @@ class HDLSmartBus extends Homey.App {
     if (hdl_motion == undefined || hdl_motion == "") {
       Homey.ManagerSettings.set("hdl_universal_motion", "212");
     }
+
+    //
+    // if (this._activeunits[hdl_subnet] == undefined)
+    //  this._activeunits[hdl_subnet] = {};
 
     // Return if settings are not defined
     if (

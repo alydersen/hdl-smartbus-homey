@@ -21,7 +21,7 @@ class DimmerDevice extends Homey.Device {
   }
 
   updateLevel(level) {
-    let corrected_level = level / 100;
+    var corrected_level = level / 100;
     this.setCapabilityValue("dim", corrected_level).catch(this.error);
     this.setCapabilityValue("onoff", corrected_level != 0).catch(this.error);
   }

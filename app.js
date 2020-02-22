@@ -11,7 +11,6 @@ class HDLSmartBus extends Homey.App {
     this._relays = {};
     this._multisensors = {};
     this._tempsensors = {};
-    this._activeunits = {};
 
     this.log("Homey HDL SmartBus app has been initialized...");
 
@@ -22,17 +21,6 @@ class HDLSmartBus extends Homey.App {
         Homey.app.log(err.message);
       }
     })();
-
-    if (this._busConnected == true) {
-      this.log("Initializing recurring update...");
-      setInterval(async () => {
-        this.callForUpdate();
-      }, 30000);
-    }
-  }
-
-  async callForUpdate() {
-    this.log("Update called - functionality to be added later");
   }
 
   async connect() {
@@ -44,10 +32,6 @@ class HDLSmartBus extends Homey.App {
     if (hdl_motion == undefined || hdl_motion == "") {
       Homey.ManagerSettings.set("hdl_universal_motion", "212");
     }
-
-    //
-    // if (this._activeunits[hdl_subnet] == undefined)
-    //  this._activeunits[hdl_subnet] = {};
 
     // Return if settings are not defined
     if (
@@ -75,7 +59,11 @@ class HDLSmartBus extends Homey.App {
     }
 
     // Connect the bus
-    this._bus = new SmartBus(`hdl://${hdl_ip_address}:6000`);
+    this._bus = new SmartBus({
+      //device: "1.200",
+      gateway: hdl_ip_address,
+      port: 6000
+    });
 
     // Send out a discovery ping
     this._bus.send("255.255", 0x000e, function(err) {
@@ -92,6 +80,32 @@ class HDLSmartBus extends Homey.App {
     // Set the bus as connected
     this._busConnected = true;
     this.log("Homey HDL SmartBus is running...");
+    this.log("Initializing recurring update...");
+    setInterval(async () => {
+      this.callForUpdate(this._bus);
+    }, 60000);
+  }
+
+  async callForUpdate(bus) {
+    this.log("Update called - looping through drivers");
+    Homey.ManagerDrivers.getDriver("dimmer")
+      .getDevices()
+      .forEach(function(device) {
+        bus.send(device.getData().address, 0x0033, function(err) {
+          if (err) {
+            Homey.app.log(err);
+          }
+        });
+      });
+    Homey.ManagerDrivers.getDriver("relay")
+      .getDevices()
+      .forEach(function(device) {
+        bus.send(device.getData().address, 0x0033, function(err) {
+          if (err) {
+            Homey.app.log(err);
+          }
+        });
+      });
   }
 
   isBusConnected() {

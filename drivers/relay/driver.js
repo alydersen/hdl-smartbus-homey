@@ -10,41 +10,34 @@ class RelayDriver extends Homey.Driver {
   updateValues(signal) {
     if (signal.data == undefined) return;
     if (signal.data.level == undefined) return;
-    if (signal.data.id == undefined) return;
+    if (signal.sender.id == undefined) return;
 
     let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
+    let parent = this;
     if (signal.data.channel != undefined) {
-      let homeyDevice = this.getDevice({
-        id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
-        address: `${hdl_subnet}.${signal.sender.id}`,
-        channel: signal.data.channel
-      });
-      if (homeyDevice instanceof Error) return;
-
       if (signal.data.level != undefined) {
-        homeyDevice.updateLevel(signal.data.level);
-      }
+        let homeyDevice = parent.getDevice({
+          id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
+          address: `${hdl_subnet}.${signal.sender.id}`,
+          channel: signal.data.channel
+        });
+        if (homeyDevice instanceof Error) return;
 
-      if (signal.data.status != undefined) {
-        homeyDevice.updateTrueFalse(signal.data.status);
+        homeyDevice.updateLevel(signal.data.level);
       }
     }
 
     if (signal.data.channels != undefined) {
       signal.data.channels.forEach(function(element) {
-        let homeyDevice = this.getDevice({
-          id: `${hdl_subnet}.${signal.sender.id}.${element.number}`,
-          address: `${hdl_subnet}.${signal.sender.id}`,
-          channel: element.number
-        });
-        if (homeyDevice instanceof Error) return;
-
         if (element.level != undefined) {
-          homeyDevice.updateLevel(element.level);
-        }
+          let homeyDevice = parent.getDevice({
+            id: `${hdl_subnet}.${signal.sender.id}.${element.number}`,
+            address: `${hdl_subnet}.${signal.sender.id}`,
+            channel: element.number
+          });
+          if (homeyDevice instanceof Error) return;
 
-        if (element.status != undefined) {
-          homeyDevice.updateTrueFalse(element.status);
+          homeyDevice.updateLevel(element.level);
         }
       });
     }

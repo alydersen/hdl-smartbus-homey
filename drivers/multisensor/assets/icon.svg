@@ -8,6 +8,6 @@
     <path d="M6200 1420 l0 -1310 1195 0 1195 0 0 295 0 295 -822 2 -823 3 -3 1013 -2 1012 -370 0 -370 0 0 -1310z" style="fill: rgb(43, 42, 42);"/>
   </g>
   <rect x="21.211" y="19.62" width="459.76" height="460.033" style="stroke: rgb(43, 42, 42); fill: none; stroke-width: 12px;" rx="17.433" ry="17.433"/>
-  <ellipse style="fill: rgb(43, 42, 42);" cx="250.584" cy="259.487" rx="117.004" ry="45.02"/>
-  <circle style="fill: none; stroke-width: 12px; stroke: rgb(43, 42, 42);" cx="250.934" cy="260.229" r="141.18"/>
+  <ellipse style="fill: rgb(43, 42, 42);" cx="251.244" cy="268.035" rx="117.004" ry="37.347"/>
+  <circle style="fill: none; stroke: rgb(43, 42, 42); stroke-width: 20px;" cx="250.934" cy="260.229" r="141.18" transform="matrix(0.960373, 0, 0, 0.958235, 9.00976, 18.639454)"/>
 </svg>

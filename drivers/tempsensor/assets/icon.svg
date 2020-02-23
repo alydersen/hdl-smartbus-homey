@@ -8,12 +8,12 @@
     <path d="M6200 1420 l0 -1310 1195 0 1195 0 0 295 0 295 -822 2 -823 3 -3 1013 -2 1012 -370 0 -370 0 0 -1310z" style="fill: rgb(43, 42, 42);"/>
   </g>
   <rect x="21.211" y="19.62" width="459.76" height="460.033" style="stroke: rgb(43, 42, 42); fill: none; stroke-width: 12px;" rx="17.433" ry="17.433"/>
-  <line style="fill: rgb(43, 42, 42); stroke: rgb(43, 42, 42); stroke-linecap: round; stroke-width: 15px;" x1="250.66" y1="130.225" x2="250.66" y2="377.263"/>
-  <circle style="stroke-width: 14px; stroke: rgb(43, 42, 42); fill: none;" cx="250.968" cy="407.579" r="29.801"/>
-  <line style="fill: rgb(43, 42, 42); stroke: rgb(43, 42, 42); stroke-linecap: round; stroke-width: 15px;" x1="323.504" y1="141.372" x2="273.668" y2="141.372"/>
-  <line style="fill: rgb(43, 42, 42); stroke: rgb(43, 42, 42); stroke-linecap: round; stroke-width: 15px;" x1="323.98" y1="171.991" x2="274.144" y2="171.991"/>
-  <line style="fill: rgb(43, 42, 42); stroke: rgb(43, 42, 42); stroke-linecap: round; stroke-width: 15px;" x1="323.799" y1="203.061" x2="273.963" y2="203.061"/>
-  <line style="fill: rgb(43, 42, 42); stroke: rgb(43, 42, 42); stroke-linecap: round; stroke-width: 15px;" x1="226.774" y1="229.544" x2="176.938" y2="229.544"/>
-  <line style="fill: rgb(43, 42, 42); stroke: rgb(43, 42, 42); stroke-linecap: round; stroke-width: 15px;" x1="227.25" y1="260.163" x2="177.414" y2="260.163"/>
-  <line style="fill: rgb(43, 42, 42); stroke: rgb(43, 42, 42); stroke-linecap: round; stroke-width: 15px;" x1="227.069" y1="291.233" x2="177.233" y2="291.233"/>
+  <line style="fill: rgb(43, 42, 42); stroke: rgb(43, 42, 42); stroke-linecap: round; stroke-width: 20px;" x1="250.66" y1="116.469" x2="250.66" y2="339.729"/>
+  <circle style="stroke: rgb(43, 42, 42); fill: none; stroke-width: 20px;" cx="250.51" cy="375.537" r="35.343"/>
+  <line style="fill: rgb(43, 42, 42); stroke: rgb(43, 42, 42); stroke-linecap: round; stroke-width: 20px;" x1="323.504" y1="141.372" x2="273.668" y2="141.372"/>
+  <line style="fill: rgb(43, 42, 42); stroke: rgb(43, 42, 42); stroke-linecap: round; stroke-width: 20px;" x1="323.98" y1="171.991" x2="274.144" y2="171.991"/>
+  <line style="fill: rgb(43, 42, 42); stroke: rgb(43, 42, 42); stroke-linecap: round; stroke-width: 20px;" x1="323.799" y1="203.061" x2="273.963" y2="203.061"/>
+  <line style="fill: rgb(43, 42, 42); stroke: rgb(43, 42, 42); stroke-linecap: round; stroke-width: 20px;" x1="226.774" y1="229.544" x2="176.938" y2="229.544"/>
+  <line style="fill: rgb(43, 42, 42); stroke: rgb(43, 42, 42); stroke-linecap: round; stroke-width: 20px;" x1="227.25" y1="260.163" x2="177.414" y2="260.163"/>
+  <line style="fill: rgb(43, 42, 42); stroke: rgb(43, 42, 42); stroke-linecap: round; stroke-width: 20px;" x1="227.069" y1="291.233" x2="177.233" y2="291.233"/>
 </svg>

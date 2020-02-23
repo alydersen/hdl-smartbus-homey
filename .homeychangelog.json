@@ -25,5 +25,8 @@
   },
   "0.0.9": {
     "en": "Status update for relays and dimmers every minute. Changed icons"
+  },
+  "0.1.0": {
+    "en": "Added support for the app to have an ID in the HDL smartbus subnet"
   }
 }

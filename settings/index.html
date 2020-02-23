@@ -18,13 +18,23 @@
 
     <fieldset>
       <legend>HDL Smartbus settings</legend>
+      <p>
+        For the app to communicate with the smartbus, the first thing needed is
+        the IP-address of the IP-module. The subnet is your HDL bus subnet, and
+        then the ID of this app in your subnet. It is important that this ID is
+        available (not taken by another unit on the bus).
+      </p>
       <div class="field row">
-        <label for="hdl_ip_address">IP address</label>
+        <label for="hdl_ip_address">IP address of IP-module</label>
         <input id="hdl_ip_address" type="text" value="" />
       </div>
       <div class="field row">
         <label for="hdl_subnet">Subnet (in HDL, 1-255)</label>
         <input id="hdl_subnet" type="text" value="" />
+      </div>
+      <div class="field row">
+        <label for="hdl_id">This apps ID in HDL subnet (1-255)</label>
+        <input id="hdl_id" type="text" value="" />
       </div>
     </fieldset>
 
@@ -50,6 +60,7 @@
       function onHomeyReady(Homey) {
         var ipElement = document.getElementById("hdl_ip_address");
         var subnetElement = document.getElementById("hdl_subnet");
+        var idElement = document.getElementById("hdl_id");
         var motionElement = document.getElementById("hdl_universal_motion");
         var saveElement = document.getElementById("save");
 
@@ -61,6 +72,11 @@
         Homey.get("hdl_subnet", function(err, hdl_subnet) {
           if (err) return Homey.alert(err);
           subnetElement.value = hdl_subnet;
+        });
+
+        Homey.get("hdl_id", function(err, hdl_id) {
+          if (err) return Homey.alert(err);
+          idElement.value = hdl_id;
         });
 
         Homey.get("hdl_universal_motion", function(err, hdl_universal_motion) {
@@ -96,6 +112,26 @@
             );
           }
 
+          // Verify id
+          if (!idElement.value.match(subnetRegex)) {
+            return Homey.alert(
+              "Not a valid HDL id (not up to 3 numbers). Please use 1-254"
+            );
+          }
+
+          let id = parseInt(idElement.value);
+          if (id < 1) {
+            return Homey.alert(
+              "Not a valid HDL ID (less than 0). Please use 1-254"
+            );
+          }
+
+          if (id > 254) {
+            return Homey.alert(
+              `Not a valid HDL ID (more than 254 - ${id}). Please use 1-254`
+            );
+          }
+
           // Verify motion universal switch number
           if (!motionElement.value.match(subnetRegex)) {
             return Homey.alert(
@@ -121,6 +157,10 @@
           });
 
           Homey.set("hdl_subnet", subnetElement.value, function(err) {
+            if (err) return Homey.alert(err);
+          });
+
+          Homey.set("hdl_id", idElement.value, function(err) {
             if (err) return Homey.alert(err);
           });
 

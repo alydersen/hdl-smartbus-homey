@@ -26,6 +26,7 @@ class HDLSmartBus extends Homey.App {
   async connect() {
     let hdl_ip_address = Homey.ManagerSettings.get("hdl_ip_address");
     let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
+    let hdl_id = Homey.ManagerSettings.get("hdl_id");
     let hdl_motion = Homey.ManagerSettings.get("hdl_universal_motion");
 
     // Set the universal motion if not set
@@ -42,7 +43,7 @@ class HDLSmartBus extends Homey.App {
     )
       return;
 
-    // Return if not proper ip or subnet
+    // Return if not proper ip, subnet or id
     const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/g;
     const subnetRegex = /^\d{1,3}$/g;
     if (!hdl_ip_address.match(ipRegex)) return;
@@ -50,6 +51,12 @@ class HDLSmartBus extends Homey.App {
     let hdl_subnet_int = parseInt(hdl_subnet);
     if (hdl_subnet_int < 1) return;
     if (hdl_subnet_int > 254) return;
+    if (hdl_id != undefined && hdl_id != "") {
+      if (!hdl_id.match(subnetRegex)) return;
+      let hdl_id_int = parseInt(hdl_id);
+      if (hdl_id_int < 1) return;
+      if (hdl_id_int > 254) return;
+    }
 
     // Close if the bus is already is running
     this._busConnected = false;
@@ -59,11 +66,18 @@ class HDLSmartBus extends Homey.App {
     }
 
     // Connect the bus
-    this._bus = new SmartBus({
-      //device: "1.200",
-      gateway: hdl_ip_address,
-      port: 6000
-    });
+    if (hdl_id == undefined || hdl_id == "") {
+      this._bus = new SmartBus({
+        gateway: hdl_ip_address,
+        port: 6000
+      });
+    } else {
+      this._bus = new SmartBus({
+        device: `${hdl_subnet}.${hdl_id}`,
+        gateway: hdl_ip_address,
+        port: 6000
+      });
+    }
 
     // Send out a discovery ping
     this._bus.send("255.255", 0x000e, function(err) {

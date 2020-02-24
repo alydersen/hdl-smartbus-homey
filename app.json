@@ -1,6 +1,6 @@
 {
   "id": "com.github.alydersen.hdl-smartbus-homey",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "compatibility": ">=3.0.0",
   "sdk": 2,
   "name": {
@@ -10,7 +10,7 @@
     "en": "HDL SmartBus support for Homey"
   },
   "tags": {
-    "en": ["smart-bus"]
+    "en": ["smart-bus", "buspro", "hdl"]
   },
   "category": ["lights"],
   "permissions": [],

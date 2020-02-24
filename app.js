@@ -120,6 +120,18 @@ class HDLSmartBus extends Homey.App {
           }
         });
       });
+
+    Homey.ManagerDrivers.getDriver("tempsensor")
+      .getDevices()
+      .forEach(function(tempsensor) {
+        tempsensor.requestUpdate();
+      });
+
+    Homey.ManagerDrivers.getDriver("multisensor")
+      .getDevices()
+      .forEach(function(multisensor) {
+        multisensor.requestUpdate();
+      });
   }
 
   isBusConnected() {

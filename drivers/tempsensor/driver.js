@@ -11,7 +11,7 @@ class TempsensorDriver extends Homey.Driver {
     if (signal.data == undefined) return;
     if (signal.data.temperature == undefined) return;
     if (signal.data.channel == undefined) return;
-    if (signal.data.id == undefined) return;
+    if (signal.sender.id == undefined) return;
 
     let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
     let homeyDevice = this.getDevice({

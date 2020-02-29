@@ -8,7 +8,7 @@ Install the app and go to its settings. Set the IP-address and the subnet (on yo
 
 ### Troubleshooting
 
-If devices are not discovered, no traffic is published on the bus for that device since the app was started, or is is not supported. Try activating the device by a switch or other means.
+If devices are not discovered, no traffic is published on the bus for that device since the app was started, or it's not supported. Try activating the device by a switch or other means to generate traffic on the bus.
 
 ## Supported equipment
 

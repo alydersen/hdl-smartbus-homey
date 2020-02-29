@@ -1,6 +1,7 @@
 "use strict";
 
 const Homey = require("homey");
+const HdlRelays = require("./../../hdl/hdl_relays");
 
 class RelayDriver extends Homey.Driver {
   onInit() {
@@ -52,14 +53,14 @@ class RelayDriver extends Homey.Driver {
       callback(new Error("Please configure the app settings first."));
     } else {
       this.log("onPairListDevices from Dimmer");
-      let relays = Homey.app.getRelays();
-
-      for (const device of Object.values(relays)) {
-        let type = Homey.app.devicelist["relays"][device.type.toString()];
-        let channelsAvailable = type["channels"];
-
+      for (const device of Object.values(Homey.app.getRelays())) {
+        let hdlRelay = new HdlRelays(device.type.toString());
         var channel;
-        for (channel = 1; channel < channelsAvailable + 1; channel++) {
+        for (
+          channel = 1;
+          channel < hdlRelay.numberOfChannels() + 1;
+          channel++
+        ) {
           devices.push({
             name: `HDL Relay (${hdl_subnet}.${device.id} ch ${channel})`,
             data: {

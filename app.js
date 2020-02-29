@@ -102,36 +102,15 @@ class HDLSmartBus extends Homey.App {
 
   async callForUpdate(bus) {
     this.log("Update called - looping through drivers");
-    Homey.ManagerDrivers.getDriver("dimmer")
-      .getDevices()
-      .forEach(function(device) {
-        bus.send(device.getData().address, 0x0033, function(err) {
-          if (err) {
-            Homey.app.log(err);
-          }
-        });
-      });
-    Homey.ManagerDrivers.getDriver("relay")
-      .getDevices()
-      .forEach(function(device) {
-        bus.send(device.getData().address, 0x0033, function(err) {
-          if (err) {
-            Homey.app.log(err);
-          }
-        });
-      });
+    let drivers = ["dimmer", "relay", "tempsensor", "multisensor"];
 
-    Homey.ManagerDrivers.getDriver("tempsensor")
-      .getDevices()
-      .forEach(function(tempsensor) {
-        tempsensor.requestUpdate();
-      });
-
-    Homey.ManagerDrivers.getDriver("multisensor")
-      .getDevices()
-      .forEach(function(multisensor) {
-        multisensor.requestUpdate();
-      });
+    for (let i = 0; i < drivers.length; i++) {
+      Homey.ManagerDrivers.getDriver(drivers[i])
+        .getDevices()
+        .forEach(function(device) {
+          device.requestUpdate();
+        });
+    }
   }
 
   isBusConnected() {
@@ -264,14 +243,42 @@ class HDLSmartBus extends Homey.App {
         467: { channels: 3 },
         468: { channels: 6 },
         469: { channels: 4 },
-        470: { channels: 6 }
+        470: { channels: 6 },
+        600: { channels: 6 },
+        601: { channels: 4 },
+        602: { channels: 2 },
+        606: { channels: 2 },
+        607: { channels: 4 },
+        608: { channels: 6 },
+        609: { channels: 1 },
+        610: { channels: 6 },
+        611: { channels: 4 },
+        612: { channels: 2 },
+        613: { channels: 6 },
+        614: { channels: 2 },
+        615: { channels: 4 },
+        616: { channels: 4 },
+        617: { channels: 6 },
+        618: { channels: 1 },
+        619: { channels: 2 },
+        620: { channels: 4 },
+        621: { channels: 6 },
+        622: { channels: 6 },
+        623: { channels: 4 },
+        630: { channels: 4 },
+        631: { channels: 2 },
+        632: { channels: 4 },
+        633: { channels: 6 },
+        634: { channels: 2 },
+        635: { channels: 4 },
+        636: { channels: 6 }
       },
       multisensors: {
-        305: { temperature: true, motion: true },
-        307: { temperature: true, motion: true },
-        308: { temperature: true, motion: true },
+        305: { temperature: false, motion: true },
+        307: { temperature: false, motion: true },
+        308: { temperature: false, motion: true },
         309: { temperature: false, motion: true },
-        312: { temperature: true, motion: true },
+        312: { temperature: false, motion: true },
         314: { temperature: true, motion: true },
         315: { temperature: true, motion: true },
         316: { temperature: true, motion: true },
@@ -280,6 +287,7 @@ class HDLSmartBus extends Homey.App {
         322: { temperature: true, motion: true },
         328: { temperature: true, motion: true },
         329: { temperature: true, motion: true },
+        330: { temperature: true, motion: true },
         336: { temperature: true, motion: true },
         337: { temperature: true, motion: true },
         340: { temperature: true, motion: true }

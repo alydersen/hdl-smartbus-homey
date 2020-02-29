@@ -28,5 +28,11 @@
   },
   "0.1.0": {
     "en": "Added support for the app to have an ID in the HDL smartbus subnet"
+  },
+  "0.1.1": {
+    "en": "Recurring updates of tempsensors and multisensors."
+  },
+  "0.1.2": {
+    "en": "Support for more dimmers and sensors"
   }
 }

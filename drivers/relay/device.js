@@ -27,6 +27,14 @@ class RelayDevice extends Homey.Device {
     this.setCapabilityValue("onoff", status).catch(this.error);
   }
 
+  requestUpdate() {
+    this._bus().send(this.getData().address, 0x0033, function(err) {
+      if (err) {
+        Homey.app.log(err);
+      }
+    });
+  }
+
   _bus() {
     return Homey.app.bus();
   }

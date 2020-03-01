@@ -11,6 +11,7 @@ class HDLSmartBus extends Homey.App {
   onInit() {
     this._busConnected = false;
     this._bus = null;
+    this._controller = null;
     this._dimmers = {};
     this._relays = {};
     this._multisensors = {};
@@ -43,7 +44,9 @@ class HDLSmartBus extends Homey.App {
       hdl_ip_address == undefined ||
       hdl_ip_address == "" ||
       hdl_subnet == undefined ||
-      hdl_subnet == ""
+      hdl_subnet == "" ||
+      hdl_id == undefined ||
+      hdl_id == ""
     )
       return;
 
@@ -70,29 +73,36 @@ class HDLSmartBus extends Homey.App {
     }
 
     // Connect the bus
-    if (hdl_id == undefined || hdl_id == "") {
-      this._bus = new SmartBus({
-        gateway: hdl_ip_address,
-        port: 6000
-      });
-    } else {
-      this._bus = new SmartBus({
-        device: `${hdl_subnet}.${hdl_id}`,
-        gateway: hdl_ip_address,
-        port: 6000
-      });
-    }
+    this._bus = new SmartBus({
+      gateway: hdl_ip_address,
+      port: 6000
+    });
+
+    this._controller = this._bus.controller(`${hdl_subnet}.${hdl_id}`);
 
     // Send out a discovery ping
-    this._bus.send("255.255", 0x000e, function(err) {
-      if (err) {
-        Homey.app.log(err);
+    this._controller.send(
+      {
+        target: "255.255",
+        command: 0x000e
+      },
+      function(err) {
+        if (err) {
+          Homey.app.log(err);
+        }
       }
-    });
+    );
 
     // Listen to bus
     this._bus.on("command", function(signal) {
-      Homey.app._signalReceived(signal);
+      var data;
+
+      try {
+        data = signal.data;
+        Homey.app._signalReceived(signal);
+      } catch (err) {
+        Homey.app.log(`Could not parse data from ${signal.sender.id}: ${err}`);
+      }
     });
 
     // Set the bus as connected
@@ -127,6 +137,10 @@ class HDLSmartBus extends Homey.App {
 
   bus() {
     return this._bus;
+  }
+
+  controller() {
+    return this._controller;
   }
 
   getDimmers() {

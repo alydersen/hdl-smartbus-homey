@@ -15,17 +15,24 @@ class MultisensorDevice extends Homey.Device {
 
     for (let i = 0; i < commands.length; i++) {
       if (Homey.app.isBusConnected()) {
-        this._bus().send(this.getData().id, commands[i], function(err) {
-          if (err) {
-            Homey.app.log(err);
+        this._controller().send(
+          { target: this.getData().id, command: commands[i] },
+          function(err) {
+            if (err) {
+              Homey.app.log(err);
+            }
           }
-        });
+        );
       }
     }
   }
 
   _bus() {
     return Homey.app.bus();
+  }
+
+  _controller() {
+    return Homey.app.controller();
   }
 }
 

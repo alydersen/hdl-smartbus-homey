@@ -16,15 +16,30 @@ class TempsensorDevice extends Homey.Device {
 
     for (let i = 0; i < commands.length; i++) {
       if (Homey.app.isBusConnected()) {
-        this._bus().send(this.getData().address, commands[i], {
-          channel: this.getData().channel
-        });
+        this._controller().send(
+          {
+            target: this.getData().address,
+            command: commands[i],
+            data: {
+              channel: this.getData().channel
+            }
+          },
+          function(err) {
+            if (err) {
+              Homey.app.log(err);
+            }
+          }
+        );
       }
     }
   }
 
   _bus() {
     return Homey.app.bus();
+  }
+
+  _controller() {
+    return Homey.app.controller();
   }
 }
 

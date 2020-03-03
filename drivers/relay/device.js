@@ -15,7 +15,14 @@ class RelayDevice extends Homey.Device {
 
     // Ask for channel status
     if (Homey.app.isBusConnected()) {
-      this._bus().send(this.getData().address, 0x0033);
+      this._controller().send(
+        { target: this.getData().address, command: 0x0033 },
+        function(err) {
+          if (err) {
+            Homey.app.log(err);
+          }
+        }
+      );
     }
   }
 
@@ -28,27 +35,54 @@ class RelayDevice extends Homey.Device {
   }
 
   requestUpdate() {
-    this._bus().send(this.getData().address, 0x0033, function(err) {
-      if (err) {
-        Homey.app.log(err);
+    this._controller().send(
+      { target: this.getData().address, command: 0x0033 },
+      function(err) {
+        if (err) {
+          Homey.app.log(err);
+        }
       }
-    });
+    );
   }
 
   _bus() {
     return Homey.app.bus();
   }
 
+  _controller() {
+    return Homey.app.controller();
+  }
+
   async onCapabilityOnoff(value, opts) {
     if (value === true) {
-      this._bus().send(this.getData().address, 0x0031, {
-        channel: this.getData().channel,
-        level: 100
-      });
+      this._controller().send(
+        {
+          target: this.getData().address,
+          command: 0x0031,
+          data: {
+            channel: this.getData().channel,
+            level: 100
+          }
+        },
+        function(err) {
+          if (err) {
+            Homey.app.log(err);
+          }
+        }
+      );
     } else {
-      this._bus().send(this.getData().address, 0x0031, {
-        channel: this.getData().channel,
-        level: 0
+      this._controller().send({
+        target: this.getData().address,
+        command: 0x0031,
+        data: {
+          channel: this.getData().channel,
+          level: 0
+        },
+        function(err) {
+          if (err) {
+            Homey.app.log(err);
+          }
+        }
       });
     }
   }

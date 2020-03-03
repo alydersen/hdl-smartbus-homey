@@ -40,5 +40,8 @@
   },
   "0.2.0": {
     "en": "Upgrading smart-bus library"
+  },
+  "0.2.1": {
+    "en": "Adding lux support to multisensors if available"
   }
 }

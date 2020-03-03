@@ -45,10 +45,6 @@ class RelayDevice extends Homey.Device {
     );
   }
 
-  _bus() {
-    return Homey.app.bus();
-  }
-
   _controller() {
     return Homey.app.controller();
   }

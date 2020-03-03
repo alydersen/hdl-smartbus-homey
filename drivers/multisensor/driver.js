@@ -37,6 +37,19 @@ class MultisensorDriver extends Homey.Driver {
         homeyDevice
           .setCapabilityValue("measure_temperature", signal.data.temperature)
           .catch(this.error);
+      } else {
+        homeyDevice.addCapability("measure_temperature").catch(this.error);
+      }
+    }
+
+    // Set brighness
+    if (signal.data.brightness != undefined) {
+      if (homeyDevice.hasCapability("measure_luminance")) {
+        homeyDevice
+          .setCapabilityValue("measure_luminance", signal.data.brightness)
+          .catch(this.error);
+      } else {
+        homeyDevice.addCapability("measure_luminance").catch(this.error);
       }
     }
   }
@@ -52,13 +65,7 @@ class MultisensorDriver extends Homey.Driver {
       this.log("onPairListDevices from Multisensor");
       for (const device of Object.values(Homey.app.getMultisensors())) {
         let hdlMultisensor = new HdlMultisensors(device.type.toString());
-        let capabilities = [];
-        if (hdlMultisensor.hasTemperature()) {
-          capabilities.push("measure_temperature");
-        }
-        if (hdlMultisensor.hasMotion()) {
-          capabilities.push("alarm_motion");
-        }
+        let capabilities = ["alarm_motion"];
 
         devices.push({
           name: `HDL Multisensor (${hdl_subnet}.${device.id})`,

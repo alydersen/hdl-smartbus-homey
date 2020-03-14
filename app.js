@@ -95,10 +95,7 @@ class HDLSmartBus extends Homey.App {
 
     // Listen to bus
     this._bus.on("command", function(signal) {
-      var data;
-
       try {
-        data = signal.data;
         Homey.app._signalReceived(signal);
       } catch (err) {
         Homey.app.log(`Could not parse data from ${signal.sender.id}: ${err}`);
@@ -116,7 +113,13 @@ class HDLSmartBus extends Homey.App {
 
   async callForUpdate(bus) {
     this.log("Update called - looping through drivers");
-    let drivers = ["dimmer", "relay", "tempsensor", "multisensor"];
+    let drivers = [
+      "dimmer",
+      "relay",
+      "tempsensor",
+      "multisensor",
+      "universal-switch"
+    ];
 
     for (let i = 0; i < drivers.length; i++) {
       Homey.ManagerDrivers.getDriver(drivers[i])
@@ -165,6 +168,13 @@ class HDLSmartBus extends Homey.App {
       signal.sender.subnet != parseInt(Homey.ManagerSettings.get("hdl_subnet"))
     )
       return;
+
+    // UNIVERSAL SWITCH
+    if (signal.data != undefined) {
+      if (signal.data.switch != undefined) {
+        Homey.ManagerDrivers.getDriver("universal-switch").updateValues(signal);
+      }
+    }
 
     let senderType = signal.sender.type.toString();
     let hdlDimmers = new HdlDimmers(senderType);

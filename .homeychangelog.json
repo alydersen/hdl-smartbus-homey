@@ -43,5 +43,8 @@
   },
   "0.2.1": {
     "en": "Adding lux support to multisensors if available"
+  },
+  "0.2.2": {
+    "en": "Adding support for universal switches"
   }
 }

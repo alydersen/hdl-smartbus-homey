@@ -9,7 +9,6 @@ class HdlUniversalSwitchDriver extends Homey.Driver {
 
   updateValues(signal) {
     if (signal.data == undefined) return;
-    if (signal.sender.id == undefined) return;
     if (signal.data.switch == undefined) return;
     if (
       signal.data.switch ==

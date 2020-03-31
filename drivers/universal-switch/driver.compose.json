@@ -1,0 +1,29 @@
+{
+  "id": "universal-switch",
+  "name": {
+    "en": "Universal Switch"
+  },
+  "class": "other",
+  "capabilities": ["onoff"],
+  "icon": "{{driverAssetsPath}}/icon.svg",
+  "images": {
+    "large": "/drivers/universal-switch/assets/images/large.png",
+    "small": "/drivers/universal-switch/assets/images/small.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      },
+      "options": {
+        "singular": true
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

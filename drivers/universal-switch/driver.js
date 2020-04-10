@@ -15,7 +15,7 @@ class HdlUniversalSwitchDriver extends Homey.Driver {
       parseInt(Homey.ManagerSettings.get("hdl_universal_motion"))
     )
       return;
-
+    this.log(signal.data.switch);
     let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
     let homeyDevice = this.getDevice({
       id: `${hdl_subnet}.${signal.data.switch}`,
@@ -23,7 +23,9 @@ class HdlUniversalSwitchDriver extends Homey.Driver {
     });
     if (homeyDevice instanceof Error) return;
 
-    homeyDevice.updateTrueFalse(signal.data.status).catch(this.error);
+    homeyDevice
+      .setCapabilityValue("onoff", signal.data.status)
+      .catch(this.error);
   }
 
   onPairListDevices(data, callback) {

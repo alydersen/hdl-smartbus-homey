@@ -46,5 +46,8 @@
   },
   "0.2.2": {
     "en": "Adding support for universal switches"
+  },
+  "0.2.3": {
+    "en": "Bugfixing support for universal switches"
   }
 }

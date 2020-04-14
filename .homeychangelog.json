@@ -49,5 +49,8 @@
   },
   "0.2.3": {
     "en": "Bugfixing support for universal switches"
+  },
+  "0.2.4": {
+    "en": "Adding support for DMX devices as relays"
   }
 }

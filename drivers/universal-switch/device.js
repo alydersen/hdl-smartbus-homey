@@ -18,6 +18,21 @@ class HdlUniversalSwitchDevice extends Homey.Device {
     this.setCapabilityValue("onoff", status).catch(this.error);
   }
 
+  respondToSender(sender) {
+    this._controller().send(
+      {
+        target: `${sender.subnet}.${sender.id}`,
+        command: 0xE01D,
+        data: { switch: this.getData().switch, status: this.getCapabilityValue("onoff") }
+      },
+      function(err) {
+        if (err) {
+          Homey.app.log(err);
+        }
+      }
+    );
+  }
+
   requestUpdate() {
     this._controller().send(
       {

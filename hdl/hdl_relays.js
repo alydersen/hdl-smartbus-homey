@@ -56,16 +56,7 @@ class HdlRelays {
       "467": { channels: 3 },
       "468": { channels: 6 },
       "469": { channels: 4 },
-      "470": { channels: 6 },
-      "800": { channels: 8 },
-      "850": { channels: 96 },
-      "851": { channels: 96 },
-      "852": { channels: 96 },
-      "853": { channels: 48 },
-      "854": { channels: 48 },
-      "16": { channels: 48 },
-      "18": { channels: 48 },
-      "32": { channels: 48 }
+      "470": { channels: 6 }
     };
   }
 }

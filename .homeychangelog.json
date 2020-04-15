@@ -52,5 +52,11 @@
   },
   "0.2.4": {
     "en": "Adding support for DMX devices as relays"
+  },
+  "0.2.5": {
+    "en": "Adding more DMX devices"
+  },
+  "0.2.6": {
+    "en": "Adding even more DMX devices"
   }
 }

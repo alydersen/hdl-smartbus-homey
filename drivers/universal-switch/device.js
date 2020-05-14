@@ -53,21 +53,29 @@ class HdlUniversalSwitchDevice extends Homey.Device {
   }
 
   async onCapabilityOnoff(value, opts) {
-    this._controller().send(
-      {
-        target: "255.255",
-        command: 0xe01c,
-        data: {
-          switch: this.getData().switch,
-          status: value
-        }
-      },
-      function(err) {
-        if (err) {
-          Homey.app.log(err);
-        }
+    let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
+    let hdl_id = parseInt(Homey.ManagerSettings.get("hdl_id"));
+
+    var i;
+    for (i = 1; i < 256; i++) {
+      if (i != hdl_id) {
+        this._controller().send(
+          {
+            target: `${hdl_subnet}.${i}`,
+            command: 0xe01c,
+            data: {
+              switch: this.getData().switch,
+              status: value
+            }
+          },
+          function(err) {
+            if (err) {
+              Homey.app.log(err);
+            }
+          }
+        );
       }
-    );
+    }
   }
 }
 

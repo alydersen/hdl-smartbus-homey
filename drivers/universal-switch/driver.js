@@ -31,9 +31,7 @@ class HdlUniversalSwitchDriver extends Homey.Driver {
     homeyDevice
       .setCapabilityValue("onoff", signal.data.status)
       .catch(this.error);
-    homeyDevice
-      .respondToSender(signal.sender)
-      .catch(this.error);
+    homeyDevice.respondToSender(signal.sender);
   }
 
   onPairListDevices(data, callback) {

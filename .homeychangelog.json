@@ -61,5 +61,8 @@
   },
   "0.2.7": {
     "en": "Moving DMX devices from relays to dimmers. Adding US feedback on bus"
+  },
+  "0.2.8": {
+    "en": "Responding to all devices on subnet if Universal Switch change detected"
   }
 }

@@ -64,5 +64,8 @@
   },
   "0.2.8": {
     "en": "Responding to all devices on subnet if Universal Switch change detected"
+  },
+  "0.3.0": {
+    "en": "Updated the Homey Api"
   }
 }

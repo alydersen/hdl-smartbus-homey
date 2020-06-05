@@ -1,7 +1,7 @@
 {
   "id": "com.github.alydersen.hdl-smartbus-homey",
-  "version": "0.2.8",
-  "compatibility": ">=3.0.0",
+  "version": "0.3.0",
+  "compatibility": ">=3.1.0",
   "sdk": 2,
   "name": {
     "en": "HDL SmartBus"

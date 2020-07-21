@@ -67,5 +67,8 @@
   },
   "0.3.0": {
     "en": "Updated the Homey Api"
+  },
+  "0.3.1": {
+    "en": "Maintenance release (dependencies)"
   }
 }

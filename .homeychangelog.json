@@ -70,5 +70,8 @@
   },
   "0.3.1": {
     "en": "Maintenance release (dependencies)"
+  },
+  "0.3.2": {
+    "en": "Added DALI support"
   }
 }

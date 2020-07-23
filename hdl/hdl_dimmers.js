@@ -49,7 +49,14 @@ class HdlDimmers {
       "854": { channels: 48 },
       "16": { channels: 48 },
       "18": { channels: 48 },
-      "32": { channels: 48 }
+      "32": { channels: 48 },
+      "40": { channels: 48 },
+      "41": { channels: 48 },
+      "42": { channels: 64 },
+      "43": { channels: 64 },
+      "4300": { channels: 64 },
+      "4301": { channels: 64 },
+      "4302": { channels: 64 }
     };
   }
 }

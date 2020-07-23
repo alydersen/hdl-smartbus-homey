@@ -13,7 +13,7 @@ If devices are not discovered, no traffic is published on the bus for that devic
 ## Supported equipment
 
 - Relays
-- Dimmers
+- Dimmers (this also includes DMX and DALI)
 - Multisensors (x-in-1 etc.)
 - Temperature sensors
 

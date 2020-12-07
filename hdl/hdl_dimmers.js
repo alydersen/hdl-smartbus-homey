@@ -13,6 +13,14 @@ class HdlDimmers {
 
   get list() {
     return {
+      "16": { channels: 48 },
+      "17": { channels:6 },
+      "18": { channels: 48 },
+      "32": { channels: 48 },
+      "40": { channels: 48 },
+      "41": { channels: 48 },
+      "42": { channels: 64 },
+      "43": { channels: 64 },
       "600": { channels: 6 },
       "601": { channels: 4 },
       "602": { channels: 2 },
@@ -47,13 +55,6 @@ class HdlDimmers {
       "852": { channels: 96 },
       "853": { channels: 48 },
       "854": { channels: 48 },
-      "16": { channels: 48 },
-      "18": { channels: 48 },
-      "32": { channels: 48 },
-      "40": { channels: 48 },
-      "41": { channels: 48 },
-      "42": { channels: 64 },
-      "43": { channels: 64 },
       "4300": { channels: 64 },
       "4301": { channels: 64 },
       "4302": { channels: 64 }

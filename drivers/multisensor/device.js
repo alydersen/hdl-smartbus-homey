@@ -3,7 +3,7 @@
 const Homey = require("homey");
 
 class MultisensorDevice extends Homey.Device {
-  onInit() {
+  async onInit() {
     this.log("Device init");
     this.log("Name:", this.getName());
     this.log("Class:", this.getClass());
@@ -14,12 +14,12 @@ class MultisensorDevice extends Homey.Device {
     let commands = [0xdb00, 0x1645, 0x1604];
 
     for (let i = 0; i < commands.length; i++) {
-      if (Homey.app.isBusConnected()) {
+      if (this.homey.app.isBusConnected()) {
         this._controller().send(
           { target: this.getData().id, command: commands[i] },
           function(err) {
             if (err) {
-              Homey.app.log(err);
+              this.homey.app.log(err);
             }
           }
         );
@@ -28,7 +28,7 @@ class MultisensorDevice extends Homey.Device {
   }
 
   _controller() {
-    return Homey.app.controller();
+    return this.homey.app.controller();
   }
 }
 

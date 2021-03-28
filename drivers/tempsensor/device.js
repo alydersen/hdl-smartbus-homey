@@ -3,7 +3,7 @@
 const Homey = require("homey");
 
 class TempsensorDevice extends Homey.Device {
-  onInit() {
+  async onInit() {
     this.log("Device init");
     this.log("Name:", this.getName());
     this.log("Class:", this.getClass());
@@ -15,7 +15,7 @@ class TempsensorDevice extends Homey.Device {
     let commands = [0xe3e7, 0x1948];
 
     for (let i = 0; i < commands.length; i++) {
-      if (Homey.app.isBusConnected()) {
+      if (this.homey.app.isBusConnected()) {
         this._controller().send(
           {
             target: this.getData().address,
@@ -26,7 +26,7 @@ class TempsensorDevice extends Homey.Device {
           },
           function(err) {
             if (err) {
-              Homey.app.log(err);
+              this.homey.app.log(err);
             }
           }
         );
@@ -35,7 +35,7 @@ class TempsensorDevice extends Homey.Device {
   }
 
   _controller() {
-    return Homey.app.controller();
+    return this.homey.app.controller();
   }
 }
 

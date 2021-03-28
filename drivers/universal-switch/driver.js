@@ -3,7 +3,7 @@
 const Homey = require("homey");
 
 class HdlUniversalSwitchDriver extends Homey.Driver {
-  onInit() {
+  async onInit() {
     this.log("HdlUniversalSwitchDriver has been initiated");
   }
 
@@ -12,16 +12,16 @@ class HdlUniversalSwitchDriver extends Homey.Driver {
     if (signal.data.switch == undefined) return;
     if (
       signal.data.switch ==
-      parseInt(Homey.ManagerSettings.get("hdl_universal_motion"))
+      parseInt(this.homey.ManagerSettings.get("hdl_universal_motion"))
     )
       return;
     // RETURN IF THE SIGNAL IS FROM MYSELF
     if (
       signal.sender.id ==
-      parseInt(Homey.ManagerSettings.get("hdl_id"))
+      parseInt(this.homey.ManagerSettings.get("hdl_id"))
     )
       return;
-    let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
+    let hdl_subnet = this.homey.ManagerSettings.get("hdl_subnet");
     let homeyDevice = this.getDevice({
       id: `${hdl_subnet}.${signal.data.switch}`,
       switch: signal.data.switch
@@ -36,16 +36,16 @@ class HdlUniversalSwitchDriver extends Homey.Driver {
 
   onPairListDevices(data, callback) {
     let devices = [];
-    let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
+    let hdl_subnet = this.homey.ManagerSettings.get("hdl_subnet");
 
     // Check that the bus is connected
-    if (!Homey.app.isBusConnected()) {
+    if (!this.homey.app.isBusConnected()) {
       callback(new Error("Please configure the app settings first."));
     } else {
       this.log("onPairListDevices from UniversalSwitches");
       var i;
       for (i = 1; i < 255; i++) {
-        if (i == parseInt(Homey.ManagerSettings.get("hdl_universal_motion")))
+        if (i == parseInt(this.homey.ManagerSettings.get("hdl_universal_motion")))
           continue;
         devices.push({
           name: `HDL Universal Switch (${hdl_subnet}.${i})`,

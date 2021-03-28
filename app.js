@@ -8,7 +8,7 @@ const HdlMultisensors = require("./hdl/hdl_multisensors");
 const HdlTempsensors = require("./hdl/hdl_tempsensors");
 
 class HDLSmartBus extends Homey.App {
-  onInit() {
+  async onInit() {
     this._busConnected = false;
     this._bus = null;
     this._controller = null;
@@ -23,20 +23,20 @@ class HDLSmartBus extends Homey.App {
       try {
         await this.connect();
       } catch (err) {
-        Homey.app.log(err.message);
+        this.homey.app.log(err.message);
       }
     })();
   }
 
   async connect() {
-    let hdl_ip_address = Homey.ManagerSettings.get("hdl_ip_address");
-    let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
-    let hdl_id = Homey.ManagerSettings.get("hdl_id");
-    let hdl_motion = Homey.ManagerSettings.get("hdl_universal_motion");
+    let hdl_ip_address = this.homey.ManagerSettings.get("hdl_ip_address");
+    let hdl_subnet = this.homey.ManagerSettings.get("hdl_subnet");
+    let hdl_id = this.homey.ManagerSettings.get("hdl_id");
+    let hdl_motion = this.homey.ManagerSettings.get("hdl_universal_motion");
 
     // Set the universal motion if not set
     if (hdl_motion == undefined || hdl_motion == "") {
-      Homey.ManagerSettings.set("hdl_universal_motion", "212");
+      this.homey.ManagerSettings.set("hdl_universal_motion", "212");
     }
 
     // Return if settings are not defined
@@ -88,7 +88,7 @@ class HDLSmartBus extends Homey.App {
       },
       function(err) {
         if (err) {
-          Homey.app.log(err);
+          this.homey.app.log(err);
         }
       }
     );
@@ -96,9 +96,9 @@ class HDLSmartBus extends Homey.App {
     // Listen to bus
     this._bus.on("command", function(signal) {
       try {
-        Homey.app._signalReceived(signal);
+        this.homey.app._signalReceived(signal);
       } catch (err) {
-        Homey.app.log(`Could not parse data from ${signal.sender.id}: ${err}`);
+        this.homey.app.log(`Could not parse data from ${signal.sender.id}: ${err}`);
       }
     });
 
@@ -122,7 +122,7 @@ class HDLSmartBus extends Homey.App {
     ];
 
     for (let i = 0; i < drivers.length; i++) {
-      Homey.ManagerDrivers.getDriver(drivers[i])
+      this.homey.ManagerDrivers.getDriver(drivers[i])
         .getDevices()
         .forEach(function(device) {
           device.requestUpdate();
@@ -172,7 +172,7 @@ class HDLSmartBus extends Homey.App {
     // UNIVERSAL SWITCH
     if (signal.data != undefined) {
       if (signal.data.switch != undefined) {
-        Homey.ManagerDrivers.getDriver("universal-switch").updateValues(signal);
+        this.homey.ManagerDrivers.getDriver("universal-switch").updateValues(signal);
       }
     }
 
@@ -184,19 +184,19 @@ class HDLSmartBus extends Homey.App {
     if (hdlDimmers.isOne()) {
       // DIMMERS
       this._dimmers[signal.sender.id] = signal.sender;
-      Homey.ManagerDrivers.getDriver("dimmer").updateValues(signal);
+      this.homey.ManagerDrivers.getDriver("dimmer").updateValues(signal);
     } else if (hdlRelays.isOne()) {
       // RELAYS
       this._relays[signal.sender.id] = signal.sender;
-      Homey.ManagerDrivers.getDriver("relay").updateValues(signal);
+      this.homey.ManagerDrivers.getDriver("relay").updateValues(signal);
     } else if (hdlMultisensors.isOne()) {
       // MULTISENSORS
       this._multisensors[signal.sender.id] = signal.sender;
-      Homey.ManagerDrivers.getDriver("multisensor").updateValues(signal);
+      this.homey.ManagerDrivers.getDriver("multisensor").updateValues(signal);
     } else if (hdlTempsensors.isOne()) {
       // TEMPSENSORS
       this._tempsensors[signal.sender.id] = signal.sender;
-      Homey.ManagerDrivers.getDriver("tempsensor").updateValues(signal);
+      this.homey.ManagerDrivers.getDriver("tempsensor").updateValues(signal);
     }
   }
 }

@@ -3,7 +3,7 @@
 const Homey = require("homey");
 
 class HdlUniversalSwitchDevice extends Homey.Device {
-  onInit() {
+  async onInit() {
     this.log("Device init");
     this.log("Name:", this.getName());
     this.log("Class:", this.getClass());
@@ -27,7 +27,7 @@ class HdlUniversalSwitchDevice extends Homey.Device {
       },
       function(err) {
         if (err) {
-          Homey.app.log(err);
+          this.homey.app.log(err);
         }
       }
     );
@@ -42,19 +42,19 @@ class HdlUniversalSwitchDevice extends Homey.Device {
       },
       function(err) {
         if (err) {
-          Homey.app.log(err);
+          this.homey.app.log(err);
         }
       }
     );
   }
 
   _controller() {
-    return Homey.app.controller();
+    return this.homey.app.controller();
   }
 
   async onCapabilityOnoff(value, opts) {
-    let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
-    let hdl_id = parseInt(Homey.ManagerSettings.get("hdl_id"));
+    let hdl_subnet = this.homey.ManagerSettings.get("hdl_subnet");
+    let hdl_id = parseInt(this.homey.ManagerSettings.get("hdl_id"));
 
     var i;
     for (i = 1; i < 256; i++) {
@@ -70,7 +70,7 @@ class HdlUniversalSwitchDevice extends Homey.Device {
           },
           function(err) {
             if (err) {
-              Homey.app.log(err);
+              this.homey.app.log(err);
             }
           }
         );

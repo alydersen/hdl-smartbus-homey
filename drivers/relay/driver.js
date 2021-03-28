@@ -4,7 +4,7 @@ const Homey = require("homey");
 const HdlRelays = require("./../../hdl/hdl_relays");
 
 class RelayDriver extends Homey.Driver {
-  onInit() {
+  async onInit() {
     this.log("HDL RelayDriver has been initiated");
   }
 
@@ -13,7 +13,7 @@ class RelayDriver extends Homey.Driver {
     if (signal.data.level == undefined) return;
     if (signal.sender.id == undefined) return;
 
-    let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
+    let hdl_subnet = this.homey.ManagerSettings.get("hdl_subnet");
     let parent = this;
     if (signal.data.channel != undefined) {
       if (signal.data.level != undefined) {
@@ -46,14 +46,14 @@ class RelayDriver extends Homey.Driver {
 
   onPairListDevices(data, callback) {
     let devices = [];
-    let hdl_subnet = Homey.ManagerSettings.get("hdl_subnet");
+    let hdl_subnet = this.homey.ManagerSettings.get("hdl_subnet");
 
     // Check that the bus is connected
-    if (!Homey.app.isBusConnected()) {
+    if (!this.homey.app.isBusConnected()) {
       callback(new Error("Please configure the app settings first."));
     } else {
       this.log("onPairListDevices from Dimmer");
-      for (const device of Object.values(Homey.app.getRelays())) {
+      for (const device of Object.values(this.homey.app.getRelays())) {
         let hdlRelay = new HdlRelays(device.type.toString());
         var channel;
         for (

@@ -79,5 +79,8 @@
   },
   "0.3.4": {
     "en": "Adding support for SB-DN-6B0-10v"
+  },
+  "0.4.0": {
+    "en": "Switching to SDK 3"
   }
 }

@@ -3,7 +3,7 @@
 const Homey = require("homey");
 
 class RelayDevice extends Homey.Device {
-  onInit() {
+  async onInit() {
     this.log("Device init");
     this.log("Name:", this.getName());
     this.log("Class:", this.getClass());
@@ -14,12 +14,12 @@ class RelayDevice extends Homey.Device {
     this.registerCapabilityListener("onoff", this.onCapabilityOnoff.bind(this));
 
     // Ask for channel status
-    if (Homey.app.isBusConnected()) {
+    if (this.homey.app.isBusConnected()) {
       this._controller().send(
         { target: this.getData().address, command: 0x0033 },
         function(err) {
           if (err) {
-            Homey.app.log(err);
+            this.homey.app.log(err);
           }
         }
       );
@@ -39,14 +39,14 @@ class RelayDevice extends Homey.Device {
       { target: this.getData().address, command: 0x0033 },
       function(err) {
         if (err) {
-          Homey.app.log(err);
+          this.homey.app.log(err);
         }
       }
     );
   }
 
   _controller() {
-    return Homey.app.controller();
+    return this.homey.app.controller();
   }
 
   async onCapabilityOnoff(value, opts) {
@@ -62,7 +62,7 @@ class RelayDevice extends Homey.Device {
         },
         function(err) {
           if (err) {
-            Homey.app.log(err);
+            this.homey.app.log(err);
           }
         }
       );
@@ -76,7 +76,7 @@ class RelayDevice extends Homey.Device {
         },
         function(err) {
           if (err) {
-            Homey.app.log(err);
+            this.homey.app.log(err);
           }
         }
       });

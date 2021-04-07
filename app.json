@@ -1,6 +1,6 @@
 {
   "id": "com.github.alydersen.hdl-smartbus-homey",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
@@ -19,6 +19,7 @@
   "category": [
     "lights"
   ],
+  "brandColor": "#7d4098",
   "homeyCommunityTopicId": 26575,
   "permissions": [],
   "images": {

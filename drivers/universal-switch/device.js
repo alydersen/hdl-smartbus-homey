@@ -1,14 +1,14 @@
-"use strict";
+'use strict';
 
 const Homey = require("homey");
 
 class HdlUniversalSwitchDevice extends Homey.Device {
   async onInit() {
-    this.log("Device init");
-    this.log("Name:", this.getName());
-    this.log("Class:", this.getClass());
-    this.log("Id:", this.getData().id);
-    this.log("Switch:", this.getData().switch);
+    this.homey.app.log("Device init");
+    this.homey.app.log("Name:", this.getName());
+    this.homey.app.log("Class:", this.getClass());
+    this.homey.app.log("Id:", this.getData().id);
+    this.homey.app.log("Switch:", this.getData().switch);
 
     // register a capability listener
     this.registerCapabilityListener("onoff", this.onCapabilityOnoff.bind(this));
@@ -53,8 +53,8 @@ class HdlUniversalSwitchDevice extends Homey.Device {
   }
 
   async onCapabilityOnoff(value, opts) {
-    let hdl_subnet = this.homey.ManagerSettings.get("hdl_subnet");
-    let hdl_id = parseInt(this.homey.ManagerSettings.get("hdl_id"));
+    let hdl_subnet = this.homey.settings.get("hdl_subnet");
+    let hdl_id = parseInt(this.homey.settings.get("hdl_id"));
 
     var i;
     for (i = 1; i < 256; i++) {

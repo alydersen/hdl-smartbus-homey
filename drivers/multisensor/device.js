@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
 const Homey = require("homey");
 
 class MultisensorDevice extends Homey.Device {
   async onInit() {
-    this.log("Device init");
-    this.log("Name:", this.getName());
-    this.log("Class:", this.getClass());
-    this.log("Id:", this.getData().id);
+    this.homey.app.log("Device init");
+    this.homey.app.log("Name:", this.getName());
+    this.homey.app.log("Class:", this.getClass());
+    this.homey.app.log("Id:", this.getData().id);
   }
 
   requestUpdate() {

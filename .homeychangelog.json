@@ -82,5 +82,8 @@
   },
   "0.4.0": {
     "en": "Switching to SDK 3"
+  },
+  "0.4.1": {
+    "en": "Bugfixes after switching to SDK 3"
   }
 }

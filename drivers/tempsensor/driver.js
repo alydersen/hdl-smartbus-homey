@@ -1,11 +1,11 @@
-"use strict";
+'use strict';
 
 const Homey = require("homey");
 const HdlTempsensors = require("./../../hdl/hdl_tempsensors");
 
 class TempsensorDriver extends Homey.Driver {
   async onInit() {
-    this.log("HDL TempsensorDriver has been initiated");
+    this.homey.app.log("HDL TempsensorDriver has been initiated");
   }
 
   updateValues(signal) {
@@ -14,7 +14,7 @@ class TempsensorDriver extends Homey.Driver {
     if (signal.data.channel == undefined) return;
     if (signal.sender.id == undefined) return;
 
-    let hdl_subnet = this.homey.ManagerSettings.get("hdl_subnet");
+    let hdl_subnet = this.homey.settings.get("hdl_subnet");
     let homeyDevice = this.getDevice({
       id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
       address: `${hdl_subnet}.${signal.sender.id}`,
@@ -29,14 +29,14 @@ class TempsensorDriver extends Homey.Driver {
 
   onPairListDevices(data, callback) {
     let devices = [];
-    let hdl_subnet = this.homey.ManagerSettings.get("hdl_subnet");
+    let hdl_subnet = this.homey.settings.get("hdl_subnet");
 
     // Check that the bus is connected
     if (!this.homey.app.isBusConnected()) {
       callback(new Error("Please configure the app settings first."));
     } else {
-      this.log("onPairListDevices from Tempsensor");
-      for (const device of Object.values(this.homey.app.getTempsensors())) {
+      this.homey.app.log("onPairListDevices from Tempsensor");
+      for (const device of Object.values(Homey.app.getTempsensors())) {
         let hdlTempsensor = new HdlTempsensors(device.type.toString());
         var channel;
         for (

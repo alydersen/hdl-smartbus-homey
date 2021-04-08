@@ -3,11 +3,11 @@ class HdlDimmers {
     this._type = type;
   }
 
-  isOne() {
+  async isOne() {
     return this.list[this._type] != undefined;
   }
 
-  numberOfChannels() {
+  async numberOfChannels() {
     return this.list[this._type].channels;
   }
 

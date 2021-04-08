@@ -8,16 +8,24 @@ class MultisensorDriver extends Homey.Driver {
     this.homey.app.log("HDL MultisensorDriver has been initiated");
   }
 
-  updateValues(signal) {
+  async updateValues(signal) {
     if (signal.data == undefined) return;
     if (signal.sender.id == undefined) return;
 
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
-    let homeyDevice = this.getDevice({
-      id: `${hdl_subnet}.${signal.sender.id}`
-    });
-    if (homeyDevice instanceof Error) return;
+    let parent = this;
+    try {
+      let homeyDevice = parent.getDevice({
+        id: `${hdl_subnet}.${signal.sender.id}`
+      });
+    } catch (error) {
+      return;
+    }
+    if (typeof homeyDevice === 'undefined') {
+      return;
+    }
 
+    if (homeyDevice instanceof Error) return;
     // Set motion status
     if (
       signal.data.switch != undefined &&
@@ -54,16 +62,16 @@ class MultisensorDriver extends Homey.Driver {
     }
   }
 
-  onPairListDevices(data, callback) {
+  async onPairListDevices() {
     let devices = [];
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
 
     // Check that the bus is connected
     if (!this.homey.app.isBusConnected()) {
-      callback(new Error("Please configure the app settings first."));
+      return new Error("Please configure the app settings first.");
     } else {
       this.homey.app.log("onPairListDevices from Multisensor");
-      for (const device of Object.values(Homey.app.getMultisensors())) {
+      for (const device of Object.values(this.homey.app.getMultisensors())) {
         let hdlMultisensor = new HdlMultisensors(device.type.toString());
         let capabilities = ["alarm_motion"];
 
@@ -75,7 +83,7 @@ class MultisensorDriver extends Homey.Driver {
           }
         });
       }
-      callback(null, devices.sort(MultisensorDriver._compareHomeyDevice));
+      return devices.sort(MultisensorDriver._compareHomeyDevice);
     }
   }
 }

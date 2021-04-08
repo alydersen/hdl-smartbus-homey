@@ -1,9 +1,9 @@
 {
   "name": "com.github.alydersen.homey-smartbus",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "main": "app.js",
   "devDependencies": {
-    "homey": "^2.14.2"
+    "@types/homey": "npm:homey-apps-sdk-v3-types@^0.1.0"
   },
   "dependencies": {
     "smart-bus": "^0.6.0"

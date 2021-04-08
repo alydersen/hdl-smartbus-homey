@@ -30,17 +30,17 @@ class DimmerDevice extends Homey.Device {
     }
   }
 
-  updateLevel(level) {
+  async updateLevel(level) {
     var corrected_level = level / 100;
     this.setCapabilityValue("dim", corrected_level).catch(this.error);
     this.setCapabilityValue("onoff", corrected_level != 0).catch(this.error);
   }
 
-  updateTrueFalse(status) {
+  async updateTrueFalse(status) {
     this.setCapabilityValue("onoff", status).catch(this.error);
   }
 
-  requestUpdate() {
+  async requestUpdate() {
     this._controller().send(
       { target: this.getData().address, command: 0x0033 },
       function(err) {

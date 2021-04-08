@@ -3,7 +3,7 @@ class HdlMultisensors {
     this._type = type;
   }
 
-  isOne() {
+  async isOne() {
     return this.list.includes(this._type);
   }
 

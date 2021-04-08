@@ -11,7 +11,7 @@ class TempsensorDevice extends Homey.Device {
     this.homey.app.log("Channel:", this.getData().channel);
   }
 
-  requestUpdate() {
+  async requestUpdate() {
     let commands = [0xe3e7, 0x1948];
 
     for (let i = 0; i < commands.length; i++) {

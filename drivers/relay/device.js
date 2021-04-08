@@ -26,15 +26,15 @@ class RelayDevice extends Homey.Device {
     }
   }
 
-  updateLevel(level) {
+  async updateLevel(level) {
     this.setCapabilityValue("onoff", level != 0).catch(this.error);
   }
 
-  updateTrueFalse(status) {
+  async updateTrueFalse(status) {
     this.setCapabilityValue("onoff", status).catch(this.error);
   }
 
-  requestUpdate() {
+  async requestUpdate() {
     this._controller().send(
       { target: this.getData().address, command: 0x0033 },
       function(err) {

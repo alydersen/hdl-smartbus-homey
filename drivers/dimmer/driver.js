@@ -8,56 +8,66 @@ class DimmerDriver extends Homey.Driver {
     this.homey.app.log("HDL DimmerDriver has been initiated");
   }
 
-  updateValues(signal) {
+  async updateValues(signal) {
     if (signal.data == undefined) return;
     if (signal.sender.id == undefined) return;
 
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
-    let parent = this;
+    let updateValueFunction = this;
     if (signal.data.channel != undefined) {
       if (signal.data.level != undefined) {
-        let homeyDevice = parent.getDevice({
-          id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
-          address: `${hdl_subnet}.${signal.sender.id}`,
-          channel: signal.data.channel
-        });
-        if (homeyDevice instanceof Error) return;
-
-        homeyDevice.updateLevel(signal.data.level);
+        try {
+          let homeyDevice = updateValueFunction.getDevice({
+            id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
+            address: `${hdl_subnet}.${signal.sender.id}`,
+            channel: signal.data.channel
+          }).catch(error);
+        } catch (error) {
+          return;
+        }
+        if (typeof homeyDevice !== 'undefined') {
+          if (homeyDevice instanceof Error) return;
+          homeyDevice.updateLevel(signal.data.level);
+        }
       }
     }
 
     if (signal.data.channels != undefined) {
       signal.data.channels.forEach(function(element) {
         if (element.level != undefined) {
-          let homeyDevice = parent.getDevice({
-            id: `${hdl_subnet}.${signal.sender.id}.${element.number}`,
-            address: `${hdl_subnet}.${signal.sender.id}`,
-            channel: element.number
-          });
-          if (homeyDevice instanceof Error) return;
-
-          homeyDevice.updateLevel(element.level);
+          try {
+            let homeyDevice = updateValueFunction.getDevice({
+              id: `${hdl_subnet}.${signal.sender.id}.${element.number}`,
+              address: `${hdl_subnet}.${signal.sender.id}`,
+              channel: element.number
+              }).catch(error);
+          } catch (error) {
+            return;
+          }
+          if (typeof homeyDevice !== 'undefined') {
+            if (homeyDevice instanceof Error) return;
+            homeyDevice.updateLevel(element.level);
+          }
         }
       });
     }
   }
 
-  onPairListDevices(data, callback) {
+  async onPairListDevices() {
     let devices = [];
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
 
     // Check that the bus is connected
     if (!this.homey.app.isBusConnected()) {
-      callback(new Error("Please configure the app settings first."));
+      return new Error("Please configure the app settings first.");
     } else {
       this.homey.app.log("onPairListDevices from Dimmer");
-      for (const device of Object.values(Homey.app.getDimmers())) {
+      for (const device of Object.values(this.homey.app.getDimmers())) {
         let hdlDimmer = new HdlDimmers(device.type.toString());
         var channel;
         for (
           channel = 1;
-          channel < hdlDimmer.numberOfChannels() + 1;
+          channel < await hdlDimmer.numberOfChannels() + 1;
           channel++
         ) {
           devices.push({
@@ -70,7 +80,7 @@ class DimmerDriver extends Homey.Driver {
           });
         }
       }
-      callback(null, devices.sort(DimmerDriver._compareHomeyDevice));
+      return devices.sort(DimmerDriver._compareHomeyDevice);
     }
   }
 

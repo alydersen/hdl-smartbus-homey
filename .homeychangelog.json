@@ -88,5 +88,8 @@
   },
   "0.4.2": {
     "en": "Updated icons to match new look in SDK 3"
+  },
+  "0.4.3": {
+    "en": "Bugfixes for SDK 3 compatibility"
   }
 }

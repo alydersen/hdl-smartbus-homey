@@ -7,40 +7,44 @@ class HdlUniversalSwitchDriver extends Homey.Driver {
     this.homey.app.log("HdlUniversalSwitchDriver has been initiated");
   }
 
-  updateValues(signal) {
-    if (signal.data == undefined) return;
-    if (signal.data.switch == undefined) return;
+  async updateValues(signal) {
+    if (signal.data == undefined) return;  // RETURN IF NO DATA
+    if (signal.data.switch == undefined) return;  // RETURN IF NO CONTENT
     if (
-      signal.data.switch ==
-      parseInt(this.homey.settings.get("hdl_universal_motion"))
+      signal.data.switch == parseInt(this.homey.settings.get("hdl_universal_motion"))
     )
-      return;
-    // RETURN IF THE SIGNAL IS FROM MYSELF
+      return;  // RETURN IF THE SIGNAL IS FOR UNIVERSAL MOTION
     if (
-      signal.sender.id ==
-      parseInt(this.homey.settings.get("hdl_id"))
+      signal.sender.id == parseInt(this.homey.settings.get("hdl_id"))
     )
-      return;
-    let hdl_subnet = this.homey.settings.get("hdl_subnet");
-    let homeyDevice = this.getDevice({
-      id: `${hdl_subnet}.${signal.data.switch}`,
-      switch: signal.data.switch
-    });
-    if (homeyDevice instanceof Error) return;
+      return;  // RETURN IF THE SIGNAL IS FROM MYSELF
 
-    homeyDevice
-      .setCapabilityValue("onoff", signal.data.status)
-      .catch(this.error);
-    homeyDevice.respondToSender(signal.sender);
+    let hdl_subnet = this.homey.settings.get("hdl_subnet");
+    let parent = this;
+    try {
+      let homeyDevice = parent.getDevice({
+        id: `${hdl_subnet}.${signal.data.switch}`,
+        switch: signal.data.switch
+        });
+    } catch (error) {
+      return;
+    }
+    if (typeof homeyDevice !== 'undefined') {
+      if (homeyDevice instanceof Error) return;
+      homeyDevice
+        .setCapabilityValue("onoff", signal.data.status)
+        .catch(this.error);
+      homeyDevice.respondToSender(signal.sender);
+    }
   }
 
-  onPairListDevices(data, callback) {
+  async onPairListDevices() {
     let devices = [];
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
 
     // Check that the bus is connected
     if (!this.homey.app.isBusConnected()) {
-      callback(new Error("Please configure the app settings first."));
+      return new Error("Please configure the app settings first.");
     } else {
       this.homey.app.log("onPairListDevices from UniversalSwitches");
       var i;
@@ -55,10 +59,7 @@ class HdlUniversalSwitchDriver extends Homey.Driver {
           }
         });
       }
-      callback(
-        null,
-        devices.sort(HdlUniversalSwitchDriver._compareHomeyDevice)
-      );
+      return devices.sort(HdlUniversalSwitchDriver._compareHomeyDevice);
     }
   }
 }

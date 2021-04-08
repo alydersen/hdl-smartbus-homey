@@ -10,7 +10,7 @@ class MultisensorDevice extends Homey.Device {
     this.homey.app.log("Id:", this.getData().id);
   }
 
-  requestUpdate() {
+  async requestUpdate() {
     let commands = [0xdb00, 0x1645, 0x1604];
 
     for (let i = 0; i < commands.length; i++) {

@@ -14,11 +14,11 @@ class HdlUniversalSwitchDevice extends Homey.Device {
     this.registerCapabilityListener("onoff", this.onCapabilityOnoff.bind(this));
   }
 
-  updateTrueFalse(status) {
+  async updateTrueFalse(status) {
     this.setCapabilityValue("onoff", status).catch(this.error);
   }
 
-  respondToSender(sender) {
+  async respondToSender(sender) {
     this._controller().send(
       {
         target: `${sender.subnet}.${sender.id}`,
@@ -33,7 +33,7 @@ class HdlUniversalSwitchDevice extends Homey.Device {
     );
   }
 
-  requestUpdate() {
+  async requestUpdate() {
     this._controller().send(
       {
         target: "255.255",

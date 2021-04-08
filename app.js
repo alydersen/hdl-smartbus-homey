@@ -20,13 +20,11 @@ class HDLSmartBus extends Homey.App {
 
     this.log("Homey HDL SmartBus app has been initialized...");
 
-    (async (args, callback) => {
-      try {
-        await this.connect();
-      } catch (err) {
-        this.homey.app.log(err.message);
-      }
-    })();
+    try {
+      await this.connect();
+    } catch (err) {
+      this.log(err.message);
+    }
   }
 
   async connect() {
@@ -95,7 +93,7 @@ class HDLSmartBus extends Homey.App {
     );
 
     // Listen to bus
-    this._bus.on.bind("command", function (signal) {
+    this._bus.on("command", (signal) => {
       try {
         this.homey.app._signalReceived(signal);
       } catch (err) {
@@ -186,22 +184,30 @@ class HDLSmartBus extends Homey.App {
     let hdlRelays = new HdlRelays(senderType);
     let hdlMultisensors = new HdlMultisensors(senderType);
     let hdlTempsensors = new HdlTempsensors(senderType);
-    if (hdlDimmers.isOne()) {
+    if (await hdlDimmers.isOne()) {
       // DIMMERS
       this._dimmers[signal.sender.id] = signal.sender;
-      this.homey.drivers.getDriver("dimmer").updateValues(signal);
-    } else if (hdlRelays.isOne()) {
+      await this.homey.drivers.getDriver("dimmer").updateValues(signal).catch((error) => {
+        console.error(error);
+      });
+    } else if (await hdlRelays.isOne()) {
       // RELAYS
       this._relays[signal.sender.id] = signal.sender;
-      this.homey.drivers.getDriver("relay").updateValues(signal);
-    } else if (hdlMultisensors.isOne()) {
+      await this.homey.drivers.getDriver("relay").updateValues(signal).catch((error) => {
+        console.error(error);
+      });
+    } else if (await hdlMultisensors.isOne()) {
       // MULTISENSORS
       this._multisensors[signal.sender.id] = signal.sender;
-      this.homey.drivers.getDriver("multisensor").updateValues(signal);
-    } else if (hdlTempsensors.isOne()) {
+      await this.homey.drivers.getDriver("multisensor").updateValues(signal).catch((error) => {
+        console.error(error);
+      });
+    } else if (await hdlTempsensors.isOne()) {
       // TEMPSENSORS
       this._tempsensors[signal.sender.id] = signal.sender;
-      this.homey.drivers.getDriver("tempsensor").updateValues(signal);
+      await this.homey.drivers.getDriver("tempsensor").updateValues(signal).catch((error) => {
+        console.error(error);
+      });
     }
   }
 }

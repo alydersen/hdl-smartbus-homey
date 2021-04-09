@@ -17,15 +17,11 @@ class RelayDriver extends Homey.Driver {
     let parent = this;
     if (signal.data.channel != undefined) {
       if (signal.data.level != undefined) {
-        try {
-          let homeyDevice = parent.getDevice({
-            id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
-            address: `${hdl_subnet}.${signal.sender.id}`,
-            channel: signal.data.channel
-            });
-        } catch (error) {
-          return;
-        }
+        let homeyDevice = parent.getDevice({
+          id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
+          address: `${hdl_subnet}.${signal.sender.id}`,
+          channel: signal.data.channel
+          });
         if (typeof homeyDevice !== 'undefined') {
           if (homeyDevice instanceof Error) return;
           homeyDevice.updateLevel(signal.data.level);
@@ -36,15 +32,11 @@ class RelayDriver extends Homey.Driver {
     if (signal.data.channels != undefined) {
       signal.data.channels.forEach(function(element) {
         if (element.level != undefined) {
-          try {
-            let homeyDevice = parent.getDevice({
-              id: `${hdl_subnet}.${signal.sender.id}.${element.number}`,
-              address: `${hdl_subnet}.${signal.sender.id}`,
-              channel: element.number
-              });
-          } catch (error) {
-            return;
-          }
+          let homeyDevice = parent.getDevice({
+            id: `${hdl_subnet}.${signal.sender.id}.${element.number}`,
+            address: `${hdl_subnet}.${signal.sender.id}`,
+            channel: element.number
+            });
           if (typeof homeyDevice !== 'undefined') {
             if (homeyDevice instanceof Error) return;
             homeyDevice.updateLevel(element.level);

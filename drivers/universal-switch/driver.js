@@ -20,22 +20,20 @@ class HdlUniversalSwitchDriver extends Homey.Driver {
       return;  // RETURN IF THE SIGNAL IS FROM MYSELF
 
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
-    let parent = this;
-    try {
-      let homeyDevice = parent.getDevice({
-        id: `${hdl_subnet}.${signal.data.switch}`,
-        switch: signal.data.switch
-        });
-    } catch (error) {
-      return;
-    }
+    const homeyDevice = this.getDevice({
+      id: `${hdl_subnet}.${signal.data.switch}`,
+      switch: signal.data.switch
+      });
     if (typeof homeyDevice !== 'undefined') {
       if (homeyDevice instanceof Error) return;
       homeyDevice
         .setCapabilityValue("onoff", signal.data.status)
-        .catch(this.error);
+        .catch((error) => {
+          console.error(error);
+        });
       homeyDevice.respondToSender(signal.sender);
     }
+    return;
   }
 
   async onPairListDevices() {

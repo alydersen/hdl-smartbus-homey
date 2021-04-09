@@ -188,25 +188,33 @@ class HDLSmartBus extends Homey.App {
       // DIMMERS
       this._dimmers[signal.sender.id] = signal.sender;
       await this.homey.drivers.getDriver("dimmer").updateValues(signal).catch((error) => {
-        console.error(error);
+        if (error.message !== 'invalid_device') {
+          console.error(error.message);
+        }
       });
     } else if (await hdlRelays.isOne()) {
       // RELAYS
       this._relays[signal.sender.id] = signal.sender;
       await this.homey.drivers.getDriver("relay").updateValues(signal).catch((error) => {
-        console.error(error);
+        if (error.message !== 'invalid_device') {
+          console.error(error.message);
+        }
       });
     } else if (await hdlMultisensors.isOne()) {
       // MULTISENSORS
       this._multisensors[signal.sender.id] = signal.sender;
       await this.homey.drivers.getDriver("multisensor").updateValues(signal).catch((error) => {
-        console.error(error);
+        if (error.message !== 'invalid_device') {
+          console.error(error.message);
+        }
       });
     } else if (await hdlTempsensors.isOne()) {
       // TEMPSENSORS
       this._tempsensors[signal.sender.id] = signal.sender;
       await this.homey.drivers.getDriver("tempsensor").updateValues(signal).catch((error) => {
-        console.error(error);
+        if (error.message !== 'invalid_device') {
+          console.error(error.message);
+        }
       });
     }
   }

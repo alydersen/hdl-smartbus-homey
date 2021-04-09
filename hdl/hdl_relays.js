@@ -13,6 +13,7 @@ class HdlRelays {
 
   get list() {
     return {
+      "363": { channels: 6 },
       "423": { channels: 4 },
       "425": { channels: 6 },
       "426": { channels: 6 },

@@ -91,5 +91,8 @@
   },
   "0.4.3": {
     "en": "Bugfixes for SDK 3 compatibility"
+  },
+  "0.4.4": {
+    "en": "Adding support for 6ch I/O Module (MSC06.432)"
   }
 }

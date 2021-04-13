@@ -54,6 +54,22 @@
       </div>
     </fieldset>
 
+    <fieldset>
+      <legend>Logic Controller</legend>
+      <p>
+        Universal Switches are published on the HDL bus as a broadcast and individually to
+        all addresses on the subnet. If you set the address for a logic controller here, a 
+        copy of any changes on an Universal Switch from this Homey App will only be sent to
+        the controller in addition to a broadcast.
+      </p>
+      <div class="field row">
+        <label for="hdl_logic_controller">
+          Logic Controllers ID (1-255)
+        </label>
+        <input id="hdl_logic_controller" type="text" value="" />
+      </div>
+    </fieldset>
+
     <button id="save" class="right">Save changes</button>
 
     <script type="text/javascript">
@@ -62,6 +78,7 @@
         var subnetElement = document.getElementById("hdl_subnet");
         var idElement = document.getElementById("hdl_id");
         var motionElement = document.getElementById("hdl_universal_motion");
+        var logicElement = document.getElementById("hdl_logic_controller");
         var saveElement = document.getElementById("save");
 
         Homey.get("hdl_ip_address", function(err, hdl_ip_address) {
@@ -82,6 +99,11 @@
         Homey.get("hdl_universal_motion", function(err, hdl_universal_motion) {
           if (err) return Homey.alert(err);
           motionElement.value = hdl_universal_motion;
+        });
+
+        Homey.get("hdl_logic_controller", function(err, hdl_logic_controller) {
+          if (err) return Homey.alert(err);
+          logicElement.value = hdl_logic_controller;
         });
 
         saveElement.addEventListener("click", function(e) {
@@ -152,6 +174,19 @@
             );
           }
 
+          let logic = parseInt(logicElement.value);
+          if (logic < 1) {
+            return Homey.alert(
+              "Not a valid Logic Controller Number. Please use 1-254 "
+            );
+          }
+
+          if (logic > 254) {
+            return Homey.alert(
+              "Not a valid Logic Controller Number. Please use 1-254"
+            );
+          }
+
           Homey.set("hdl_ip_address", ipElement.value, function(err) {
             if (err) return Homey.alert(err);
           });
@@ -165,6 +200,10 @@
           });
 
           Homey.set("hdl_universal_motion", motionElement.value, function(err) {
+            if (err) return Homey.alert(err);
+          });
+
+          Homey.set("hdl_logic_controller", logicElement.value, function(err) {
             if (err) return Homey.alert(err);
           });
 

@@ -175,7 +175,12 @@ class HDLSmartBus extends Homey.App {
       if (signal.data.switch != undefined) {
         this.homey.drivers
           .getDriver("universal-switch")
-          .updateValues(signal);
+          .updateValues(signal)
+          .catch((error) => {
+            if (error.message !== 'invalid_device') {
+              console.error(error.message);
+            }
+          });
       }
     }
 

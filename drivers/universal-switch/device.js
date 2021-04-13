@@ -55,26 +55,67 @@ class HdlUniversalSwitchDevice extends Homey.Device {
   async onCapabilityOnoff(value, opts) {
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
     let hdl_id = parseInt(this.homey.settings.get("hdl_id"));
+    let hdl_logic_controller = this.homey.settings.get("hdl_logic_controller");
 
-    var i;
-    for (i = 1; i < 256; i++) {
-      if (i != hdl_id) {
-        this._controller().send(
-          {
-            target: `${hdl_subnet}.${i}`,
-            command: 0xe01c,
-            data: {
-              switch: this.getData().switch,
-              status: value
-            }
-          },
-          function(err) {
-            if (err) {
-              this.homey.app.log(err);
-            }
-          }
-        );
+    // Broadcast the change
+    this._controller().send(
+      {
+        target: "255.255",
+        command: 0xe01c,
+        data: {
+          switch: this.getData().switch,
+          status: value
+        }
+      },
+      function(err) {
+        if (err) {
+          this.homey.app.log(err);
+        }
       }
+    );
+
+
+    // Treat sending differently if there is a logic controller present
+    if (hdl_logic_controller !== undefined) {
+      // If present - only send to the logiccontroller (broadcast already sent)
+      let logic = parseInt(hdl_logic_controller);
+      this._controller().send(
+        {
+          target: `${hdl_subnet}.${logic}`,
+          command: 0xe01c,
+          data: {
+            switch: this.getData().switch,
+            status: value
+          }
+        },
+        function(err) {
+          if (err) {
+            this.homey.app.log(err);
+          }
+        }
+      );
+    } else {
+      // If not present - send to all addresses individually (broadcast already sent)
+      var i;
+      for (i = 1; i < 256; i++) {
+        if (i != hdl_id) {
+          this._controller().send(
+            {
+              target: `${hdl_subnet}.${i}`,
+              command: 0xe01c,
+              data: {
+                switch: this.getData().switch,
+                status: value
+              }
+            },
+            function(err) {
+              if (err) {
+                this.homey.app.log(err);
+              }
+            }
+          );
+        }
+      }  
     }
   }
 }

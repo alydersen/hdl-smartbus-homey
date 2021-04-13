@@ -94,5 +94,8 @@
   },
   "0.4.4": {
     "en": "Adding support for 6ch I/O Module (MSC06.432)"
+  },
+  "0.5.0": {
+    "en": "Better handling of Universal Switches"
   }
 }

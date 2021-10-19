@@ -43,7 +43,7 @@ class FloorheaterDevice extends Homey.Device {
  }
 
    updateValve(valve) {
-      var x = valve ? "Otevřen" : "Zavřen";
+      var x = valve ? "Open" : "Closed";
       this.setCapabilityValue("meter_valve", x).catch(function () {
         remoteLog('HOMEY err ' + arguments[0].toString());
       });

@@ -96,8 +96,8 @@
       ],
       "icon": "/drivers/floorheater/assets/icon.svg",
       "images": {
-        "large": "/drivers/relay/assets/images/large.png",
-        "small": "/drivers/relay/assets/images/small.png"
+        "large": "/drivers/floorheater/assets/images/large.png",
+        "small": "/drivers/floorheater/assets/images/small.png"
       },
       "pair": [
         {
@@ -234,12 +234,12 @@
     "meter_valve": {
       "type": "string",
       "title": {
-        "en": "Stav ventilu"
+        "en": "Valve condition"
       },
       "uiComponent": "sensor",
       "getable": true,
       "setable": false,
-      "icon": "/assets/valve.svg",
+      "icon": "/drivers/floorheater/assets/valve.svg",
       "insights": true,
       "uiQuickAction": true,
       "units": {
@@ -252,14 +252,14 @@
     "meter_valve_number": {
       "type": "number",
       "title": {
-        "en": "Ventil číselně"
+        "en": "Valve number"
       },
       "uiComponent": "sensor",
       "getable": true,
       "setable": true,
       "insights": true,
       "uiQuickAction": true,
-      "icon": "/assets/valve.svg",
+      "icon": "/drivers/floorheater/assets/valve.svg",
       "units": {
         "en": ""
       },

@@ -13,8 +13,8 @@
   ],
   "icon": "{{driverAssetsPath}}/icon.svg",
   "images": {
-    "large": "/drivers/relay/assets/images/large.png",
-    "small": "/drivers/relay/assets/images/small.png"
+    "large": "/drivers/floorheater/assets/images/large.png",
+    "small": "/drivers/floorheater/assets/images/small.png"
   },
   "pair": [
     {

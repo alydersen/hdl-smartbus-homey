@@ -1,13 +1,13 @@
 {
-  "id": "com.github.alydersen.hdl-smartbus-homey",
+  "id": "com.github.alydersen.hdl-smartbus-MH",
   "version": "0.5.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
-    "en": "HDL SmartBus"
+    "en": "HDL SmartBus MH"
   },
   "description": {
-    "en": "HDL SmartBus support for Homey"
+    "en": "HDL SmartBus support for MH"
   },
   "tags": {
     "en": [
@@ -63,6 +63,38 @@
       "images": {
         "large": "/drivers/dimmer/assets/images/large.png",
         "small": "/drivers/dimmer/assets/images/small.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    },
+    {
+      "id": "floorheater",
+      "name": {
+        "en": "Floorheater"
+      },
+      "class": "thermostat",
+      "capabilities": [
+        "target_temperature",
+        "measure_temperature",
+        "onoff",
+        "meter_valve",
+        "meter_valve_number"
+      ],
+      "icon": "/drivers/floorheater/assets/icon.svg",
+      "images": {
+        "large": "/drivers/relay/assets/images/large.png",
+        "small": "/drivers/relay/assets/images/small.png"
       },
       "pair": [
         {
@@ -194,5 +226,43 @@
         }
       ]
     }
-  ]
+  ],
+  "capabilities": {
+    "meter_valve": {
+      "type": "string",
+      "title": {
+        "en": "Stav ventilu"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "icon": "/assets/valve.svg",
+      "insights": true,
+      "uiQuickAction": true,
+      "units": {
+        "en": ""
+      },
+      "min": 0,
+      "max": 2,
+      "decimals": 1
+    },
+    "meter_valve_number": {
+      "type": "number",
+      "title": {
+        "en": "Ventil číselně"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": true,
+      "insights": true,
+      "uiQuickAction": true,
+      "icon": "/assets/valve.svg",
+      "units": {
+        "en": ""
+      },
+      "min": 0,
+      "max": 1,
+      "step": 1
+    }
+  }
 }

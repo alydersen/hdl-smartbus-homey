@@ -1,13 +1,13 @@
 {
-  "id": "com.github.alydersen.hdl-smartbus-MH",
+  "id": "com.github.alydersen.hdl-smartbus-homey",
   "version": "0.5.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
-    "en": "HDL SmartBus MH"
+    "en": "HDL SmartBus"
   },
   "description": {
-    "en": "HDL SmartBus support for MH"
+    "en": "HDL SmartBus support for Homey"
   },
   "tags": {
     "en": [
@@ -28,7 +28,7 @@
   },
   "author": {
     "name": "Andreas Lydersen",
-    "email": "andreas.lydersen@gmail.com"
+    "email": "andreas.lydersen@hey.com"
   },
   "contributors": {
     "developers": [
@@ -37,6 +37,9 @@
       },
       {
         "name": "Robert Kurti"
+      },
+      {
+        "name": "Martin Horák"
       }
     ]
   },

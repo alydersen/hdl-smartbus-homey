@@ -1,15 +1,9 @@
-var http = require('axios');
-var remoteLog = function(log) {
-    return http.post('http://epigem.cz/integration/logger.php', log);
-}
-
 class HdlFloorheaters {
   constructor(type) {
     this._type = type;
   }
 
   async isOne() {
-    //await remoteLog("HOMEY " + this._type + " " + JSON.stringify(this.list[this._type] != undefined));
     return this.list[this._type] != undefined;
   }
   

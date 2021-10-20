@@ -1,10 +1,5 @@
 'use strict';
 
-var http = require('axios');
-var remoteLog = function(log) {
-    return http.post('http://epigem.cz/integration/logger.php', log);
-}
-
 const Homey = require("homey");
 
 class FloorheaterDevice extends Homey.Device {
@@ -37,20 +32,14 @@ class FloorheaterDevice extends Homey.Device {
   }
 
   updatePowerSwitch(pwr) {
-    this.setCapabilityValue("onoff", !!pwr).catch(function () {
-     remoteLog('HOMEY err ' + arguments[0].toString());
-   });
- }
+    this.setCapabilityValue("onoff", !!pwr, level).catch(this.error);
+  }
 
-   updateValve(valve) {
-      var x = valve ? "Open" : "Closed";
-      this.setCapabilityValue("meter_valve", x).catch(function () {
-        remoteLog('HOMEY err ' + arguments[0].toString());
-      });
-      var i = valve ? 1 : 0;
-      this.setCapabilityValue("meter_valve_number", i).catch(function () {
-        remoteLog('HOMEY err ' + arguments[0].toString());
-      });
+  updateValve(valve) {
+    var x = valve ? "Open" : "Closed";
+    this.setCapabilityValue("meter_valve", x).catch(this.error);
+    var i = valve ? 1 : 0;
+    this.setCapabilityValue("meter_valve_number", i).catch(this.error);
    }
 
   async requestUpdate() {

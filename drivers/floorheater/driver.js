@@ -1,10 +1,5 @@
 "use strict";
 
-var http = require('axios');
-var remoteLog = function(log) {
-    return http.post('http://epigem.cz/integration/logger.php', log);
-}
-
 const Homey = require("homey");
 const HdlFloorheaters = require("./../../hdl/hdl_floorheaters");
 
@@ -48,7 +43,6 @@ class FloorHeaterDriver extends Homey.Driver {
               device.updateValve(signal.data.watering && signal.data.watering.status);
               device.updatePowerSwitch(signal.data.work && signal.data.work.status);
               device.currentData = signal.data;
-              //await remoteLog("HOMEY update " + JSON.stringify(signal.data)); 
               return;
 
             case 0xE3E8:
@@ -57,8 +51,6 @@ class FloorHeaterDriver extends Homey.Driver {
           }
         }
     }
-
-    //await remoteLog("HOMEY update " + signal.code);
   }
 
   async onPairListDevices() {

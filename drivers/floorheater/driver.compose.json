@@ -1,0 +1,32 @@
+{
+  "id": "floorheater",
+  "name": {
+    "en": "Floorheater"
+  },
+  "class": "thermostat",
+  "capabilities": [
+    "target_temperature",
+    "measure_temperature",
+    "onoff",
+    "meter_valve",
+    "meter_valve_number"
+  ],
+  "icon": "{{driverAssetsPath}}/icon.svg",
+  "images": {
+    "large": "/drivers/floorheater/assets/images/large.png",
+    "small": "/drivers/floorheater/assets/images/small.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

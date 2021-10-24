@@ -1,6 +1,6 @@
 {
   "id": "com.github.alydersen.hdl-smartbus-homey",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
@@ -28,7 +28,7 @@
   },
   "author": {
     "name": "Andreas Lydersen",
-    "email": "andreas.lydersen@gmail.com"
+    "email": "andreas.lydersen@hey.com"
   },
   "contributors": {
     "developers": [
@@ -37,6 +37,9 @@
       },
       {
         "name": "Robert Kurti"
+      },
+      {
+        "name": "Martin Horák"
       }
     ]
   },
@@ -63,6 +66,38 @@
       "images": {
         "large": "/drivers/dimmer/assets/images/large.png",
         "small": "/drivers/dimmer/assets/images/small.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    },
+    {
+      "id": "floorheater",
+      "name": {
+        "en": "Floorheater"
+      },
+      "class": "thermostat",
+      "capabilities": [
+        "target_temperature",
+        "measure_temperature",
+        "onoff",
+        "meter_valve",
+        "meter_valve_number"
+      ],
+      "icon": "/drivers/floorheater/assets/icon.svg",
+      "images": {
+        "large": "/drivers/floorheater/assets/images/large.png",
+        "small": "/drivers/floorheater/assets/images/small.png"
       },
       "pair": [
         {
@@ -194,5 +229,43 @@
         }
       ]
     }
-  ]
+  ],
+  "capabilities": {
+    "meter_valve": {
+      "type": "string",
+      "title": {
+        "en": "Valve condition"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "icon": "/drivers/floorheater/assets/valve.svg",
+      "insights": true,
+      "uiQuickAction": true,
+      "units": {
+        "en": ""
+      },
+      "min": 0,
+      "max": 2,
+      "decimals": 1
+    },
+    "meter_valve_number": {
+      "type": "number",
+      "title": {
+        "en": "Valve number"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": true,
+      "insights": true,
+      "uiQuickAction": true,
+      "icon": "/drivers/floorheater/assets/valve.svg",
+      "units": {
+        "en": ""
+      },
+      "min": 0,
+      "max": 1,
+      "step": 1
+    }
+  }
 }

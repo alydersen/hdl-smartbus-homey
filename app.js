@@ -6,6 +6,7 @@ const HdlDimmers = require("./hdl/hdl_dimmers");
 const HdlRelays = require("./hdl/hdl_relays");
 const HdlMultisensors = require("./hdl/hdl_multisensors");
 const HdlTempsensors = require("./hdl/hdl_tempsensors");
+const HdlFloorheaters = require("./hdl/hdl_floorheaters");
 
 class HDLSmartBus extends Homey.App {
 
@@ -17,6 +18,7 @@ class HDLSmartBus extends Homey.App {
     this._relays = {};
     this._multisensors = {};
     this._tempsensors = {};
+    this._floorheaters = {};
 
     this.log("Homey HDL SmartBus app has been initialized...");
 
@@ -118,6 +120,7 @@ class HDLSmartBus extends Homey.App {
       "tempsensor",
       "multisensor",
       "universal-switch",
+      "floorheater"
     ];
 
     for (let i = 0; i < drivers.length; i++) {
@@ -161,6 +164,10 @@ class HDLSmartBus extends Homey.App {
   getTempsensors() {
     return this._tempsensors;
   }
+  
+  getFloorheaters() {
+    return this._floorheaters;
+  }
 
   async _signalReceived(signal) {
     // Check to see that the subnet is the same
@@ -189,6 +196,7 @@ class HDLSmartBus extends Homey.App {
     let hdlRelays = new HdlRelays(senderType);
     let hdlMultisensors = new HdlMultisensors(senderType);
     let hdlTempsensors = new HdlTempsensors(senderType);
+    let hdlFloorheaters = new HdlFloorheaters(senderType);
     if (await hdlDimmers.isOne()) {
       // DIMMERS
       this._dimmers[signal.sender.id] = signal.sender;
@@ -217,6 +225,14 @@ class HDLSmartBus extends Homey.App {
       // TEMPSENSORS
       this._tempsensors[signal.sender.id] = signal.sender;
       await this.homey.drivers.getDriver("tempsensor").updateValues(signal).catch((error) => {
+        if (error.message !== 'invalid_device') {
+          console.error(error.message);
+        }
+      });
+    } else if (await hdlFloorheaters.isOne()) {
+      // FLOORHEATERS
+      this._floorheaters[signal.sender.id] = signal.sender;
+      await this.homey.drivers.getDriver("floorheater").updateValues(signal).catch((error) => {
         if (error.message !== 'invalid_device') {
           console.error(error.message);
         }

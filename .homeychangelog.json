@@ -97,5 +97,8 @@
   },
   "0.5.0": {
     "en": "Better handling of Universal Switches"
+  },
+  "0.6.0": {
+    "en": "Floor Heater Module by Martin Horák"
   }
 }

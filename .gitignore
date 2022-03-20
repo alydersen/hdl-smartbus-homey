@@ -2,3 +2,6 @@ env.json
 .DS_Store
 node_modules
 /build
+
+# Added by Homey CLI
+/.homeybuild/

@@ -15,7 +15,7 @@ class FloorheaterDevice extends Homey.Device {
     // register a capability listener
     this.registerCapabilityListener("target_temperature", this.onTemperatureChange.bind(this));
     this.registerCapabilityListener("onoff", this.onPowerSwitchChange.bind(this));
-    
+
     // Ask for channel status
     if (this.homey.app.isBusConnected()) {
       await this.requestUpdate();
@@ -27,33 +27,40 @@ class FloorheaterDevice extends Homey.Device {
   }
 
   updateTemperature(temperature) {
-    // invalid_capability :/
+    // invalid_capability 
     this.setCapabilityValue("measure_temperature", temperature).catch(this.error);
   }
 
   updatePowerSwitch(pwr) {
-    this.setCapabilityValue("onoff", !!pwr, level).catch(this.error);
+    this.setCapabilityValue("onoff", !!pwr).catch(function () {
+      //nothing
+    });
   }
 
   updateValve(valve) {
     var x = valve ? "Open" : "Closed";
-    this.setCapabilityValue("meter_valve", x).catch(this.error);
+    this.setCapabilityValue("meter_valve", x).catch(function () {
+      //nothing
+    });
     var i = valve ? 1 : 0;
-    this.setCapabilityValue("meter_valve_number", i).catch(this.error);
-   }
+    this.setCapabilityValue("meter_valve_number", i).catch(function () {
+      //nothing
+    });
+  }
 
   async requestUpdate() {
-    this._controller().send({ 
-      target: this.getData().address, 
+    this._controller().send({
+      target: this.getData().address,
       command: 0x1C5E,
       data: {
         channel: this.getData().channel
       }
-    }, function(err) {
-      if (err) {
+      }, function(err) {
+        if (err) {
         this.homey.app.log(err);
+        }
       }
-    });
+    );
 
     this._controller().send({
       target: this.getData().address,
@@ -73,8 +80,9 @@ class FloorheaterDevice extends Homey.Device {
   }
 
   async onTemperatureChange(value, opts) {
-    if (this.currentData == null)
+    if (this.currentData == null){
       return; // No template data to send
+    }
 
     this.currentData.watering = this.currentData.watering || {};
     this.currentData.work = this.currentData.work || {};
@@ -93,8 +101,9 @@ class FloorheaterDevice extends Homey.Device {
   }
 
   async onPowerSwitchChange(value, opts) {
-    if (this.currentData == null)
+    if (this.currentData == null){
       return; // No template data to send
+    }
 
     this.currentData.watering = this.currentData.watering || {};
     this.currentData.work = this.currentData.work || {};

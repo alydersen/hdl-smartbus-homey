@@ -104,7 +104,7 @@ class FloorheaterDevice extends Homey.Device {
     if (this.currentData == null){
       return; // No template data to send
     }
-    
+
     this.currentData.watering = this.currentData.watering || {};
     this.currentData.work = this.currentData.work || {};
     this.currentData.work.status = value;

@@ -50,16 +50,17 @@ class FloorheaterDevice extends Homey.Device {
 
   async requestUpdate() {
     this._controller().send({
-    target: this.getData().address,
-    command: 0x1C5E,
-    data: {
-      channel: this.getData().channel
-    }
-    }, function(err) {
-      if (err) {
-      this.homey.app.log(err);
+      target: this.getData().address,
+      command: 0x1C5E,
+      data: {
+        channel: this.getData().channel
       }
-    });
+      }, function(err) {
+        if (err) {
+        this.homey.app.log(err);
+        }
+      }
+    );
 
     this._controller().send({
       target: this.getData().address,
@@ -79,8 +80,9 @@ class FloorheaterDevice extends Homey.Device {
   }
 
   async onTemperatureChange(value, opts) {
-    if (this.currentData == null)
-    return; // No template data to send
+    if (this.currentData == null){
+      return; // No template data to send
+    }
 
     this.currentData.watering = this.currentData.watering || {};
     this.currentData.work = this.currentData.work || {};
@@ -99,9 +101,10 @@ class FloorheaterDevice extends Homey.Device {
   }
 
   async onPowerSwitchChange(value, opts) {
-    if (this.currentData == null)
-    return; // No template data to send
-
+    if (this.currentData == null){
+      return; // No template data to send
+    }
+    
     this.currentData.watering = this.currentData.watering || {};
     this.currentData.work = this.currentData.work || {};
     this.currentData.work.status = value;

@@ -82,6 +82,38 @@
       ]
     },
     {
+      "id": "curtain",
+      "name": {
+        "en": "Curtains"
+      },
+      "class": "curtain",
+      "capabilities": [
+        "windowcoverings_set",
+        "windowcoverings_state"
+      ],
+      "defaultCapabilities": [
+        "windowcoverings_state"
+      ],
+      "icon": "/drivers/curtain/assets/icon.svg",
+      "images": {
+        "large": "/drivers/curtain/assets/images/large.png",
+        "small": "/drivers/curtain/assets/images/small.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    },
+    {
       "id": "floorheater",
       "name": {
         "en": "Floorheater"

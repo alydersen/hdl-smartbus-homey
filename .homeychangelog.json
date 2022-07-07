@@ -103,5 +103,8 @@
   },
   "0.6.1": {
     "en": "Bugfix in Floor Heater Module by Martin Horák"
+  },
+  "0.6.2": {
+    "en": "Curtain Module by Martin Horák"
   }
 }

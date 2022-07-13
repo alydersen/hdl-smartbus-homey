@@ -211,7 +211,7 @@ class HDLSmartBus extends Homey.App {
       this._dimmers[signal.sender.id] = signal.sender;
       await this.homey.drivers.getDriver("dimmer").updateValues(signal).catch((error) => {
         if (error.message !== 'invalid_device') {
-          console.error(error.message);
+          console.error(`Error for dimmer: ${error.message}`);
         }
       });
     } else if (await hdlRelays.isOne()) {
@@ -219,7 +219,7 @@ class HDLSmartBus extends Homey.App {
       this._relays[signal.sender.id] = signal.sender;
       await this.homey.drivers.getDriver("relay").updateValues(signal).catch((error) => {
         if (error.message !== 'invalid_device') {
-          console.error(error.message);
+          console.error(`Error for relay: ${error.message}`);
         }
       });
     } else if (await hdlMultisensors.isOne()) {
@@ -227,7 +227,7 @@ class HDLSmartBus extends Homey.App {
       this._multisensors[signal.sender.id] = signal.sender;
       await this.homey.drivers.getDriver("multisensor").updateValues(signal).catch((error) => {
         if (error.message !== 'invalid_device') {
-          console.error(error.message);
+          console.error(`Error for multisensor: ${error.message}`);
         }
       });
     } else if (await hdlTempsensors.isOne()) {
@@ -235,7 +235,7 @@ class HDLSmartBus extends Homey.App {
       this._tempsensors[signal.sender.id] = signal.sender;
       await this.homey.drivers.getDriver("tempsensor").updateValues(signal).catch((error) => {
         if (error.message !== 'invalid_device') {
-          console.error(error.message);
+          console.error(`Error for tempsensor: ${error.message}`);
         }
       });
     } else if (await hdlCurtains.isOne()) {
@@ -243,7 +243,7 @@ class HDLSmartBus extends Homey.App {
       this._curtains[signal.sender.id] = signal.sender;
       await this.homey.drivers.getDriver("curtain").updateValues(signal).catch((error) => {
         if (error.message !== 'invalid_device') {
-          console.error(error.message);
+          console.error(`Error for curtain: ${error.message}`);
         }
       });
     } else if (await hdlFloorheaters.isOne()) {
@@ -251,7 +251,7 @@ class HDLSmartBus extends Homey.App {
       this._floorheaters[signal.sender.id] = signal.sender;
       await this.homey.drivers.getDriver("floorheater").updateValues(signal).catch((error) => {
         if (error.message !== 'invalid_device') {
-          console.error(error.message);
+          console.error(`Error for floorheater: ${error.message}`);
         }
       });
     }

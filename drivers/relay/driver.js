@@ -17,11 +17,15 @@ class RelayDriver extends Homey.Driver {
     let parent = this;
     if (signal.data.channel != undefined) {
       if (signal.data.level != undefined) {
-        let homeyDevice = parent.getDevice({
-          id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
-          address: `${hdl_subnet}.${signal.sender.id}`,
-          channel: signal.data.channel
-          });
+        try {
+          let homeyDevice = parent.getDevice({
+            id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
+            address: `${hdl_subnet}.${signal.sender.id}`,
+            channel: signal.data.channel
+            });
+          } catch (err) {
+          return;
+        }    
         if (typeof homeyDevice !== 'undefined') {
           if (homeyDevice instanceof Error) return;
           homeyDevice.updateLevel(signal.data.level);

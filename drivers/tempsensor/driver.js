@@ -15,11 +15,16 @@ class TempsensorDriver extends Homey.Driver {
     if (signal.sender.id == undefined) return;
 
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
-    let homeyDevice = this.getDevice({
-      id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
-      address: `${hdl_subnet}.${signal.sender.id}`,
-      channel: signal.data.channel
-    });
+    try {
+      let homeyDevice = this.getDevice({
+        id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
+        address: `${hdl_subnet}.${signal.sender.id}`,
+        channel: signal.data.channel
+      });
+    } catch (err) {
+      return;
+    }
+    
     if (typeof homeyDevice !== 'undefined') {
       if (homeyDevice instanceof Error) return;
       homeyDevice.setCapabilityValue("measure_temperature", signal.data.temperature);

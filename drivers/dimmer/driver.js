@@ -8,6 +8,18 @@ class DimmerDriver extends Homey.Driver {
     this.homey.app.log("HDL DimmerDriver has been initiated");
   }
 
+  getDeviceFromSignal(signal, channel) {
+    let hdl_subnet = this.homey.settings.get("hdl_subnet");
+
+    let deviceSignature = {
+      id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel || channel}`,
+      address: `${hdl_subnet}.${signal.sender.id}`,
+      channel: signal.data.channel || channel
+    };
+
+    return this.getDevice(deviceSignature);    
+  }
+
   async updateValues(signal) {
     if (signal.data == undefined) return;
     if (signal.sender.id == undefined) return;
@@ -16,29 +28,22 @@ class DimmerDriver extends Homey.Driver {
     let parent = this;
     if (signal.data.channel != undefined) {
       if (signal.data.level != undefined) {
-        let homeyDevice = parent.getDevice({
-          id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
-          address: `${hdl_subnet}.${signal.sender.id}`,
-          channel: signal.data.channel
-          });
-        if (typeof homeyDevice !== 'undefined') {
-          if (homeyDevice instanceof Error) return;
-          homeyDevice.updateLevel(signal.data.level);
+        try { let device = this.getDeviceFromSignal(signal, signal.data.channel); } catch (err) { return; }
+        if (typeof device !== 'undefined') {
+          if (device instanceof Error) return;
+          device.updateLevel(signal.data.level);
         }
       }
     }
 
     if (signal.data.channels != undefined) {
-      signal.data.channels.forEach(function(element) {
-        if (element.level != undefined) {
-          let homeyDevice = parent.getDevice({
-            id: `${hdl_subnet}.${signal.sender.id}.${element.number}`,
-            address: `${hdl_subnet}.${signal.sender.id}`,
-            channel: element.number
-            });
-          if (typeof homeyDevice !== 'undefined') {
-            if (homeyDevice instanceof Error) return;
-            homeyDevice.updateLevel(element.level);
+      // This signal contains all channels, we need to process it for every device
+      signal.data.channels.forEach((chnl, index) => {
+        if (signal.data.channels[index].level != undefined) {
+          try { let device = this.getDeviceFromSignal(signal, chnl.number); } catch (err) { return; }
+          if (typeof device !== 'undefined') {
+            if (device instanceof Error) return;
+            device.updateLevel(signal.data.channels[index].level);
           }
         }
       });

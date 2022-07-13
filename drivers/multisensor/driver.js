@@ -13,9 +13,13 @@ class MultisensorDriver extends Homey.Driver {
     if (signal.sender.id == undefined) return;
 
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
-    let homeyDevice = this.getDevice({
-      id: `${hdl_subnet}.${signal.sender.id}`
-    });
+    try {
+      let homeyDevice = this.getDevice({
+        id: `${hdl_subnet}.${signal.sender.id}`
+      });
+      } catch (err) {
+      return;
+    }
     if (typeof homeyDevice === 'undefined') {
       return;
     }

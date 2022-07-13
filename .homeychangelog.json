@@ -109,5 +109,8 @@
   },
   "0.6.3": {
     "en": "Trying to catch a crash when receiving bad signals from the bus"
+  },
+  "0.6.4": {
+    "en": "Better error handling for recieved signals"
   }
 }

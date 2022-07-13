@@ -1,6 +1,6 @@
 {
   "id": "com.github.alydersen.hdl-smartbus-homey",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
@@ -153,6 +153,8 @@
       "class": "sensor",
       "capabilities": [
         "alarm_motion",
+        "alarm_contact.contact_1",
+        "alarm_contact.contact_2",
         "measure_temperature",
         "measure_luminance"
       ],

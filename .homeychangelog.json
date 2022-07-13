@@ -106,5 +106,8 @@
   },
   "0.6.2": {
     "en": "Curtain Module by Martin Horák"
+  },
+  "0.6.3": {
+    "en": "Trying to catch a crash when receiving bad signals from the bus"
   }
 }

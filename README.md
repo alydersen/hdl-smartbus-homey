@@ -17,6 +17,7 @@ If devices are not discovered, no traffic is published on the bus for that devic
 - Multisensors (x-in-1 etc.) (see below *)
 - Temperature sensors
 - Universal Switches (see below **)
+- Curtains
 
 If you want more equipment to be supported. Create an issue or contribute by creating the code yourself.
 

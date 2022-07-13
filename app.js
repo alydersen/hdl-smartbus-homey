@@ -101,7 +101,7 @@ class HDLSmartBus extends Homey.App {
       try {
         this.homey.app._signalReceived(signal);
       } catch (err) {
-        console.log(`Could not parse data from ${signal.sender.id}: ${err}`);
+        console.log(`Could not parse received data: ${err}`);
       }
     });
 

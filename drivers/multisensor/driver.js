@@ -9,54 +9,76 @@ class MultisensorDriver extends Homey.Driver {
   }
 
   async updateValues(signal) {
-    if (signal.data == undefined) return;
+    let data = signal.parse(signal.payload);
+    if (data == undefined) return;
     if (signal.sender.id == undefined) return;
 
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
-    try {
-      let homeyDevice = this.getDevice({
+    let homeyDevice = this.getDevice({
         id: `${hdl_subnet}.${signal.sender.id}`
-      });
-      } catch (err) {
-      return;
-    }
+      }); 
+
     if (typeof homeyDevice === 'undefined') {
+      this.log("Multisensor: Could not find " + signal.sender.id);
       return;
     }
 
     if (homeyDevice instanceof Error) return;
-    // Set motion status
+
+    // Make sure we have a motion capability
+    if (! (homeyDevice.hasCapability("alarm_motion"))) {
+      homeyDevice.addCapability("alarm_motion").catch(this.error);
+    }
+
+    // Set motion status if there is a movement update
+    if (data.movement != undefined) {
+      homeyDevice
+        .setCapabilityValue("alarm_motion", data.movement)
+        .catch(this.error);
+    }
+
+
+    // Set motion status if there is a status update with a switch
     if (
-      signal.data.switch != undefined &&
-      signal.data.switch ==
+      data.switch != undefined &&
+      data.switch ==
         parseInt(this.homey.settings.get("hdl_universal_motion"))
     ) {
-      if (homeyDevice.hasCapability("alarm_motion")) {
-        homeyDevice
-          .setCapabilityValue("alarm_motion", signal.data.status)
-          .catch(this.error);
-      }
+      homeyDevice
+        .setCapabilityValue("alarm_motion", data.status)
+        .catch(this.error);
     }
 
     // Set temperature
-    if (signal.data.temperature != undefined) {
-      if (homeyDevice.hasCapability("measure_temperature")) {
-        homeyDevice
-          .setCapabilityValue("measure_temperature", signal.data.temperature)
-          .catch(this.error);
-      } else {
+    if (data.temperature != undefined) {
+      if (! (homeyDevice.hasCapability("measure_temperature"))) {
         homeyDevice.addCapability("measure_temperature").catch(this.error);
       }
+      homeyDevice
+        .setCapabilityValue("measure_temperature", data.temperature)
+        .catch(this.error);
     }
 
     // Set brighness
-    if (signal.data.brightness != undefined) {
-      if (homeyDevice.hasCapability("measure_luminance")) {
-        homeyDevice
-          .setCapabilityValue("measure_luminance", signal.data.brightness)
-          .catch(this.error);
-      } else {
+    if (data.brightness != undefined) {
+      if (! (homeyDevice.hasCapability("measure_luminance"))) {
         homeyDevice.addCapability("measure_luminance").catch(this.error);
+      }
+      homeyDevice
+        .setCapabilityValue("measure_luminance", data.brightness)
+        .catch(this.error);
+    }
+
+    // Set DryContacts
+    if (data.dryContacts != undefined) {
+      for (const dryContact in data.dryContacts) {
+        let registered_drycontact = `alarm_contact.contact_${dryContact + 1}`;
+        if (! (homeyDevice.hasCapability(registered_drycontact))) {
+          homeyDevice.addCapability(registered_drycontact).catch(this.error);
+        }
+        homeyDevice
+          .setCapabilityValue(registered_drycontact, data.dryContacts[dryContact].status)
+          .catch(this.error);
       }
     }
   }

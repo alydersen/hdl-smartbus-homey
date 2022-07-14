@@ -115,5 +115,8 @@
   },
   "0.7.0": {
     "en": "Adding drycontacts for movement sensors and better handling of movement signals"
+  },
+  "0.7.1": {
+    "en": "Refactoring and bugfixing"
   }
 }

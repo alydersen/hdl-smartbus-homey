@@ -153,12 +153,8 @@ class CurtainDevice extends Homey.Device {
   process = null;
 
   async onInit() {
-    this.homey.app.log("Device init");
-    this.homey.app.log("Name:", this.getName());
-    this.homey.app.log("Class:", this.getClass());
-    this.homey.app.log("Id:", this.getData().id);
-    this.homey.app.log("Channel:", this.getData().channel);
-
+    this.homey.app.log(`Initated "${this.getName()}" (Curtain/${this.getClass()}) ${this.getData().id}`);
+ 
     // register a capability listener
     this.registerCapabilityListener("windowcoverings_set", (value, opts) => this.onPositionChange(value, opts));
     this.registerCapabilityListener("windowcoverings_state", (value, opts) => this.onButton(value, opts));

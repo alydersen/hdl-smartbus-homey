@@ -8,43 +8,55 @@ class RelayDriver extends Homey.Driver {
     this.homey.app.log("HDL RelayDriver has been initiated");
   }
 
+  getDeviceFromSignal(signal, channel) {
+    let hdl_subnet = this.homey.settings.get("hdl_subnet");
+
+    let deviceSignature = {
+      id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel || channel}`,
+      address: `${hdl_subnet}.${signal.sender.id}`,
+      channel: signal.data.channel || channel
+    };
+
+    return this.getDevice(deviceSignature);    
+  }
+
   async updateValues(signal) {
+    // Parse and check the incoming signal, return if missing or invalid
+    if (signal.parse)
+      signal.data = signal.parse(signal.payload);
     if (signal.data == undefined) return;
     if (signal.data.level == undefined) return;
     if (signal.sender.id == undefined) return;
 
-    let hdl_subnet = this.homey.settings.get("hdl_subnet");
-    let parent = this;
+    // Get the device from Homey, return if not found or error
     if (signal.data.channel != undefined) {
       if (signal.data.level != undefined) {
         try {
-          let homeyDevice = parent.getDevice({
-            id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
-            address: `${hdl_subnet}.${signal.sender.id}`,
-            channel: signal.data.channel
-            });
-          } catch (err) {
-          return;
-        }    
-        if (typeof homeyDevice !== 'undefined') {
-          if (homeyDevice instanceof Error) return;
-          homeyDevice.updateLevel(signal.data.level);
+          let homeyDevice = this.getDeviceFromSignal(signal, signal.data.channel);
+        } finally {
+          let homeyDevice = undefined;
         }
+        if (typeof homeyDevice === 'undefined') return;
+        if (homeyDevice instanceof Error) return;
+
+        // Update the device with the new values and add the capability if missing
+        homeyDevice.updateLevel(signal.data.level);
       }
     }
 
     if (signal.data.channels != undefined) {
-      signal.data.channels.forEach(function(element) {
-        if (element.level != undefined) {
-          let homeyDevice = parent.getDevice({
-            id: `${hdl_subnet}.${signal.sender.id}.${element.number}`,
-            address: `${hdl_subnet}.${signal.sender.id}`,
-            channel: element.number
-            });
-          if (typeof homeyDevice !== 'undefined') {
-            if (homeyDevice instanceof Error) return;
-            homeyDevice.updateLevel(element.level);
+      signal.data.channels.forEach(function(chnl) {
+        if (chnl.level != undefined) {
+          try {
+            let homeyDevice = this.getDeviceFromSignal(signal, chnl.number);
+          } finally {
+            let homeyDevice = undefined;
           }
+          if (typeof homeyDevice === 'undefined') return;
+          if (homeyDevice instanceof Error) return;
+  
+          // Update the device with the new values and add the capability if missing
+          homeyDevice.updateLevel(chnl.level);
         }
       });
     }

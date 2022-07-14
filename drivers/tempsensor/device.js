@@ -4,11 +4,7 @@ const Homey = require("homey");
 
 class TempsensorDevice extends Homey.Device {
   async onInit() {
-    this.homey.app.log("Device init");
-    this.homey.app.log("Name:", this.getName());
-    this.homey.app.log("Class:", this.getClass());
-    this.homey.app.log("Id:", this.getData().id);
-    this.homey.app.log("Channel:", this.getData().channel);
+    this.homey.app.log(`Initated "${this.getName()}" (Temperature Sensor/${this.getClass()}) ${this.getData().id}`);
   }
 
   async requestUpdate() {

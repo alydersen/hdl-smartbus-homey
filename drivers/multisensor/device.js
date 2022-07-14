@@ -4,10 +4,7 @@ const Homey = require("homey");
 
 class MultisensorDevice extends Homey.Device {
   async onInit() {
-    this.homey.app.log("Device init");
-    this.homey.app.log("Name:", this.getName());
-    this.homey.app.log("Class:", this.getClass());
-    this.homey.app.log("Id:", this.getData().id);
+    this.homey.app.log(`Initated "${this.getName()}" (Multisensor/${this.getClass()}) ${this.getData().id}`);
   }
 
   async requestUpdate() {

@@ -4,12 +4,8 @@ const Homey = require("homey");
 
 class HdlUniversalSwitchDevice extends Homey.Device {
   async onInit() {
-    this.homey.app.log("Device init");
-    this.homey.app.log("Name:", this.getName());
-    this.homey.app.log("Class:", this.getClass());
-    this.homey.app.log("Id:", this.getData().id);
-    this.homey.app.log("Switch:", this.getData().switch);
-
+    this.homey.app.log(`Initated "${this.getName()}" (Universal Switch/${this.getClass()}) ${this.getData().id}`);
+ 
     // register a capability listener
     this.registerCapabilityListener("onoff", this.onCapabilityOnoff.bind(this));
   }

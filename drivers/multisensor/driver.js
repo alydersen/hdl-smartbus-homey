@@ -9,36 +9,33 @@ class MultisensorDriver extends Homey.Driver {
   }
 
   async updateValues(signal) {
+    // Parse and check the incoming signal, return if missing or invalid
     let data = signal.parse(signal.payload);
     if (data == undefined) return;
     if (signal.sender.id == undefined) return;
 
+    // Get the device from Homey, return if not found or error
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
-    let homeyDevice = this.getDevice({
+    try {
+      let homeyDevice = this.getDevice({
         id: `${hdl_subnet}.${signal.sender.id}`
-      }); 
-
-    if (typeof homeyDevice === 'undefined') {
-      this.log("Multisensor: Could not find " + signal.sender.id);
-      return;
+      });
+    } finally {
+      let homeyDevice = undefined;
     }
-
+    if (typeof homeyDevice === 'undefined') return;
     if (homeyDevice instanceof Error) return;
 
-    // Make sure we have a motion capability
+    // Update the device with the new motion values and add the capability if missing
     if (! (homeyDevice.hasCapability("alarm_motion"))) {
       homeyDevice.addCapability("alarm_motion").catch(this.error);
     }
-
-    // Set motion status if there is a movement update
+    // Either this comes from a signal.motion or through universal switch
     if (data.movement != undefined) {
       homeyDevice
         .setCapabilityValue("alarm_motion", data.movement)
         .catch(this.error);
     }
-
-
-    // Set motion status if there is a status update with a switch
     if (
       data.switch != undefined &&
       data.switch ==

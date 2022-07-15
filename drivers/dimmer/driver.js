@@ -28,7 +28,7 @@ class DimmerDriver extends Homey.Driver {
     let parent = this;
     if (signal.data.channel != undefined) {
       if (signal.data.level != undefined) {
-        try { let device = this.getDeviceFromSignal(signal, signal.data.channel); } catch (err) { return; }
+        try { var device = this.getDeviceFromSignal(signal, signal.data.channel); } catch (err) { return; }
         if (typeof device !== 'undefined') {
           if (device instanceof Error) return;
           device.updateLevel(signal.data.level);

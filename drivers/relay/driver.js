@@ -22,8 +22,6 @@ class RelayDriver extends Homey.Driver {
 
   async updateValues(signal) {
     // Parse and check the incoming signal, return if missing or invalid
-    if (signal.parse)
-      signal.data = signal.parse(signal.payload);
     if (signal.data == undefined) return;
     if (signal.data.level == undefined) return;
     if (signal.sender.id == undefined) return;
@@ -31,11 +29,7 @@ class RelayDriver extends Homey.Driver {
     // Get the device from Homey, return if not found or error
     if (signal.data.channel != undefined) {
       if (signal.data.level != undefined) {
-        try {
-          let homeyDevice = this.getDeviceFromSignal(signal, signal.data.channel);
-        } finally {
-          let homeyDevice = undefined;
-        }
+        let homeyDevice = this.getDeviceFromSignal(signal, signal.data.channel);
         if (typeof homeyDevice === 'undefined') return;
         if (homeyDevice instanceof Error) return;
 
@@ -49,7 +43,7 @@ class RelayDriver extends Homey.Driver {
         if (chnl.level != undefined) {
           try {
             let homeyDevice = this.getDeviceFromSignal(signal, chnl.number);
-          } finally {
+          } catch (error) {
             let homeyDevice = undefined;
           }
           if (typeof homeyDevice === 'undefined') return;

@@ -10,21 +10,19 @@ class TempsensorDriver extends Homey.Driver {
 
   async updateValues(signal) {
     // Parse and check the incoming signal, return if missing or invalid
-    let data = signal.parse(signal.payload);
-    if (data == undefined) return;
-    if (data.temperature == undefined) return;
-    if (data.channel == undefined) return;
+    if (signal.data == undefined) return;
+    if (signal.data.temperature == undefined) return;
+    if (signal.data.channel == undefined) return;
     if (signal.sender.id == undefined) return;
 
     // Get the device from Homey, return if not found or error
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
-    try {
-      let homeyDevice = this.getDevice({
-        id: `${hdl_subnet}.${signal.sender.id}.${data.channel}`
-      });
-    } finally {
-      let homeyDevice = undefined;
-    }
+    let homeyDevice = await this.getDevice({
+      id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
+      address: `${hdl_subnet}.${signal.sender.id}`,
+      channel: signal.data.channel
+    });
+
     if (typeof homeyDevice === 'undefined') return;
     if (homeyDevice instanceof Error) return;
 
@@ -33,7 +31,7 @@ class TempsensorDriver extends Homey.Driver {
       homeyDevice.addCapability("measure_temperature").catch(this.error);
     }
     homeyDevice
-      .setCapabilityValue("measure_temperature", data.temperature)
+      .setCapabilityValue("measure_temperature", signal.data.temperature)
       .catch(this.error);
   }
 

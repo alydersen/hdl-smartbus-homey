@@ -27,9 +27,6 @@ class FloorHeaterDriver extends Homey.Driver {
   }
 
   async updateValues(signal) {
-    if (signal.parse)
-      signal.data = signal.parse(signal.payload);
-      
     if (signal.data) {
         let device = this.getDeviceFromSignal(signal);
         if (typeof device !== 'undefined') {

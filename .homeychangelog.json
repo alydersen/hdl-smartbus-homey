@@ -118,5 +118,8 @@
   },
   "0.7.1": {
     "en": "Refactoring and bugfixing"
+  },
+  "0.7.2": {
+    "en": "Fixed bug on the temperature sensor"
   }
 }

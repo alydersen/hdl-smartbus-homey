@@ -184,18 +184,11 @@ class HDLSmartBus extends Homey.App {
     )
       return;
 
-    // UNIVERSAL SWITCH
-    if (signal.data != undefined) {
-      if (signal.data.switch != undefined) {
-        this.homey.drivers
-          .getDriver("universal-switch")
-          .updateValues(signal)
-          .catch((error) => {
-            if (error.message !== 'invalid_device') {
-              console.error(error.message);
-            }
-          });
-      }
+    // Catch errors when trying to access the signal.data
+    try {
+      var dataFromSignal = signal.data;
+    } catch(err) {
+      var dataFromSignal = undefined;
     }
 
     let senderType = signal.sender.type.toString();
@@ -206,41 +199,65 @@ class HDLSmartBus extends Homey.App {
     let hdlFloorheaters = new HdlFloorheaters(senderType);
     let hdlCurtains = new HdlCurtains(senderType);
 
-    const unknownDeviceMessages = ["invalid_device", "Could not get device from device data"]
+    const unknownDeviceMessages = ["invalid_device", "device is not defined", "Could not get device by device data"]
 
-    if (await hdlDimmers.isOne()) {
-      // DIMMERS
-      this._dimmers[signal.sender.id] = signal.sender;
-      await this.homey.drivers.getDriver("dimmer").updateValues(signal).catch((error) => {
-        if (unknownDeviceMessages.includes(error.message)) {
-          this.log(`Error for dimmer ${signal.sender.id}: ${error.message}`);
-        }
-      });
-    } else if (await hdlRelays.isOne()) {
-      // RELAYS
-      this._relays[signal.sender.id] = signal.sender;
-      await this.homey.drivers.getDriver("relay").updateValues(signal).catch((error) => {
-        if (unknownDeviceMessages.includes(error.message)) {
-          this.log(`Error for relay ${signal.sender.id}: ${error.message}`);
-        }
-      });
-    } else if (await hdlMultisensors.isOne()) {
-      // MULTISENSORS
-      this._multisensors[signal.sender.id] = signal.sender;
-      await this.homey.drivers.getDriver("multisensor").updateValues(signal).catch((error) => {
-        if (unknownDeviceMessages.includes(error.message)) {
-          this.log(`Error for multisensor ${signal.sender.id}: ${error.message}`);
-        }
-      });
-    } else if (await hdlTempsensors.isOne()) {
-      // TEMPSENSORS
-      this._tempsensors[signal.sender.id] = signal.sender;
-      await this.homey.drivers.getDriver("tempsensor").updateValues(signal).catch((error) => {
-        if (unknownDeviceMessages.includes(error.message)) {
-          this.log(`Error for tempsensor ${signal.sender.id}: ${error.message}`);
-        }
-      });
-    } else if (await hdlCurtains.isOne()) {
+    if (dataFromSignal != undefined) {
+      //this.log(`All: ${signal.sender.id}: ${signal.data}`)
+      if (dataFromSignal.switch != undefined) {
+        // UNIVERSAL SWITCH
+        this.homey.drivers
+          .getDriver("universal-switch")
+          .updateValues(signal)
+          .catch((error) => {
+            if (error.message !== 'invalid_device') {
+              console.error(error.message);
+            }
+          });
+      }
+      if (await hdlDimmers.isOne()) {
+        // DIMMERS
+        this._dimmers[signal.sender.id] = signal.sender;
+        await this.homey.drivers.getDriver("dimmer").updateValues(signal).catch((error) => {
+          if (! (unknownDeviceMessages.includes(error.message))) {
+            this.log(`Error for dimmer ${signal.sender.id}: ${error.message}`);
+          }
+        });
+      } else if (await hdlRelays.isOne()) {
+        // RELAYS
+        this._relays[signal.sender.id] = signal.sender;
+        await this.homey.drivers.getDriver("relay").updateValues(signal).catch((error) => {
+          if (! (unknownDeviceMessages.includes(error.message))) {
+            this.log(`Error for relay ${signal.sender.id}: ${error.message}`);
+          }
+        });
+      } else if (await hdlMultisensors.isOne()) {
+        // MULTISENSORS
+        this._multisensors[signal.sender.id] = signal.sender;
+        await this.homey.drivers.getDriver("multisensor").updateValues(signal).catch((error) => {
+          if (! (unknownDeviceMessages.includes(error.message))) {
+            this.log(`Error for multisensor ${signal.sender.id}: ${error.message}`);
+          }
+        });
+      } else if (await hdlTempsensors.isOne()) {
+        // TEMPSENSORS
+        this._tempsensors[signal.sender.id] = signal.sender;
+        await this.homey.drivers.getDriver("tempsensor").updateValues(signal).catch((error) => {
+          if (! (unknownDeviceMessages.includes(error.message))) {
+            this.log(`Error for tempsensor ${signal.sender.id}: ${error.message}`);
+          }
+        });
+      } else if (await hdlFloorheaters.isOne()) {
+        // FLOORHEATERS
+        this._floorheaters[signal.sender.id] = signal.sender;
+        await this.homey.drivers.getDriver("floorheater").updateValues(signal).catch((error) => {
+          if (! (unknownDeviceMessages.includes(error.message))) {
+            this.log(`Error for floorheater ${signal.sender.id}: ${error.message}`);
+          }
+        });
+      }  
+    }
+    // This driver allows failing signal.data, as it adds to the HDL library
+    if (await hdlCurtains.isOne()) {
       // CURTAINSWITCHES
       this._curtains[signal.sender.id] = signal.sender;
       await this.homey.drivers.getDriver("curtain").updateValues(signal).catch((error) => {
@@ -248,15 +265,8 @@ class HDLSmartBus extends Homey.App {
           this.log(`Error for curtain ${signal.sender.id}: ${error.message}`);
         }
       });
-    } else if (await hdlFloorheaters.isOne()) {
-      // FLOORHEATERS
-      this._floorheaters[signal.sender.id] = signal.sender;
-      await this.homey.drivers.getDriver("floorheater").updateValues(signal).catch((error) => {
-        if (unknownDeviceMessages.includes(error.message)) {
-          this.log(`Error for floorheater ${signal.sender.id}: ${error.message}`);
-        }
-      });
     }
+
   }
 }
 module.exports = HDLSmartBus;

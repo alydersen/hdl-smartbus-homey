@@ -18,6 +18,7 @@ class HdlFloorheaters {
       "209": { channels: 6 },
       "210": { channels: 6 },
       "211": { channels: 6 },
+      "212": { channels: 6 },
 
       // "367": { channels: 6 },
       // "371": { channels: 6 },

@@ -265,6 +265,62 @@
       "id": "universal-switch"
     }
   ],
+  "flow": {
+    "triggers": [
+      {
+        "id": "alarm_contact.contact_1_true",
+        "title": {
+          "en": "Dry contact 1 activated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor"
+          }
+        ]
+      },
+      {
+        "id": "alarm_contact.contact_1_false",
+        "title": {
+          "en": "Dry contact 1 deactivated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor"
+          }
+        ]
+      },
+      {
+        "id": "alarm_contact.contact_2_true",
+        "title": {
+          "en": "Dry contact 2 activated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor"
+          }
+        ]
+      },
+      {
+        "id": "alarm_contact.contact_2_false",
+        "title": {
+          "en": "Dry contact 2 deactivated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor"
+          }
+        ]
+      }
+    ]
+  },
   "capabilities": {
     "meter_valve": {
       "type": "string",

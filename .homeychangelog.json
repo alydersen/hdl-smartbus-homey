@@ -121,5 +121,8 @@
   },
   "0.7.2": {
     "en": "Fixed bug on the temperature sensor"
+  },
+  "0.7.3": {
+    "en": "Added more dimmers and floorheaters, updated dependencies"
   }
 }

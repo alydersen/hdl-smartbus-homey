@@ -1,0 +1,18 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Valve condition"
+  },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "icon": "/drivers/floorheater/assets/valve.svg",
+  "insights": true,
+  "uiQuickAction": true,
+  "units": {
+    "en": ""
+  },
+  "min": 0,
+  "max": 2,
+  "decimals": 1
+}

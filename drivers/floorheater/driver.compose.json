@@ -1,5 +1,4 @@
 {
-  "id": "floorheater",
   "name": {
     "en": "Floorheater"
   },
@@ -11,7 +10,7 @@
     "meter_valve",
     "meter_valve_number"
   ],
-  "icon": "{{driverAssetsPath}}/icon.svg",
+  "icon": "/drivers/floorheater/assets/icon.svg",
   "images": {
     "large": "/drivers/floorheater/assets/images/large.png",
     "small": "/drivers/floorheater/assets/images/small.png"

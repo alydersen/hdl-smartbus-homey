@@ -1,14 +1,16 @@
 {
-  "id": "curtain",
   "name": {
-    "en": "Curtain"
+    "en": "Curtains"
   },
   "class": "curtain",
   "capabilities": [
     "windowcoverings_set",
     "windowcoverings_state"
   ],
-  "icon": "{{driverAssetsPath}}/icon.svg",
+  "defaultCapabilities": [
+    "windowcoverings_state"
+  ],
+  "icon": "/drivers/curtain/assets/icon.svg",
   "images": {
     "large": "/drivers/curtain/assets/images/large.png",
     "small": "/drivers/curtain/assets/images/small.png"

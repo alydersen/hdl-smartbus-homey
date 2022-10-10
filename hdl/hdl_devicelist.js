@@ -6,7 +6,7 @@ class HdlTypelist {
 
     async typeOfDevice(id) {
         if (!this.found(id)){
-            return null
+            return null;
         }
         
         return this.list[id].type;
@@ -14,7 +14,7 @@ class HdlTypelist {
 
     async numberOfChannels(id) {
         if (!this.found(id)){
-            return null
+            return null;
         }
 
         return this.list[id].channels;
@@ -22,7 +22,7 @@ class HdlTypelist {
 
     async getDict(id) {
         if (!this.found(id)){
-            return null
+            return null;
         }
 
         return this.list[id];

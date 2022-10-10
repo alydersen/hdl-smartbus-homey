@@ -198,16 +198,16 @@ class HDLSmartBus extends Homey.App {
     }
 
     let senderType = signal.sender.type.toString();
-    
-    if (! await this._hdlDevicelist.found(senderType)) return;
 
-    let foundType = await this._hdlDevicelist.typeOfDevice(senderType);
+    // Check for universal switch
+    if (dataFromSignal != undefined && dataFromSignal.switch != undefined) {
+      var foundType = 'universal-switch'
+    } else { // Look up the type in the device list
+      var foundType = await this._hdlDevicelist.typeOfDevice(senderType);  
+    }
+
     // Return if no type was found
     if (foundType == null) return;
-
-    if (dataFromSignal != undefined && dataFromSignal.switch != undefined) {
-      foundType = 'universal-switch'
-    }
 
     switch (foundType) {
       case "universal-switch":

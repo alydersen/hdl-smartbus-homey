@@ -124,5 +124,8 @@
   },
   "0.7.3": {
     "en": "Added more dimmers and floorheaters, updated dependencies"
+  },
+  "0.8.0": {
+    "en": "Changed how signals received are handled under the hood (improved performance in noisy installations)"
   }
 }

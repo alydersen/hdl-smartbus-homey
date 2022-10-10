@@ -211,7 +211,6 @@ class HDLSmartBus extends Homey.App {
 
     switch (foundType) {
       case "universal-switch":
-        this._dimmers[signal.sender.id] = signal.sender;
         await this._updateDevice(foundType, signal);
         return;
 

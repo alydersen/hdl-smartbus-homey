@@ -1,7 +1,7 @@
 "use strict";
 
 const Homey = require("homey");
-const HdlCurtains = require("./../../hdl/hdl_curtains");
+const HdlDevicelist = require("./../../hdl/hdl_devicelist");
 const HdlCommands = require("smart-bus/lib/commands");
 
 class CurtainDriver extends Homey.Driver {
@@ -118,11 +118,11 @@ class CurtainDriver extends Homey.Driver {
     } else {
       this.homey.app.log("onPairListDevices from Curtain");
       for (const device of Object.values(this.homey.app.getCurtains())) {
-        let hdlCurtain = new HdlCurtains(device.type.toString());
+        let devicelist = new HdlDevicelist()
         var channel;
         for (
           channel = 1;
-          channel < await hdlCurtain.numberOfChannels() + 1;
+          channel < await devicelist.numberOfChannels(device.type.toString()) + 1;
           channel++
         ) {
           devices.push({

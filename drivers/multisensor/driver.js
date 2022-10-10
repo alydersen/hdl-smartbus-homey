@@ -1,7 +1,6 @@
 'use strict';
 
 const Homey = require("homey");
-const HdlMultisensors = require("./../../hdl/hdl_multisensors");
 
 class MultisensorDriver extends Homey.Driver {
   async onInit() {
@@ -84,7 +83,6 @@ class MultisensorDriver extends Homey.Driver {
     } else {
       this.homey.app.log("onPairListDevices from Multisensor");
       for (const device of Object.values(this.homey.app.getMultisensors())) {
-        let hdlMultisensor = new HdlMultisensors(device.type.toString());
         let capabilities = ["alarm_motion"];
 
         devices.push({

@@ -2,12 +2,7 @@
 
 const Homey = require("homey");
 const SmartBus = require("smart-bus");
-const HdlDimmers = require("./hdl/hdl_dimmers");
-const HdlRelays = require("./hdl/hdl_relays");
-const HdlMultisensors = require("./hdl/hdl_multisensors");
-const HdlTempsensors = require("./hdl/hdl_tempsensors");
-const HdlFloorheaters = require("./hdl/hdl_floorheaters");
-const HdlCurtains = require("./hdl/hdl_curtains");
+const HdlDevicelist = require("./hdl/hdl_devicelist");
 
 class HDLSmartBus extends Homey.App {
 
@@ -21,6 +16,8 @@ class HDLSmartBus extends Homey.App {
     this._tempsensors = {};
     this._floorheaters = {};
     this._curtains = {};
+    this._hdlDevicelist = new HdlDevicelist();
+
 
     this.log("Homey HDL SmartBus app has been initialized...");
 
@@ -176,6 +173,15 @@ class HDLSmartBus extends Homey.App {
     return this._curtains;
   }
 
+  async _updateDevice(hdlSenderType, signal) {
+    const unknownDeviceMessages = ["invalid_device", "device is not defined", "Could not get device by device data"]
+    await this.homey.drivers.getDriver(hdlSenderType).updateValues(signal).catch((error) => {
+      if (! (unknownDeviceMessages.includes(error.message))) {
+        this.log(`Error for ${hdlSenderType} ${signal.sender.id}: ${error.message}`);
+      }
+    });
+  }
+
   async _signalReceived(signal) {
     // Check to see that the subnet is the same
     if (
@@ -192,81 +198,59 @@ class HDLSmartBus extends Homey.App {
     }
 
     let senderType = signal.sender.type.toString();
-    let hdlDimmers = new HdlDimmers(senderType);
-    let hdlRelays = new HdlRelays(senderType);
-    let hdlMultisensors = new HdlMultisensors(senderType);
-    let hdlTempsensors = new HdlTempsensors(senderType);
-    let hdlFloorheaters = new HdlFloorheaters(senderType);
-    let hdlCurtains = new HdlCurtains(senderType);
+    
+    if (! await this._hdlDevicelist.found(senderType)) return;
 
-    const unknownDeviceMessages = ["invalid_device", "device is not defined", "Could not get device by device data"]
+    let foundType = await this._hdlDevicelist.typeOfDevice(senderType);
+    // Return if no type was found
+    if (foundType == null) return;
 
-    if (dataFromSignal != undefined) {
-      //this.log(`All: ${signal.sender.id}: ${signal.data}`)
-      if (dataFromSignal.switch != undefined) {
-        // UNIVERSAL SWITCH
-        this.homey.drivers
-          .getDriver("universal-switch")
-          .updateValues(signal)
-          .catch((error) => {
-            if (error.message !== 'invalid_device') {
-              console.error(error.message);
-            }
-          });
-      }
-      if (await hdlDimmers.isOne()) {
-        // DIMMERS
+    if (dataFromSignal != undefined && dataFromSignal.switch != undefined) {
+      foundType = 'universal-switch'
+    }
+
+    switch (foundType) {
+      case "universal-switch":
         this._dimmers[signal.sender.id] = signal.sender;
-        await this.homey.drivers.getDriver("dimmer").updateValues(signal).catch((error) => {
-          if (! (unknownDeviceMessages.includes(error.message))) {
-            this.log(`Error for dimmer ${signal.sender.id}: ${error.message}`);
-          }
-        });
-      } else if (await hdlRelays.isOne()) {
-        // RELAYS
-        this._relays[signal.sender.id] = signal.sender;
-        await this.homey.drivers.getDriver("relay").updateValues(signal).catch((error) => {
-          if (! (unknownDeviceMessages.includes(error.message))) {
-            this.log(`Error for relay ${signal.sender.id}: ${error.message}`);
-          }
-        });
-      } else if (await hdlMultisensors.isOne()) {
-        // MULTISENSORS
-        this._multisensors[signal.sender.id] = signal.sender;
-        await this.homey.drivers.getDriver("multisensor").updateValues(signal).catch((error) => {
-          if (! (unknownDeviceMessages.includes(error.message))) {
-            this.log(`Error for multisensor ${signal.sender.id}: ${error.message}`);
-          }
-        });
-      } else if (await hdlTempsensors.isOne()) {
-        // TEMPSENSORS
-        this._tempsensors[signal.sender.id] = signal.sender;
-        await this.homey.drivers.getDriver("tempsensor").updateValues(signal).catch((error) => {
-          if (! (unknownDeviceMessages.includes(error.message))) {
-            this.log(`Error for tempsensor ${signal.sender.id}: ${error.message}`);
-          }
-        });
-      } else if (await hdlFloorheaters.isOne()) {
-        // FLOORHEATERS
-        this._floorheaters[signal.sender.id] = signal.sender;
-        await this.homey.drivers.getDriver("floorheater").updateValues(signal).catch((error) => {
-          if (! (unknownDeviceMessages.includes(error.message))) {
-            this.log(`Error for floorheater ${signal.sender.id}: ${error.message}`);
-          }
-        });
-      }  
-    }
-    // This driver allows failing signal.data, as it adds to the HDL library
-    if (await hdlCurtains.isOne()) {
-      // CURTAINSWITCHES
-      this._curtains[signal.sender.id] = signal.sender;
-      await this.homey.drivers.getDriver("curtain").updateValues(signal).catch((error) => {
-        if (unknownDeviceMessages.includes(error.message)) {
-          this.log(`Error for curtain ${signal.sender.id}: ${error.message}`);
-        }
-      });
-    }
+        await this._updateDevice(foundType, signal);
+        return;
 
+      case 'dimmer':
+        this._dimmers[signal.sender.id] = signal.sender;
+        if (dataFromSignal == undefined) return;
+        await this._updateDevice(foundType, signal);
+        return;
+
+      case 'tempsensor':
+        this._tempsensors[signal.sender.id] = signal.sender;
+        if (dataFromSignal == undefined) return;
+        await this._updateDevice(foundType, signal);
+        return;
+
+      case 'floorheater':
+        this._floorheaters[signal.sender.id] = signal.sender;
+        if (dataFromSignal == undefined) return;
+        await this._updateDevice(foundType, signal);
+        return;
+
+      case 'multisensor':
+        this._multisensors[signal.sender.id] = signal.sender;
+        if (dataFromSignal == undefined) return;
+        await this._updateDevice(foundType, signal);
+        return;
+
+      case 'relay':
+        this._relays[signal.sender.id] = signal.sender;
+        if (dataFromSignal == undefined) return;
+        await this._updateDevice(foundType, signal);
+        return;
+
+      case 'curtain':
+        this._curtains[signal.sender.id] = signal.sender;
+        // This driver allows failing signal.data, as it adds to the HDL library
+        await this._updateDevice(foundType, signal);
+        return;
+    }
   }
 }
 module.exports = HDLSmartBus;

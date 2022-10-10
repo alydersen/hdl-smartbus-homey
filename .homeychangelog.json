@@ -130,5 +130,8 @@
   },
   "0.8.1": {
     "en": "Fixed bug that would prevent universal switches from updating"
+  },
+  "0.8.2": {
+    "en": "Fixed bug that made app crash on some unknown devices"
   }
 }

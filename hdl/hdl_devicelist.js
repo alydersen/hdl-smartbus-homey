@@ -5,25 +5,19 @@ class HdlTypelist {
     }
 
     async typeOfDevice(id) {
-        if (!this.found(id)){
-            return null;
-        }
-        
+        if (this.list[id] == undefined) return null;
+
         return this.list[id].type;
     }
 
     async numberOfChannels(id) {
-        if (!this.found(id)){
-            return null;
-        }
+        if (this.list[id] == undefined) return null;
 
         return this.list[id].channels;
     }
 
     async getDict(id) {
-        if (!this.found(id)){
-            return null;
-        }
+        if (this.list[id] == undefined) return null;
 
         return this.list[id];
     }

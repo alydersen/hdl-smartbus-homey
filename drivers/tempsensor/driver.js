@@ -1,7 +1,7 @@
 'use strict';
 
 const Homey = require("homey");
-const HdlTempsensors = require("./../../hdl/hdl_tempsensors");
+const HdlDevicelist = require("./../../hdl/hdl_devicelist");
 
 class TempsensorDriver extends Homey.Driver {
   async onInit() {
@@ -45,11 +45,11 @@ class TempsensorDriver extends Homey.Driver {
     } else {
       this.homey.app.log("onPairListDevices from Tempsensor");
       for (const device of Object.values(this.homey.app.getTempsensors())) {
-        let hdlTempsensor = new HdlTempsensors(device.type.toString());
+        let devicelist = new HdlDevicelist()
         var channel;
         for (
           channel = 1;
-          channel < await hdlTempsensor.numberOfChannels() + 1;
+          channel < await devicelist.numberOfChannels(device.type.toString()) + 1;
           channel++
         ) {
           devices.push({

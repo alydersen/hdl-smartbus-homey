@@ -1,7 +1,7 @@
 "use strict";
 
 const Homey = require("homey");
-const HdlFloorheaters = require("./../../hdl/hdl_floorheaters");
+const HdlDevicelist = require("./../../hdl/hdl_devicelist");
 
 // interface Signal {
 //   code,
@@ -60,11 +60,11 @@ class FloorHeaterDriver extends Homey.Driver {
     } else {
       this.homey.app.log("onPairListDevices from Floorheater");
       for (const device of Object.values(this.homey.app.getFloorheaters())) {
-        let hdlFloorheater = new HdlFloorheaters(device.type.toString());
+        let devicelist = new HdlDevicelist()
         var channel;
         for (
           channel = 1;
-          channel < hdlFloorheater.numberOfChannels() + 1;
+          channel < devicelist.numberOfChannels(device.type.toString()) + 1;
           channel++
         ) {
           devices.push({

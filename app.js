@@ -10,14 +10,21 @@ class HDLSmartBus extends Homey.App {
     this._busConnected = false;
     this._bus = null;
     this._controller = null;
-    this._dimmers = {};
-    this._relays = {};
-    this._multisensors = {};
-    this._tempsensors = {};
-    this._floorheaters = {};
-    this._curtains = {};
     this._hdlDevicelist = new HdlDevicelist();
-
+    // All new devicetypes must be added here
+    this._driverlist = [
+      "dimmer",
+      "relay",
+      "tempsensor",
+      "multisensor",
+      "universal-switch",
+      "floorheater",
+      "curtain"
+    ];
+    this._hdlFoundUnits = {}
+    for (let i = 0; i < this._driverlist.length; i++) {
+      this._hdlFoundUnits[this._driverlist[i]] = {}
+    }
 
     this.log("Homey HDL SmartBus app has been initialized...");
 
@@ -113,19 +120,9 @@ class HDLSmartBus extends Homey.App {
 
   async callForUpdate(bus) {
     this.log("Update called - looping through drivers");
-    let drivers = [
-      "dimmer",
-      "relay",
-      "tempsensor",
-      "multisensor",
-      "universal-switch",
-      "floorheater",
-      "curtain"
-    ];
-
-    for (let i = 0; i < drivers.length; i++) {
+    for (let i = 0; i < this._driverlist.length; i++) {
       this.homey.drivers
-        .getDriver(drivers[i])
+        .getDriver(this._driverlist[i])
         .getDevices()
         .forEach(function (device) {
           device.requestUpdate();
@@ -149,28 +146,8 @@ class HDLSmartBus extends Homey.App {
     return this._controller;
   }
 
-  getDimmers() {
-    return this._dimmers;
-  }
-
-  getRelays() {
-    return this._relays;
-  }
-
-  getMultisensors() {
-    return this._multisensors;
-  }
-
-  getTempsensors() {
-    return this._tempsensors;
-  }
-  
-  getFloorheaters() {
-    return this._floorheaters;
-  }
-
-  getCurtains() {
-    return this._curtains;
+  getDevicesOfType(drivername) {
+    return this._hdlFoundUnits[drivername];
   }
 
   async _updateDevice(hdlSenderType, signal) {
@@ -212,43 +189,20 @@ class HDLSmartBus extends Homey.App {
     switch (foundType) {
       case "universal-switch":
         await this._updateDevice(foundType, signal);
-        return;
-
-      case 'dimmer':
-        this._dimmers[signal.sender.id] = signal.sender;
-        if (dataFromSignal == undefined) return;
-        await this._updateDevice(foundType, signal);
-        return;
-
-      case 'tempsensor':
-        this._tempsensors[signal.sender.id] = signal.sender;
-        if (dataFromSignal == undefined) return;
-        await this._updateDevice(foundType, signal);
-        return;
-
-      case 'floorheater':
-        this._floorheaters[signal.sender.id] = signal.sender;
-        if (dataFromSignal == undefined) return;
-        await this._updateDevice(foundType, signal);
-        return;
-
-      case 'multisensor':
-        this._multisensors[signal.sender.id] = signal.sender;
-        if (dataFromSignal == undefined) return;
-        await this._updateDevice(foundType, signal);
-        return;
-
-      case 'relay':
-        this._relays[signal.sender.id] = signal.sender;
-        if (dataFromSignal == undefined) return;
-        await this._updateDevice(foundType, signal);
-        return;
+        break;
 
       case 'curtain':
-        this._curtains[signal.sender.id] = signal.sender;
+        this._hdlFoundUnits["curtain"][signal.sender.id] = signal.sender;
         // This driver allows failing signal.data, as it adds to the HDL library
         await this._updateDevice(foundType, signal);
-        return;
+        break;
+
+      default:
+        // All other devices are handled the same based on foundType
+        this._hdlFoundUnits[foundType][signal.sender.id] = signal.sender;
+        if (dataFromSignal == undefined) return;
+
+        await this._updateDevice(foundType, signal);
     }
   }
 }

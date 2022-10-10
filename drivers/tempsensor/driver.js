@@ -44,7 +44,7 @@ class TempsensorDriver extends Homey.Driver {
       return new Error("Please configure the app settings first.");
     } else {
       this.homey.app.log("onPairListDevices from Tempsensor");
-      for (const device of Object.values(this.homey.app.getTempsensors())) {
+      for (const device of Object.values(this.homey.app.getDevicesOfType("tempsensor"))) {
         let devicelist = new HdlDevicelist()
         var channel;
         for (

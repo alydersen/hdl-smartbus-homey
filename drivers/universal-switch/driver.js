@@ -4,7 +4,7 @@ const Homey = require("homey");
 
 class HdlUniversalSwitchDriver extends Homey.Driver {
   async onInit() {
-    this.homey.app.log("HdlUniversalSwitchDriver has been initiated");
+    this.homey.app.log("HDL UniversalSwitchDriver has been initiated");
   }
 
   async updateValues(signal) {

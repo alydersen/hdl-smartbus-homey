@@ -82,7 +82,7 @@ class MultisensorDriver extends Homey.Driver {
       return new Error("Please configure the app settings first.");
     } else {
       this.homey.app.log("onPairListDevices from Multisensor");
-      for (const device of Object.values(this.homey.app.getMultisensors())) {
+      for (const device of Object.values(this.homey.app.getDevicesOfType("multisensor"))) {
         let capabilities = ["alarm_motion"];
 
         devices.push({

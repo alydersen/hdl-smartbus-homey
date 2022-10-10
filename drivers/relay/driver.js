@@ -64,8 +64,8 @@ class RelayDriver extends Homey.Driver {
     if (!this.homey.app.isBusConnected()) {
       return Error("Please configure the app settings first.");
     } else {
-      this.homey.app.log("onPairListDevices from Dimmer");
-      for (const device of Object.values(this.homey.app.getRelays())) {
+      this.homey.app.log("onPairListDevices from Relay");
+      for (const device of Object.values(this.homey.app.getDevicesOfType("relay"))) {
         let devicelist = new HdlDevicelist()
         var channel;
         for (

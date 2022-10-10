@@ -59,7 +59,7 @@ class FloorHeaterDriver extends Homey.Driver {
       return Error("Please configure the app settings first.");
     } else {
       this.homey.app.log("onPairListDevices from Floorheater");
-      for (const device of Object.values(this.homey.app.getFloorheaters())) {
+      for (const device of Object.values(this.homey.app.getDevicesOfType("floorheater"))) {
         let devicelist = new HdlDevicelist()
         var channel;
         for (

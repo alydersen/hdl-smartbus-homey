@@ -127,5 +127,8 @@
   },
   "0.8.0": {
     "en": "Changed how signals received are handled under the hood (improved performance in noisy installations)"
+  },
+  "0.8.1": {
+    "en": "Fixed bug that would prevent universal switches from updating"
   }
 }

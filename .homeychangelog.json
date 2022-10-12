@@ -133,5 +133,8 @@
   },
   "0.8.2": {
     "en": "Fixed bug that made app crash on some unknown devices"
+  },
+  "0.8.3": {
+    "en": "Improved handling of incoming signals and refactoring code"
   }
 }

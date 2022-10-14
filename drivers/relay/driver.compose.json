@@ -1,5 +1,4 @@
 {
-  "id": "relay",
   "name": {
     "en": "Relay"
   },
@@ -7,7 +6,7 @@
   "capabilities": [
     "onoff"
   ],
-  "icon": "{{driverAssetsPath}}/icon.svg",
+  "icon": "/drivers/relay/assets/icon.svg",
   "images": {
     "large": "/drivers/relay/assets/images/large.png",
     "small": "/drivers/relay/assets/images/small.png"

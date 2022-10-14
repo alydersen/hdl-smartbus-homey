@@ -1,10 +1,15 @@
 {
-  "id": "multisensor",
   "name": {
     "en": "multisensor"
   },
   "class": "sensor",
-  "capabilities": ["alarm_motion", "alarm_contact.contact_1", "alarm_contact.contact_2", "measure_temperature", "measure_luminance"],
+  "capabilities": [
+    "alarm_motion",
+    "alarm_contact.contact_1",
+    "alarm_contact.contact_2",
+    "measure_temperature",
+    "measure_luminance"
+  ],
   "images": {
     "large": "/drivers/multisensor/assets/images/large.png",
     "small": "/drivers/multisensor/assets/images/small.png"

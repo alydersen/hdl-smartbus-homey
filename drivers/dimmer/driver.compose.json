@@ -1,5 +1,4 @@
 {
-  "id": "dimmer",
   "name": {
     "en": "Dimmer"
   },
@@ -8,7 +7,7 @@
     "dim",
     "onoff"
   ],
-  "icon": "{{driverAssetsPath}}/icon.svg",
+  "icon": "/drivers/dimmer/assets/icon.svg",
   "images": {
     "large": "/drivers/dimmer/assets/images/large.png",
     "small": "/drivers/dimmer/assets/images/small.png"

@@ -1,0 +1,18 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Valve number"
+  },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": true,
+  "insights": true,
+  "uiQuickAction": true,
+  "icon": "/drivers/floorheater/assets/valve.svg",
+  "units": {
+    "en": ""
+  },
+  "min": 0,
+  "max": 1,
+  "step": 1
+}

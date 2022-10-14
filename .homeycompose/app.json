@@ -1,0 +1,54 @@
+{
+  "id": "com.github.alydersen.hdl-smartbus-homey",
+  "version": "0.8.3",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "name": {
+    "en": "HDL SmartBus"
+  },
+  "description": {
+    "en": "HDL SmartBus support for Homey"
+  },
+  "tags": {
+    "en": [
+      "smart-bus",
+      "buspro",
+      "hdl"
+    ]
+  },
+  "category": [
+    "lights"
+  ],
+  "brandColor": "#7d4098",
+  "homeyCommunityTopicId": 26575,
+  "permissions": [],
+  "images": {
+    "large": "/assets/images/large.png",
+    "small": "/assets/images/small.png"
+  },
+  "author": {
+    "name": "Andreas Lydersen",
+    "email": "andreas.lydersen@hey.com"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Maximilian Brosnahan"
+      },
+      {
+        "name": "Robert Kurti"
+      },
+      {
+        "name": "Martin Horák"
+      }
+    ]
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "alydersen"
+      }
+    }
+  },
+  "source": "https://github.com/alydersen/hdl-smartbus-homey"
+}

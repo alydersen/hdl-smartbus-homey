@@ -1,0 +1,20 @@
+{
+    "triggers": [
+      {
+        "id": "alarm_contact.contact_1_true",
+        "title": { "en": "Dry contact 1 activated" }
+      },
+      {
+        "id": "alarm_contact.contact_1_false",
+        "title": { "en": "Dry contact 1 deactivated" }
+      },
+      {
+        "id": "alarm_contact.contact_2_true",
+        "title": { "en": "Dry contact 2 activated" }
+      },
+      {
+        "id": "alarm_contact.contact_2_false",
+        "title": { "en": "Dry contact 2 deactivated" }
+      }
+    ]
+  }

@@ -139,5 +139,8 @@
   },
   "0.9.0": {
     "en": "Background changes: switched to Homey Compose"
+  },
+  "0.9.1": {
+    "en": "Flow triggers for multisensor drycontacts"
   }
 }

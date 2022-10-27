@@ -41,6 +41,9 @@
       },
       {
         "name": "Martin Horák"
+      },
+      {
+        "name": "Ole Jacob Nordahl"
       }
     ]
   },
@@ -156,7 +159,8 @@
         "alarm_contact.contact_1",
         "alarm_contact.contact_2",
         "measure_temperature",
-        "measure_luminance"
+        "measure_luminance",
+        "measure_humidity"
       ],
       "images": {
         "large": "/drivers/multisensor/assets/images/large.png",

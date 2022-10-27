@@ -47,6 +47,7 @@ class HdlTypelist {
             "307": { type: "multisensor"},
             "308": { type: "multisensor"},
             "309": { type: "multisensor"},
+            "310": { type: "multisensor"},
             "312": { type: "multisensor"},
             "314": { type: "multisensor"},
             "315": { type: "multisensor"},

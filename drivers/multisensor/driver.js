@@ -59,6 +59,16 @@ class MultisensorDriver extends Homey.Driver {
         .catch(this.error);
     }
 
+    // Set humidity
+    if (signal.data.humidity != undefined) {
+      if (! (homeyDevice.hasCapability("measure_humidity"))) {
+        homeyDevice.addCapability("measure_humidity").catch(this.error);
+      }
+      homeyDevice
+        .setCapabilityValue("measure_humidity", signal.data.humidity)
+        .catch(this.error);
+    }
+
     // Set DryContacts
     if (signal.data.dryContacts != undefined) {
       for (const dryContact in signal.data.dryContacts) {
@@ -83,11 +93,9 @@ class MultisensorDriver extends Homey.Driver {
     } else {
       this.homey.app.log("onPairListDevices from Multisensor");
       for (const device of Object.values(this.homey.app.getDevicesOfType("multisensor"))) {
-        let capabilities = ["alarm_motion"];
-
         devices.push({
           name: `HDL Multisensor (${hdl_subnet}.${device.id})`,
-          capabilities: capabilities,
+          capabilities: ["alarm_motion"],
           data: {
             id: `${hdl_subnet}.${device.id}`
           }

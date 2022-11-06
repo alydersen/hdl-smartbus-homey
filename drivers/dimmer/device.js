@@ -51,52 +51,14 @@ class DimmerDevice extends Homey.Device {
     return this.homey.app.controller();
   }
 
-  async onCapabilityOnoff(value, opts) {
-    if (value === true) {
-      this._controller().send(
-        {
-          target: this.getData().address,
-          command: 0x0031,
-          data: {
-            channel: this.getData().channel,
-            level: 100
-          }
-        },
-        function(err) {
-          if (err) {
-            this.homey.app.log(err);
-          }
-        }
-      );
-      this.setCapabilityValue("dim", 1).catch(this.error);
-    } else {
-      this._controller().send(
-        {
-          target: this.getData().address,
-          command: 0x0031,
-          data: {
-            channel: this.getData().channel,
-            level: 0
-          }
-        },
-        function(err) {
-          if (err) {
-            this.homey.app.log(err);
-          }
-        }
-      );
-      this.setCapabilityValue("dim", 0).catch(this.error);
-    }
-  }
-
-  async onCapabilityDim(value, opts) {
+  async updateDeviceByBus(level) {
     this._controller().send(
       {
         target: this.getData().address,
         command: 0x0031,
         data: {
           channel: this.getData().channel,
-          level: value * 100
+          level: level
         }
       },
       function(err) {
@@ -105,6 +67,17 @@ class DimmerDevice extends Homey.Device {
         }
       }
     );
+  }
+
+  async onCapabilityOnoff(value, opts) {
+    let level = value === true ? 100 : 0;
+    let dimlevel = value === true ? 1 : 0;
+    this.updateDeviceByBus(level);
+    this.setCapabilityValue("dim", dimlevel).catch(this.error);
+  }
+
+  async onCapabilityDim(value, opts) {
+    this.updateDeviceByBus(value * 100);
     this.setCapabilityValue("onoff", value > 0).catch(this.error);
   }
 }

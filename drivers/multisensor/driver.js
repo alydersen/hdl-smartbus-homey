@@ -18,6 +18,7 @@ class MultisensorDriver extends Homey.Driver {
     if (typeof homeyDevice === 'undefined') return;
     if (homeyDevice instanceof Error) return;
 
+
     // Update the device with the new motion values and add the capability if missing
     if (! (homeyDevice.hasCapability("alarm_motion"))) {
       homeyDevice.addCapability("alarm_motion").catch(this.error);
@@ -72,13 +73,15 @@ class MultisensorDriver extends Homey.Driver {
     // Set DryContacts
     if (signal.data.dryContacts != undefined) {
       for (const dryContact in signal.data.dryContacts) {
-        let registered_drycontact = `alarm_contact.contact_${dryContact + 1}`;
-        if (! (homeyDevice.hasCapability(registered_drycontact))) {
-          homeyDevice.addCapability(registered_drycontact).catch(this.error);
+        if ((parseInt(dryContact) + 1) <= 4) {
+          let registered_drycontact = `dry_contact_${parseInt(dryContact) + 1}`;
+          if (! (homeyDevice.hasCapability(registered_drycontact))) {
+            homeyDevice.addCapability(registered_drycontact).catch(this.error);
+          }
+          homeyDevice
+            .setCapabilityValue(registered_drycontact, signal.data.dryContacts[dryContact].status)
+            .catch(this.error);
         }
-        homeyDevice
-          .setCapabilityValue(registered_drycontact, signal.data.dryContacts[dryContact].status)
-          .catch(this.error);
       }
     }
   }

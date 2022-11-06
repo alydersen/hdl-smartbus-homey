@@ -45,38 +45,27 @@ class RelayDevice extends Homey.Device {
     return this.homey.app.controller();
   }
 
-  async onCapabilityOnoff(value, opts) {
-    if (value === true) {
-      this._controller().send(
-        {
-          target: this.getData().address,
-          command: 0x0031,
-          data: {
-            channel: this.getData().channel,
-            level: 100
-          }
-        },
-        function(err) {
-          if (err) {
-            this.homey.app.log(err);
-          }
-        }
-      );
-    } else {
-      this._controller().send({
+  async updateDeviceByBus(level) {
+    this._controller().send(
+      {
         target: this.getData().address,
         command: 0x0031,
         data: {
           channel: this.getData().channel,
-          level: 0
-        },
-        function(err) {
-          if (err) {
-            this.homey.app.log(err);
-          }
+          level: level
         }
-      });
-    }
+      },
+      function(err) {
+        if (err) {
+          this.homey.app.log(err);
+        }
+      }
+    );
+  }
+
+  async onCapabilityOnoff(value, opts) {
+    let level = value === true ? 100 : 0;
+    this.updateDeviceByBus(level);
   }
 }
 

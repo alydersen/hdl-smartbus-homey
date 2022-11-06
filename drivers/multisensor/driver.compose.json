@@ -5,8 +5,10 @@
   "class": "sensor",
   "capabilities": [
     "alarm_motion",
-    "alarm_contact.contact_1",
-    "alarm_contact.contact_2",
+    "dry_contact_1",
+    "dry_contact_2",
+    "dry_contact_3",
+    "dry_contact_4",
     "measure_temperature",
     "measure_luminance",
     "measure_humidity"

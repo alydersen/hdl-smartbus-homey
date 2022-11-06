@@ -145,5 +145,8 @@
   },
   "0.9.2": {
     "en": "Humidity multisensor capability by Ole Jacob Nordahl"
+  },
+  "0.9.3": {
+    "en": "Custom capabilities for dry contacts on multisensors"
   }
 }

@@ -156,8 +156,10 @@
       "class": "sensor",
       "capabilities": [
         "alarm_motion",
-        "alarm_contact.contact_1",
-        "alarm_contact.contact_2",
+        "dry_contact_1",
+        "dry_contact_2",
+        "dry_contact_3",
+        "dry_contact_4",
         "measure_temperature",
         "measure_luminance",
         "measure_humidity"
@@ -272,7 +274,7 @@
   "flow": {
     "triggers": [
       {
-        "id": "alarm_contact.contact_1_true",
+        "id": "dry_contact_1_true",
         "title": {
           "en": "Dry contact 1 activated"
         },
@@ -285,7 +287,7 @@
         ]
       },
       {
-        "id": "alarm_contact.contact_1_false",
+        "id": "dry_contact_1_false",
         "title": {
           "en": "Dry contact 1 deactivated"
         },
@@ -298,7 +300,7 @@
         ]
       },
       {
-        "id": "alarm_contact.contact_2_true",
+        "id": "dry_contact_2_true",
         "title": {
           "en": "Dry contact 2 activated"
         },
@@ -311,7 +313,7 @@
         ]
       },
       {
-        "id": "alarm_contact.contact_2_false",
+        "id": "dry_contact_2_false",
         "title": {
           "en": "Dry contact 2 deactivated"
         },
@@ -326,6 +328,50 @@
     ]
   },
   "capabilities": {
+    "dry_contact_1": {
+      "type": "boolean",
+      "title": {
+        "en": "Dry Contact 1"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": false,
+      "icon": "/drivers/multisensor/assets/drycontact.svg"
+    },
+    "dry_contact_2": {
+      "type": "boolean",
+      "title": {
+        "en": "Dry Contact 2"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": false,
+      "icon": "/drivers/multisensor/assets/drycontact.svg"
+    },
+    "dry_contact_3": {
+      "type": "boolean",
+      "title": {
+        "en": "Dry Contact 3"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": false,
+      "icon": "/drivers/multisensor/assets/drycontact.svg"
+    },
+    "dry_contact_4": {
+      "type": "boolean",
+      "title": {
+        "en": "Dry Contact 4"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": false,
+      "icon": "/drivers/multisensor/assets/drycontact.svg"
+    },
     "meter_valve": {
       "type": "string",
       "title": {

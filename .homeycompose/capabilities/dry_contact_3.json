@@ -1,0 +1,10 @@
+
+{
+    "type": "boolean",
+    "title": { "en": "Dry Contact 3" },
+    "getable": true,
+    "setable": false,
+    "uiComponent": "sensor",
+    "uiQuickAction": false,
+    "icon": "/drivers/multisensor/assets/drycontact.svg"
+  }

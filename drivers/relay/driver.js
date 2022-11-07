@@ -16,8 +16,12 @@ class RelayDriver extends Homey.Driver {
       address: `${hdl_subnet}.${signal.sender.id}`,
       channel: signal.data.channel || channel
     };
-
-    return this.getDevice(deviceSignature);    
+    try {
+      var homeyDevice = this.getDevice(deviceSignature);
+    } catch (error) {
+      var homeyDevice = undefined;
+    }
+    return homeyDevice;    
   }
 
   async updateValues(signal) {
@@ -34,23 +38,19 @@ class RelayDriver extends Homey.Driver {
         if (homeyDevice instanceof Error) return;
 
         // Update the device with the new values and add the capability if missing
-        homeyDevice.updateLevel(signal.data.level);
+        homeyDevice.updateHomeyLevel(signal.data.level);
       }
     }
 
     if (signal.data.channels != undefined) {
       signal.data.channels.forEach(function(chnl) {
         if (chnl.level != undefined) {
-          try {
-            let homeyDevice = this.getDeviceFromSignal(signal, chnl.number);
-          } catch (error) {
-            let homeyDevice = undefined;
-          }
+          let homeyDevice = this.getDeviceFromSignal(signal, chnl.number);
           if (typeof homeyDevice === 'undefined') return;
           if (homeyDevice instanceof Error) return;
   
           // Update the device with the new values and add the capability if missing
-          homeyDevice.updateLevel(chnl.level);
+          homeyDevice.updateHomeyLevel(chnl.level);
         }
       });
     }

@@ -17,7 +17,12 @@ class DimmerDriver extends Homey.Driver {
       channel: signal.data.channel || channel
     };
 
-    return this.getDevice(deviceSignature);    
+    try {
+      var homeyDevice = this.getDevice(deviceSignature);
+    } catch (error) {
+      var homeyDevice = undefined;
+    }
+    return homeyDevice;   
   }
 
   async updateValues(signal) {
@@ -28,11 +33,10 @@ class DimmerDriver extends Homey.Driver {
     let parent = this;
     if (signal.data.channel != undefined) {
       if (signal.data.level != undefined) {
-        try { var device = this.getDeviceFromSignal(signal, signal.data.channel); } catch (err) { return; }
-        if (typeof device !== 'undefined') {
-          if (device instanceof Error) return;
-          device.updateLevel(signal.data.level);
-        }
+        let homeyDevice = this.getDeviceFromSignal(signal, signal.data.channel);
+        if (typeof homeyDevice === 'undefined') return;
+        if (homeyDevice instanceof Error) return;
+        device.updateHomeyLevel(signal.data.level);
       }
     }
 
@@ -40,11 +44,10 @@ class DimmerDriver extends Homey.Driver {
       // This signal contains all channels, we need to process it for every device
       signal.data.channels.forEach((chnl, index) => {
         if (signal.data.channels[index].level != undefined) {
-          try { let device = this.getDeviceFromSignal(signal, chnl.number); } catch (err) { return; }
-          if (typeof device !== 'undefined') {
-            if (device instanceof Error) return;
-            device.updateLevel(signal.data.channels[index].level);
-          }
+          let homeyDevice = this.getDeviceFromSignal(signal, chnl.number);
+          if (typeof homeyDevice === 'undefined') return;
+          if (homeyDevice instanceof Error) return;
+          device.updateHomeyLevel(signal.data.level);
         }
       });
     }

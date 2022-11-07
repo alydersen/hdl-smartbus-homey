@@ -7,6 +7,13 @@ class MultisensorDriver extends Homey.Driver {
     this.homey.app.log("HDL MultisensorDriver has been initiated");
   }
 
+
+  async checkCapabilityAdded(device, capability) {
+    if (! (device.hasCapability(capability))) {
+      device.addCapability(capability).catch(this.error);
+    }
+  }
+
   async updateValues(signal) {
     // Parse and check the incoming signal, return if missing or invalid
     if (signal.data == undefined) return;
@@ -19,13 +26,9 @@ class MultisensorDriver extends Homey.Driver {
     if (homeyDevice instanceof Error) return;
 
 
-    // Update the device with the new motion values and add the capability if missing
-    if (! (homeyDevice.hasCapability("alarm_motion"))) {
-      homeyDevice.addCapability("alarm_motion").catch(this.error);
-    }
-
     // Either this comes from a signal.motion or through universal switch
     if (signal.data.movement != undefined) {
+      await this.checkCapabilityAdded(homeyDevice, "alarm_motion");
       homeyDevice
         .setCapabilityValue("alarm_motion", signal.data.movement)
         .catch(this.error);
@@ -35,6 +38,7 @@ class MultisensorDriver extends Homey.Driver {
       signal.data.switch ==
         parseInt(this.homey.settings.get("hdl_universal_motion"))
     ) {
+      await this.checkCapabilityAdded(homeyDevice, "alarm_motion");
       homeyDevice
         .setCapabilityValue("alarm_motion", signal.data.status)
         .catch(this.error);
@@ -42,9 +46,7 @@ class MultisensorDriver extends Homey.Driver {
 
     // Set temperature
     if (signal.data.temperature != undefined) {
-      if (! (homeyDevice.hasCapability("measure_temperature"))) {
-        homeyDevice.addCapability("measure_temperature").catch(this.error);
-      }
+      await this.checkCapabilityAdded(homeyDevice, "measure_temperature");
       homeyDevice
         .setCapabilityValue("measure_temperature", signal.data.temperature)
         .catch(this.error);
@@ -52,9 +54,7 @@ class MultisensorDriver extends Homey.Driver {
 
     // Set brighness
     if (signal.data.brightness != undefined) {
-      if (! (homeyDevice.hasCapability("measure_luminance"))) {
-        homeyDevice.addCapability("measure_luminance").catch(this.error);
-      }
+      await this.checkCapabilityAdded(homeyDevice, "measure_luminance");
       homeyDevice
         .setCapabilityValue("measure_luminance", signal.data.brightness)
         .catch(this.error);
@@ -62,9 +62,7 @@ class MultisensorDriver extends Homey.Driver {
 
     // Set humidity
     if (signal.data.humidity != undefined) {
-      if (! (homeyDevice.hasCapability("measure_humidity"))) {
-        homeyDevice.addCapability("measure_humidity").catch(this.error);
-      }
+      await this.checkCapabilityAdded(homeyDevice, "measure_humidity");
       homeyDevice
         .setCapabilityValue("measure_humidity", signal.data.humidity)
         .catch(this.error);
@@ -75,9 +73,7 @@ class MultisensorDriver extends Homey.Driver {
       for (const dryContact in signal.data.dryContacts) {
         if ((parseInt(dryContact) + 1) <= 4) {
           let registered_drycontact = `dry_contact_${parseInt(dryContact) + 1}`;
-          if (! (homeyDevice.hasCapability(registered_drycontact))) {
-            homeyDevice.addCapability(registered_drycontact).catch(this.error);
-          }
+          await this.checkCapabilityAdded(homeyDevice, registered_drycontact);
           homeyDevice
             .setCapabilityValue(registered_drycontact, signal.data.dryContacts[dryContact].status)
             .catch(this.error);

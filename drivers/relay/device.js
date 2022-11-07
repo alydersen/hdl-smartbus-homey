@@ -3,6 +3,11 @@
 const Homey = require("homey");
 
 class RelayDevice extends Homey.Device {
+
+  _controller() {
+    return this.homey.app.controller();
+  }
+
   async onInit() {
     this.homey.app.log(`Initated "${this.getName()}" (Relay/${this.getClass()}) ${this.getData().id}`);
  
@@ -10,24 +15,11 @@ class RelayDevice extends Homey.Device {
     this.registerCapabilityListener("onoff", this.onCapabilityOnoff.bind(this));
 
     // Ask for channel status
-    if (this.homey.app.isBusConnected()) {
-      this._controller().send(
-        { target: this.getData().address, command: 0x0033 },
-        function(err) {
-          if (err) {
-            this.homey.app.log(err);
-          }
-        }
-      );
-    }
+    if (this.homey.app.isBusConnected()) { this.requestUpdate() }
   }
 
-  async updateLevel(level) {
+  async updateHomeyLevel(level) {
     this.setCapabilityValue("onoff", level != 0).catch(this.error);
-  }
-
-  async updateTrueFalse(status) {
-    this.setCapabilityValue("onoff", status).catch(this.error);
   }
 
   async requestUpdate() {
@@ -39,10 +31,6 @@ class RelayDevice extends Homey.Device {
         }
       }
     );
-  }
-
-  _controller() {
-    return this.homey.app.controller();
   }
 
   async updateDeviceByBus(level) {

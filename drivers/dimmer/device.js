@@ -3,6 +3,11 @@
 const Homey = require("homey");
 
 class DimmerDevice extends Homey.Device {
+
+  _controller() {
+    return this.homey.app.controller();
+  }
+
   async onInit() {
     this.homey.app.log(`Initated "${this.getName()}" (Dimmer/${this.getClass()}) ${this.getData().id}`);
  
@@ -11,29 +16,13 @@ class DimmerDevice extends Homey.Device {
     this.registerCapabilityListener("dim", this.onCapabilityDim.bind(this));
 
     // Ask for channel status
-    if (this.homey.app.isBusConnected()) {
-      this._controller().send(
-        {
-          target: this.getData().address,
-          command: 0x0033
-        },
-        function(err) {
-          if (err) {
-            this.homey.app.log(err);
-          }
-        }
-      );
-    }
+    if (this.homey.app.isBusConnected()) { this.requestUpdate() }
   }
 
-  async updateLevel(level) {
+  async updateHomeyLevel(level) {
     var corrected_level = level / 100;
     this.setCapabilityValue("dim", corrected_level).catch(this.error);
     this.setCapabilityValue("onoff", corrected_level != 0).catch(this.error);
-  }
-
-  async updateTrueFalse(status) {
-    this.setCapabilityValue("onoff", status).catch(this.error);
   }
 
   async requestUpdate() {
@@ -45,10 +34,6 @@ class DimmerDevice extends Homey.Device {
         }
       }
     );
-  }
-
-  _controller() {
-    return this.homey.app.controller();
   }
 
   async updateDeviceByBus(level) {

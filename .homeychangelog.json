@@ -148,5 +148,8 @@
   },
   "0.9.3": {
     "en": "Custom capabilities for dry contacts on multisensors"
+  },
+  "0.9.4": {
+    "en": "Mutlisensors with main capabilities set for either for Humidity and Motion"
   }
 }

@@ -1,6 +1,7 @@
 'use strict';
 
 const Homey = require("homey");
+const HdlDevicelist = require("./../../hdl/hdl_devicelist");
 
 class MultisensorDriver extends Homey.Driver {
   async onInit() {
@@ -92,9 +93,12 @@ class MultisensorDriver extends Homey.Driver {
     } else {
       this.homey.app.log("onPairListDevices from Multisensor");
       for (const device of Object.values(this.homey.app.getDevicesOfType("multisensor"))) {
+        let devicelist = new HdlDevicelist();
+        let cap = await devicelist.mainCapability(device.type.toString());
+
         devices.push({
           name: `HDL Multisensor (${hdl_subnet}.${device.id})`,
-          capabilities: ["alarm_motion"],
+          capabilities: [cap],
           data: {
             id: `${hdl_subnet}.${device.id}`
           }

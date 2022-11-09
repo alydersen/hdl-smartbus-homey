@@ -16,6 +16,12 @@ class HdlTypelist {
         return this.list[id].channels;
     }
 
+    async mainCapability(id) {
+        if (this.list[id] == undefined) return null;
+
+        return this.list[id].main_capability;
+    }
+
     async getDict(id) {
         if (this.list[id] == undefined) return null;
 
@@ -43,24 +49,24 @@ class HdlTypelist {
             "210": { type: "floorheater", channels: 6 },
             "211": { type: "floorheater", channels: 6 },
             "212": { type: "floorheater", channels: 6 },
-            "305": { type: "multisensor"},
-            "307": { type: "multisensor"},
-            "308": { type: "multisensor"},
-            "309": { type: "multisensor"},
-            "310": { type: "multisensor"},
-            "312": { type: "multisensor"},
-            "314": { type: "multisensor"},
-            "315": { type: "multisensor"},
-            "316": { type: "multisensor"},
-            "318": { type: "multisensor"},
-            "321": { type: "multisensor"},
-            "322": { type: "multisensor"},
-            "328": { type: "multisensor"},
-            "329": { type: "multisensor"},
-            "330": { type: "multisensor"},
-            "336": { type: "multisensor"},
-            "337": { type: "multisensor"},
-            "340": { type: "multisensor"},
+            "305": { type: "multisensor", main_capability: "alarm_motion"},
+            "307": { type: "multisensor", main_capability: "alarm_motion"},
+            "308": { type: "multisensor", main_capability: "alarm_motion"},
+            "309": { type: "multisensor", main_capability: "alarm_motion"},
+            "310": { type: "multisensor", main_capability: "measure_humidity"},
+            "312": { type: "multisensor", main_capability: "alarm_motion"},
+            "314": { type: "multisensor", main_capability: "alarm_motion"},
+            "315": { type: "multisensor", main_capability: "alarm_motion"},
+            "316": { type: "multisensor", main_capability: "alarm_motion"},
+            "318": { type: "multisensor", main_capability: "alarm_motion"},
+            "321": { type: "multisensor", main_capability: "alarm_motion"},
+            "322": { type: "multisensor", main_capability: "alarm_motion"},
+            "328": { type: "multisensor", main_capability: "alarm_motion"},
+            "329": { type: "multisensor", main_capability: "alarm_motion"},
+            "330": { type: "multisensor", main_capability: "alarm_motion"},
+            "336": { type: "multisensor", main_capability: "alarm_motion"},
+            "337": { type: "multisensor", main_capability: "alarm_motion"},
+            "340": { type: "multisensor", main_capability: "alarm_motion"},
             "363": { type: "relay", channels: 6 },
             "423": { type: "relay", channels: 4 },
             "425": { type: "relay", channels: 6 },

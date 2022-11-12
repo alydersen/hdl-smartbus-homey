@@ -26,9 +26,12 @@ class MultisensorDriver extends Homey.Driver {
     if (typeof homeyDevice === 'undefined') return;
     if (homeyDevice instanceof Error) return;
 
+    // Get the exclude list
+    let devicelist = new HdlDevicelist();
+    let exclude = await devicelist.mainCapability(signal.sender.type.toString());
 
     // Either this comes from a signal.motion or through universal switch
-    if (signal.data.movement != undefined) {
+    if (signal.data.movement != undefined && !exclude.includes("alarm_motion")) {
       await this.checkCapabilityAdded(homeyDevice, "alarm_motion");
       homeyDevice
         .setCapabilityValue("alarm_motion", signal.data.movement)
@@ -37,7 +40,8 @@ class MultisensorDriver extends Homey.Driver {
     if (
       signal.data.switch != undefined &&
       signal.data.switch ==
-        parseInt(this.homey.settings.get("hdl_universal_motion"))
+        parseInt(this.homey.settings.get("hdl_universal_motion")) &&
+        !exclude.includes("alarm_motion")
     ) {
       await this.checkCapabilityAdded(homeyDevice, "alarm_motion");
       homeyDevice

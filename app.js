@@ -177,22 +177,20 @@ class HDLSmartBus extends Homey.App {
     let senderType = signal.sender.type.toString();
 
     // Check for universal switch
-    if (dataFromSignal != undefined && dataFromSignal.switch != undefined) {
-      var foundType = 'universal-switch'
-    } else { // Look up the type in the device list
-      var foundType = await this._hdlDevicelist.typeOfDevice(senderType);  
+    var uvactivated = dataFromSignal != undefined && dataFromSignal.switch != undefined;
+    var foundType = await this._hdlDevicelist.typeOfDevice(senderType);  
+
+    if (uvactivated) {
+      await this._updateDevice("universal-switch", signal);
     }
 
     // Return if no type was found
     if (foundType == null) return;
 
     switch (foundType) {
-      case "universal-switch":
-        await this._updateDevice(foundType, signal);
-        break;
 
       case 'curtain':
-        this._hdlFoundUnits["curtain"][signal.sender.id] = signal.sender;
+        this._hdlFoundUnits[foundType][signal.sender.id] = signal.sender;
         // This driver allows failing signal.data, as it adds to the HDL library
         await this._updateDevice(foundType, signal);
         break;

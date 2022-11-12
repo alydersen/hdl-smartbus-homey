@@ -151,5 +151,8 @@
   },
   "0.9.4": {
     "en": "Mutlisensors with main capabilities set for either for Humidity and Motion"
+  },
+  "1.0.0": {
+    "en": "Fixed bug in floorheters and UV Switches. Added possibility to exclude motion from multisensors"
   }
 }

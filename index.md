@@ -1,4 +1,3 @@
-# The unoffical HDL SmartBus app for Homey
 This project is an app for [Homey](https://homey.app/) that allows it to communicate with [Equipment from HDL](http://hdlautomation.com/). It is free and open source and built by people on their spare time. The vision for the project is to replace the need for using the HDL Logic Controll with Homey, opening up your HDL devices to the home automation world. **You need an IP Gateway on your HDL bus in order to use this app**
 
 ## Contributing

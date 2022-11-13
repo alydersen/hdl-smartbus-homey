@@ -154,5 +154,8 @@
   },
   "1.0.0": {
     "en": "Fixed bug in floorheters and UV Switches. Added possibility to exclude motion from multisensors"
+  },
+  "1.0.1": {
+    "en": "Fixed bug in exclude motion from multisensors"
   }
 }

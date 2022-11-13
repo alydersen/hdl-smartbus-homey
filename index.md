@@ -22,7 +22,7 @@ The App will listen to signes on the bus. For each signal, it will look into the
 ### How the device state is set
 Devices broadcasts their state on the bus and the Homey App reads them and updates the state on your Homey device if it is added. Sometimes, state is not published as it is happening (for various reasons). The app will reach out to every device every minute with a signal on the bus to make it publish its state. This means that sometimes, you'll have to wait a minute before you have an updated state.
 
-Supported devices and best practice for them:
+### Supported devices and best practice for them:
 - [Relays](DEVICES_RELAYS.md)
 - [Dimmers](DEVICES_DIMMERS.md)
 - [Temperature Sensors](DEVICES_TEMPSENSORS.md)

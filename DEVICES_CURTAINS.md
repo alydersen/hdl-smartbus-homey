@@ -1,3 +1,3 @@
-[Back to the main page](INDEX.md)
+[Back to the main page](index.md)
 
 # Curtain Controllers

@@ -1,4 +1,4 @@
-[Back to the main page](INDEX.md)
+[Back to the main page](index.md)
 
 # Connecting Homey to HDL (initial setup)
 HDL is a bus where the different equipment have an address and then sends out signals to all (broadcast) or individual addresses. All signals are sent to all on the bus, so the only difference is if a receiver is defined by device address. The address is built up of two things: A subnet and an ID.

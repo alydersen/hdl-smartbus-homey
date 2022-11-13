@@ -1,4 +1,4 @@
-[Back to the main page](INDEX.md)
+[Back to the main page](index.md)
 
 # Dimmers
 A dimmer controller have one or more dimmers as channels. Different HDL Models have different number of channels, and you see this in [hdl_devicelist.js](https://github.com/alydersen/hdl-smartbus-homey/blob/v1.0.1/hdl/hdl_devicelist.js) under each type as "channels". You always add each separate channel as a Homey device, and they will as such be shown indivdually in the process of adding them.

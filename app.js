@@ -161,7 +161,7 @@ class HDLSmartBus extends Homey.App {
 
   async _signalReceived(signal) {
     // Check to see that the subnet is the same
-    allowed_subnets = [this.homey.settings.get("hdl_subnet"), "255"];
+    let allowed_subnets = [this.homey.settings.get("hdl_subnet"), "255"];
     if (!allowed_subnets.includes(signal.sender.subnet)) return;
 
     // Catch errors when trying to access the signal.data

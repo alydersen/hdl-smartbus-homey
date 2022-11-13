@@ -1,0 +1,17 @@
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: true
+include:
+  - INDEX.md
+  - CODE_OF_CONDUCT.md
+  - CONNECTING.md
+  - CONTRIBUTING.md
+  - DEVICES_CURTAINS.md
+  - DEVICES_DIMMERS.md
+  - DEVICES_FLOORHEATERS.md
+  - DEVICES_MULTISENSORS.md
+  - DEVICES_RELAYS.md
+  - DEVICES_TEMPSENSORS.md
+  - DEVICES_UVSWITCHES.md

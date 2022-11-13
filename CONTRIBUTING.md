@@ -1,24 +1,19 @@
-# Contributing to Athom and Homey
+# Contributing to the App development
 
 First off all, thank you for taking the time to contribute!
 
-The following is a set of guidelines for contributing to Athom and its packages, which are hosted in the [Athom Organization](https://github.com/athombv) on GitHub. These are just guidelines, not rules. Use your best judgment, and feel free to contact us if you have any questions.
-
-Please join our [community slack](https://slack.athom.com), if you have not done so already.
-We also have a [community forum](https://community.athom.com) for general discussions.
+The App is free and open source and built by people on their spare time, so please don't expect people to be as into your situation as you are. The best way to contribute is to code yourself, so please read [This excellent guide](https://www.contribution-guide.org)
 
 
-## Before submitting a bug or feature request
+## Before submitting a bug, feature request or pull request
 
 * **Have you actually read the error message**?
 * Have you searched for similar issues?
 * Have you updated homey, all apps, and the development tools (if applicable)?
-* Have you checked that it's not a problem with one of the apps you're using, rather than Homey itself?
+* Have you checked that it's not a problem with one of the devices you're using, rather than the App itself?
 * Have you looked at what's involved in fixing/implementing this?
  
 Capable programmers should always attempt to investigate and fix problems themselves before asking for others to help. Submit a pull request instead of an issue!
-
-Regular support is provided through our [support staff](support@athom.com).
 
 ## A great bug report contains
 
@@ -43,11 +38,3 @@ Regular support is provided through our [support staff](support@athom.com).
 * Code conforming to the existing conventions and formats. i.e. Please don't reformat whitespace.
 * Passing tests in the test folder (if applicable). Use existing tests as a reference.
 * Relevant documentation.
-
-## Speeding up your pull request
-Merging pull requests takes time. While we always try to merge your pull request as soon as possible, there are certain things you can do to speed up this process.
-
-* Ask developers to review your code changes and post their feedback.
-* Ask users to test your changes and post their feedback.
-* Keep your changes to the minimal required amount, and dedicated to one issue/feature only.
-* If your PR introduces new features or more than just a small fix, please sign our [Contributor License Agreement](https://go.athom.com/cla).

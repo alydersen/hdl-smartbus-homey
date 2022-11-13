@@ -189,6 +189,35 @@
     },
     {
       "name": {
+        "en": "panel"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "measure_temperature"
+      ],
+      "connectivity": [],
+      "images": {
+        "small": "/drivers/panel/assets/images/small.png",
+        "large": "/drivers/panel/assets/images/large.png",
+        "xlarge": "/drivers/panel/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "panel"
+    },
+    {
+      "name": {
         "en": "Relay"
       },
       "class": "socket",

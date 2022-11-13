@@ -22,6 +22,13 @@ class HdlTypelist {
         return this.list[id].main_capability;
     }
 
+    async excludeCapabilities(id) {
+        if (this.list[id] == undefined) return null;
+
+        return this.list[id].exclude;
+    }
+
+
     get list() {
         return {
             "16": { type: "dimmer", channels: 48 },

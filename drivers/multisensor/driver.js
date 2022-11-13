@@ -28,7 +28,7 @@ class MultisensorDriver extends Homey.Driver {
 
     // Get the exclude list
     let devicelist = new HdlDevicelist();
-    let exclude = await devicelist.mainCapability(signal.sender.type.toString());
+    let exclude = await devicelist.excludeCapabilities(signal.sender.type.toString());
 
     // Either this comes from a signal.motion or through universal switch
     if (signal.data.movement != undefined && !exclude.includes("alarm_motion")) {

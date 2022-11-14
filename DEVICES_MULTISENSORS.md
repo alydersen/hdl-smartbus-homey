@@ -25,7 +25,10 @@ The different multisensor types handles motion a bit different, making trusting 
 ## Using timeouts to turn lights off after X amount of time
 Homey has built in support for flows to be triggered when zones become active or have been inactive for some time. You can use this to trigger actions like turning on/off lights in Homey, so that it is easier to have lights on for a period of time after motion have been detected. With advanced flow, you can also make this react differently based on the time of day, having e.g. the lights on your bathroom be dimmed low when motion is detected at night.
 
+## Humidity readings
+We have found that some units reports humidity values even though they don't have the sensors. This normally results in a reading of 255%. Any reading outside the 0 to 100 scope will be disregarded.
+
 ## Dry Contacts
 Some multisensors have one or more dry contacts. These are "sensors" allowing you to connect different equipment and react if the equipment closes the circuit (e.g. with a magnetic contact sensor). These types of sensors are either "NO" or "NC", meaning that they are either Normally Open or Normally Closed, and you can configure this in the HDL configuration of the multisensor. A NO sensor will trigger if the circuit is closed, and visa-versa for NC.
 
-Because special flow cards are added for these dry contacts, you can trigger flows based on their state.
+Because special flow cards are added for these dry contacts, you can trigger flows based on their state. Be aware that not all sensor types (models) sends out a signal when the state of a dry contact changes, so for them the state won't be updated before a state update request is sent from the App (every 60 seconds).

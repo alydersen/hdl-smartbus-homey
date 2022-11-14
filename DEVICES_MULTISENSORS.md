@@ -28,4 +28,4 @@ Homey has built in support for flows to be triggered when zones become active or
 ## Dry Contacts
 Some multisensors have one or more dry contacts. These are "sensors" allowing you to connect different equipment and react if the equipment closes the circuit (e.g. with a magnetic contact sensor). These types of sensors are either "NO" or "NC", meaning that they are either Normally Open or Normally Closed, and you can configure this in the HDL configuration of the multisensor. A NO sensor will trigger if the circuit is closed, and visa-versa for NC.
 
-Because special flow cards are added for these dry contacts, you can trigger flows based on their state.
+Because special flow cards are added for these dry contacts, you can trigger flows based on their state. Be aware that not all sensor types (models) sends out a signal when the state of a dry contact changes, so for them the state won't be updated before a state update request is sent from the App (every 60 seconds).

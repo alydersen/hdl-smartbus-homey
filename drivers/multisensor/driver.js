@@ -30,18 +30,23 @@ class MultisensorDriver extends Homey.Driver {
     let devicelist = new HdlDevicelist();
     let exclude = await devicelist.excludeCapabilities(signal.sender.type.toString());
 
-    // Either this comes from a signal.motion or through universal switch
-    if (signal.data.movement != undefined && !exclude.includes("alarm_motion")) {
+    // Check if there is a motion sensor input
+    if (
+      signal.data.movement != undefined &&
+      !exclude.includes("alarm_motion")
+    ) {
       await this.checkCapabilityAdded(homeyDevice, "alarm_motion");
       homeyDevice
         .setCapabilityValue("alarm_motion", signal.data.movement)
         .catch(this.error);
     }
+
+    // Check if there is a Universal Switch indicating motion
+    let hdlUVSwitch = parseInt(this.homey.settings.get("hdl_universal_motion"));
     if (
       signal.data.switch != undefined &&
-      signal.data.switch ==
-        parseInt(this.homey.settings.get("hdl_universal_motion")) &&
-        !exclude.includes("alarm_motion")
+      signal.data.switch == hdlUVSwitch &&
+      !exclude.includes("alarm_motion")
     ) {
       await this.checkCapabilityAdded(homeyDevice, "alarm_motion");
       homeyDevice
@@ -50,7 +55,10 @@ class MultisensorDriver extends Homey.Driver {
     }
 
     // Set temperature
-    if (signal.data.temperature != undefined) {
+    if (
+      signal.data.temperature != undefined &&
+      !exclude.includes("measure_temperature")
+    ) {
       await this.checkCapabilityAdded(homeyDevice, "measure_temperature");
       homeyDevice
         .setCapabilityValue("measure_temperature", signal.data.temperature)
@@ -58,7 +66,10 @@ class MultisensorDriver extends Homey.Driver {
     }
 
     // Set brighness
-    if (signal.data.brightness != undefined) {
+    if (
+      signal.data.brightness != undefined &&
+      !exclude.includes("measure_luminance")
+    ) {
       await this.checkCapabilityAdded(homeyDevice, "measure_luminance");
       homeyDevice
         .setCapabilityValue("measure_luminance", signal.data.brightness)
@@ -66,7 +77,12 @@ class MultisensorDriver extends Homey.Driver {
     }
 
     // Set humidity
-    if (signal.data.humidity != undefined) {
+    if (
+      signal.data.humidity != undefined &&
+      signal.data.humidity <= 0 &&
+      signal.data.humidity >= 100 &&
+      !exclude.includes("measure_humidity")
+    ) {
       await this.checkCapabilityAdded(homeyDevice, "measure_humidity");
       homeyDevice
         .setCapabilityValue("measure_humidity", signal.data.humidity)

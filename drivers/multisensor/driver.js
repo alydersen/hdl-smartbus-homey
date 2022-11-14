@@ -79,8 +79,8 @@ class MultisensorDriver extends Homey.Driver {
     // Set humidity
     if (
       signal.data.humidity != undefined &&
-      signal.data.humidity <= 0 &&
-      signal.data.humidity >= 100 &&
+      signal.data.humidity >= 0 &&
+      signal.data.humidity <= 100 &&
       !exclude.includes("measure_humidity")
     ) {
       await this.checkCapabilityAdded(homeyDevice, "measure_humidity");

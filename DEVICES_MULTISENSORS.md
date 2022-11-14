@@ -1,6 +1,6 @@
 [Back to the main page](index.md)
 
-# Multisensors (8-in-1 12-in1 and humidity sensors)
+# Multisensors (8-in-1 12-in-1 and humidity sensors)
 HDL have a wide range of different units with several different sensors in them. Rather then adding individual drivers for them in Homey, they are added as a multisensor.
 
 ## Capabilities

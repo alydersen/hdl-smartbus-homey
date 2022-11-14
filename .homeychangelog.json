@@ -157,5 +157,8 @@
   },
   "1.0.1": {
     "en": "Fixed bug in exclude motion from multisensors"
+  },
+  "1.0.2": {
+    "en": "Accepting broadcasts on the 255 subnet"
   }
 }

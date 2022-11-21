@@ -160,5 +160,8 @@
   },
   "1.0.2": {
     "en": "Accepting broadcasts on the 255 subnet"
+  },
+  "1.0.3": {
+    "en": "Range check on values and fixing pairing bug for floorheaters"
   }
 }

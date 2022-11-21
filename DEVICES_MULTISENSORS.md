@@ -4,7 +4,7 @@
 HDL have a wide range of different units with several different sensors in them. Rather then adding individual drivers for them in Homey, they are added as a multisensor.
 
 ## Capabilities
-As you can see in [hdl_devicelist.js](https://github.com/alydersen/hdl-smartbus-homey/blob/v1.0.2/hdl/hdl_devicelist.js), multisensors have a main capability, most often "alarm_motion". When you add a new multisensor, only this main capability are added, and others are added when signals containing their state is received. The potential capabilites are:
+As you can see in [hdl_devicelist.js](https://github.com/alydersen/hdl-smartbus-homey/blob/v3/hdl/hdl_devicelist.js), multisensors have a main capability, most often "alarm_motion". When you add a new multisensor, only this main capability are added, and others are added when signals containing their state is received. The potential capabilites are:
 - alarm_motion
 - dry_contact_1
 - dry_contact_2
@@ -17,7 +17,7 @@ As you can see in [hdl_devicelist.js](https://github.com/alydersen/hdl-smartbus-
 Keep in mind that since homey needs to have received a signal containing the capability's state before the capability is added, several minutes can go by before you have a device with all it's capabilites in Homey.
 
 ### Exclusions
-Sometimes the signal from a device will contain state for a capability that is not supported for it. [hdl_devicelist.js](https://github.com/alydersen/hdl-smartbus-homey/blob/v1.0.2/hdl/hdl_devicelist.js) contains a "exclude" option for these per device type, so that it will be disregarded. If you want more added here - follow the [Contribution guidelines](CONTRIBUTING.md)
+Sometimes the signal from a device will contain state for a capability that is not supported for it. [hdl_devicelist.js](https://github.com/alydersen/hdl-smartbus-homey/blob/v1.0.3/hdl/hdl_devicelist.js) contains a "exclude" option for these per device type, so that it will be disregarded. If you want more added here - follow the [Contribution guidelines](CONTRIBUTING.md)
 
 ## Making motion stable
 The different multisensor types handles motion a bit different, making trusting the signal received a bit difficult. If you want this to be stable, configure your sensor to send an Universal Switch (UVS) with the value set to "ON" to the device ID of your Homey app. The UVS number that the app will expect is 212, but you can change this in the settings. The ID of your Homey App is configured in your settings. You should also add a similar action for "OFF" sent to the same ID.

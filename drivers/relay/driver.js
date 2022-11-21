@@ -21,7 +21,7 @@ class RelayDriver extends Homey.Driver {
     } catch (error) {
       var homeyDevice = undefined;
     }
-    return homeyDevice;    
+    return homeyDevice;
   }
 
   async updateValues(signal) {
@@ -30,24 +30,20 @@ class RelayDriver extends Homey.Driver {
     if (signal.data.level == undefined) return;
     if (signal.sender.id == undefined) return;
 
-    // Get the device from Homey, return if not found or error
-    if (signal.data.channel != undefined) {
-      if (signal.data.level != undefined) {
-        let homeyDevice = this.getDeviceFromSignal(signal, signal.data.channel);
-        if (typeof homeyDevice === 'undefined') return;
-        if (homeyDevice instanceof Error) return;
+    if (signal.data.channel != undefined && signal.data.level != undefined) {
+      // This signal contains one channel, so we can process only that channel
+      let homeyDevice = this.getDeviceFromSignal(signal, signal.data.channel);
+      if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
 
-        // Update the device with the new values and add the capability if missing
-        homeyDevice.updateHomeyLevel(signal.data.level);
-      }
+      // Update the device with the new values and add the capability if missing
+      homeyDevice.updateHomeyLevel(signal.data.level);
     }
 
     if (signal.data.channels != undefined) {
       signal.data.channels.forEach(function(chnl) {
         if (chnl.level != undefined) {
           let homeyDevice = this.getDeviceFromSignal(signal, chnl.number);
-          if (typeof homeyDevice === 'undefined') return;
-          if (homeyDevice instanceof Error) return;
+          if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
   
           // Update the device with the new values and add the capability if missing
           homeyDevice.updateHomeyLevel(chnl.level);
@@ -62,7 +58,7 @@ class RelayDriver extends Homey.Driver {
 
     // Check that the bus is connected
     if (!this.homey.app.isBusConnected()) {
-      return Error("Please configure the app settings first.");
+      return new Error("Please configure the app settings first.");
     } else {
       this.homey.app.log("onPairListDevices from Relay");
       for (const device of Object.values(this.homey.app.getDevicesOfType("relay"))) {

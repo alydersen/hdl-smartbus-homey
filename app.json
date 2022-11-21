@@ -47,6 +47,10 @@
       }
     ]
   },
+  "homepage": "https://alydersen.github.io/hdl-smartbus-homey/",
+  "bugs": {
+    "url": "https://github.com/alydersen/hdl-smartbus-homey/issues"
+  },
   "contributing": {
     "donate": {
       "paypal": {

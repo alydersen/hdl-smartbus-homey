@@ -56,29 +56,28 @@ class FloorHeaterDriver extends Homey.Driver {
 
     // Check that the bus is connected
     if (!this.homey.app.isBusConnected()) {
-      return Error("Please configure the app settings first.");
-    } else {
-      this.homey.app.log("onPairListDevices from Floorheater");
-      for (const device of Object.values(this.homey.app.getDevicesOfType("floorheater"))) {
-        let devicelist = new HdlDevicelist()
-        var channel;
-        for (
-          channel = 1;
-          channel < devicelist.numberOfChannels(device.type.toString()) + 1;
-          channel++
-        ) {
-          devices.push({
-            name: `HDL Floorheater (${hdl_subnet}.${device.id} ch ${channel})`,
-            data: {
-              id: `${hdl_subnet}.${device.id}.${channel}`,
-              address: `${hdl_subnet}.${device.id}`,
-              channel: channel
-            }
-          });
-        }
-      }
-      return devices.sort(FloorHeaterDriver._compareHomeyDevice);
+      return new Error("Please configure the app settings first.");
     }
+    this.homey.app.log("onPairListDevices from Floorheater");
+    for (const device of Object.values(this.homey.app.getDevicesOfType("floorheater"))) {
+      let devicelist = new HdlDevicelist()
+      var channel;
+      for (
+        channel = 1;
+        channel < await devicelist.numberOfChannels(device.type.toString()) + 1;
+        channel++
+      ) {
+        devices.push({
+          name: `HDL Floorheater (${hdl_subnet}.${device.id} ch ${channel})`,
+          data: {
+            id: `${hdl_subnet}.${device.id}.${channel}`,
+            address: `${hdl_subnet}.${device.id}`,
+            channel: channel
+          }
+        });
+      }
+    }
+    return devices.sort(FloorHeaterDriver._compareHomeyDevice);
   }
 
   static _compareHomeyDevice(a, b) {

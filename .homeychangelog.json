@@ -163,5 +163,8 @@
   },
   "1.0.3": {
     "en": "Range check on values and fixing pairing bug for floorheaters"
+  },
+  "1.0.4": {
+    "en": "Fixed bug in updaing level of dimmers from bus"
   }
 }

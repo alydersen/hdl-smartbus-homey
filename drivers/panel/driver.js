@@ -14,23 +14,22 @@ class PanelDriver extends Driver {
 
   async updateValues(signal) {
       // Parse and check the incoming signal, return if missing or invalid
+      this.log(`${signal.sender.id}: ${signal.code}`);
       if (signal.data == undefined) return;
       if (signal.sender.id == undefined) return;
-
       this.log(signal.data);
+      let hasTemp = signal.data.temperature != undefined && (signal.data.temperature > -40 || signal.data.temperature < 70);
+      if (!hasTemp) return;
   
       // Get the device from Homey, return if not found or error
       let hdl_subnet = this.homey.settings.get("hdl_subnet");
       let homeyDevice = this.getDevice({id: `${hdl_subnet}.${signal.sender.id}`});
-      if (typeof homeyDevice === 'undefined') return;
-      if (homeyDevice instanceof Error) return;
+      if (typeof homeyDevice === 'undefined' || homeyDevice instanceof Error) return;
   
       // Set temperature
-      if (signal.data.temperature != undefined) {
-        homeyDevice
-          .setCapabilityValue("measure_temperature", signal.data.temperature)
-          .catch(this.error);
-      }
+      homeyDevice
+        .setCapabilityValue("measure_temperature", signal.data.temperature)
+        .catch(this.error);
     
   }
 
@@ -44,21 +43,19 @@ class PanelDriver extends Driver {
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
 
     // Check that the bus is connected
-    if (!this.homey.app.isBusConnected()) {
-      return new Error("Please configure the app settings first.");
-    } else {
-      this.homey.app.log("onPairListDevices from PanelDriver");
-      for (const device of Object.values(this.homey.app.getDevicesOfType("panel"))) {
-        devices.push({
-          name: `HDL DLP Panel (${hdl_subnet}.${device.id})`,
-          capabilities: ["measure_temperature"],
-          data: {
-            id: `${hdl_subnet}.${device.id}`
-          }
-        });
-      }
-      return devices.sort(PanelDriver._compareHomeyDevice);
+    if (!this.homey.app.isBusConnected()) return new Error("Please configure the app settings first.");
+
+    this.homey.app.log("onPairListDevices from PanelDriver");
+    for (const device of Object.values(this.homey.app.getDevicesOfType("panel"))) {
+      devices.push({
+        name: `HDL DLP Panel (${hdl_subnet}.${device.id})`,
+        capabilities: ["measure_temperature"],
+        data: {
+          id: `${hdl_subnet}.${device.id}`
+        }
+      });
     }
+    return devices.sort(PanelDriver._compareHomeyDevice);
   }
 
 }

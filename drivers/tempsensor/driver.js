@@ -16,7 +16,7 @@ class TempsensorDriver extends Homey.Driver {
     if (signal.sender.id == undefined) return;
 
     // Disregard signals if the readings are out of range
-    if (signal.data.temperature < -40 || signal.data.temperature > 70) return;
+    if (!this.homey.app.valueOK("temperature", signal.data.temperature)) return;
 
     // Get the device from Homey, return if not found or error
     let hdl_subnet = this.homey.settings.get("hdl_subnet");

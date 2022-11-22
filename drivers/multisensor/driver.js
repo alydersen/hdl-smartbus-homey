@@ -12,7 +12,7 @@ class MultisensorDriver extends Homey.Driver {
 
   async checkCapabilityAdded(device, capability) {
     if (! (device.hasCapability(capability))) {
-      device.addCapability(capability).catch(this.error);
+      await device.addCapability(capability).catch(this.error);
     }
   }
 
@@ -26,10 +26,10 @@ class MultisensorDriver extends Homey.Driver {
     let hdlUVSwitch = parseInt(this.homey.settings.get("hdl_universal_motion"));
 
     // Check which signals are present and range
-    let hasTemp = signal.data.temperature != undefined && (signal.data.temperature < -40 || signal.data.temperature > 70);
-    let hasHum = signal.data.humidity != undefined && (signal.data.humidity < 0 || signal.data.humidity > 100);
-    let hasLux = signal.data.lux != undefined && (signal.data.lux < 0 || signal.data.lux > 100000);
-    let hasMotion = signal.data.motion != undefined;
+    let hasTemp = this.homey.app.valueOK("temperature", signal.data.temperature);
+    let hasHum = this.homey.app.valueOK("humidity", signal.data.humidity);
+    let hasLux = this.homey.app.valueOK("lux", signal.data.brightness);
+    let hasMotion = signal.data.movement != undefined;
     let hasDryContact = signal.data.dryContacts != undefined;
     let hasUV = signal.data.switch != undefined && signal.data.status != undefined && hdlUVSwitch == signal.data.switch;
 

@@ -9,7 +9,7 @@ class PanelDevice extends Device {
   }
 
   async requestUpdate() {
-    let commands = [0xe3e7, 0x1948];
+    let commands = [0xe3e7, 0x1948, 0x1944];
 
     for (let i = 0; i < commands.length; i++) {
       if (this.homey.app.isBusConnected()) {

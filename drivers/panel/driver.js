@@ -14,12 +14,11 @@ class PanelDriver extends Driver {
 
   async updateValues(signal) {
       // Parse and check the incoming signal, return if missing or invalid
-      this.log(`${signal.sender.id}: ${signal.code}`);
       if (signal.data == undefined) return;
       if (signal.sender.id == undefined) return;
+      if (!this.homey.app.valueOK("temperature", signal.data.temperature)) return;
+
       this.log(signal.data);
-      let hasTemp = signal.data.temperature != undefined && (signal.data.temperature > -40 || signal.data.temperature < 70);
-      if (!hasTemp) return;
   
       // Get the device from Homey, return if not found or error
       let hdl_subnet = this.homey.settings.get("hdl_subnet");

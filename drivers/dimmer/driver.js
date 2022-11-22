@@ -38,12 +38,11 @@ class DimmerDriver extends Homey.Driver {
 
     if (signal.data.channels != undefined) {
       // This signal contains all channels, we need to process it for every channel
-      signal.data.channels.forEach((chnl, index) => {
-        if (chnl.level != undefined) {
-          let homeyDevice = this.getDeviceFromSignal(signal, chnl.number);
-          if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
-          homeyDevice.updateHomeyLevel(chnl.level);
-        }
+      signal.data.channels.forEach(function(chnl) {
+        if (chnl.level != undefined) return;
+        let homeyDevice = this.getDeviceFromSignal(signal, chnl.number);
+        if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
+        homeyDevice.updateHomeyLevel(chnl.level);
       });
     }
   }

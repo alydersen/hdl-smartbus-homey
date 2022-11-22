@@ -41,13 +41,12 @@ class RelayDriver extends Homey.Driver {
 
     if (signal.data.channels != undefined) {
       signal.data.channels.forEach(function(chnl) {
-        if (chnl.level != undefined) {
-          let homeyDevice = this.getDeviceFromSignal(signal, chnl.number);
-          if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
+        if (chnl.level == undefined || chnl.number == undefined) return;
+        let homeyDevice = this.getDeviceFromSignal(signal, chnl.number);
+        if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
   
-          // Update the device with the new values and add the capability if missing
-          homeyDevice.updateHomeyLevel(chnl.level);
-        }
+        // Update the device with the new values and add the capability if missing
+        homeyDevice.updateHomeyLevel(chnl.level);
       });
     }
   }

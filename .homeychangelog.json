@@ -166,5 +166,8 @@
   },
   "1.0.4": {
     "en": "Fixed bug in updaing level of dimmers from bus"
+  },
+  "1.0.5": {
+    "en": "Refactoring value checks and fixed ug in multisensor lux, temperature and movement"
   }
 }

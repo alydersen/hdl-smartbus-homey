@@ -150,6 +150,25 @@ class HDLSmartBus extends Homey.App {
     return this._hdlFoundUnits[drivername];
   }
 
+  valueOK(type, value) {
+    if (typeof value === "undefined") return false;
+    switch (type) {
+      case "temperature":
+        if (! typeof value === "number") return false;
+        if (value < -40 || value > 80) return false;
+        return true;
+      case "humidity":
+        if (! typeof value === "number") return false;
+        if (value < 0 || value > 100) return false;
+        return true;
+      case "lux":
+        if (! typeof value === "number") return false;
+        if (value < 0 || value > 100000) return false;
+        return true;
+    }
+    return true;
+  }
+
   async _updateDevice(hdlSenderType, signal) {
     const unknownDeviceMessages = ["invalid_device", "device is not defined", "Could not get device by device data"]
     await this.homey.drivers.getDriver(hdlSenderType).updateValues(signal).catch((error) => {

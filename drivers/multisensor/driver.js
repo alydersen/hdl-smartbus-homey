@@ -18,8 +18,6 @@ class MultisensorDriver extends Homey.Driver {
 
   async updateValues(signal) {
     // Parse and check the incoming signal, return if missing or invalid
-    if (signal.data == undefined) return;
-    if (signal.sender.id == undefined) return;
     if (signal.sender.type == undefined) return;
 
     // Get the Motion UVS from Homey settings

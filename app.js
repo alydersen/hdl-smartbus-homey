@@ -95,7 +95,7 @@ class HDLSmartBus extends Homey.App {
       },
       function (err) {
         if (err) {
-          this.log(err);
+          this.homey.app.log(err);
         }
       }
     );
@@ -150,6 +150,16 @@ class HDLSmartBus extends Homey.App {
     return this._hdlFoundUnits[drivername];
   }
 
+  // Get the signature of a device with channels
+  devSignChnld(id, channel){
+    let hdl_subnet = this.homey.settings.get("hdl_subnet");
+    return {
+      id: `${hdl_subnet}.${id}.${channel}`,
+      address: `${hdl_subnet}.${id}`,
+      channel: channel
+    };
+  }
+
   valueOK(type, value) {
     if (typeof value === "undefined") return false;
     switch (type) {
@@ -170,10 +180,13 @@ class HDLSmartBus extends Homey.App {
   }
 
   async _updateDevice(hdlSenderType, signal) {
+    if (signal.code == 0xF) return; // Ignore discovery signals
+
     const unknownDeviceMessages = ["invalid_device", "device is not defined", "Could not get device by device data"]
     await this.homey.drivers.getDriver(hdlSenderType).updateValues(signal).catch((error) => {
       if (! (unknownDeviceMessages.includes(error.message))) {
         this.log(`Error for ${hdlSenderType} ${signal.sender.id}: ${error.message}`);
+        
       }
     });
   }
@@ -204,6 +217,7 @@ class HDLSmartBus extends Homey.App {
     // Allow failing signal data only if the device is a curtain
     // (curtains are extending the signal data)
     if (!foundType == "curtain" && dataFromSignal == undefined) return;
+    if (signal.sender.id == undefined) return;
 
     // Add the device to the list of found devices
     this._hdlFoundUnits[foundType][signal.sender.id] = signal.sender;

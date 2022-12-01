@@ -17,36 +17,32 @@ class FloorHeaterDriver extends Homey.Driver {
     this.homey.app.log("HDL FloorHeaterDriver has been initiated");
   }
 
-  getDeviceFromSignal(signal) {
-    let hdl_subnet = this.homey.settings.get("hdl_subnet");
-    return this.getDevice({
-      id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel}`,
-      address: `${hdl_subnet}.${signal.sender.id}`,
-      channel: signal.data.channel
-    });    
-  }
-
   async updateValues(signal) {
-    if (signal.data) {
-        let device = this.getDeviceFromSignal(signal);
-        if (typeof device !== 'undefined') {
-          if (device instanceof Error) return;
-          
-          switch (signal.code) {
-            case 0x1C5F:
-            case 0x1C5D:
-              // read floor heating status
-              device.updateLevel(signal.data.temperature.normal);
-              device.updateValve(signal.data.watering && signal.data.watering.status);
-              device.updatePowerSwitch(signal.data.work && signal.data.work.status);
-              device.currentData = signal.data;
-              return;
+    // Parse and check the incoming signal, return if missing or invalid
+    if (signal.data.channel == undefined) return;
 
-            case 0xE3E8:
-              // read temperature
-              device.updateTemperature(signal.data.temperature);
-          }
+    // Get the device from Homey, return if not found or error
+    let signature = this.homey.app.devSignChnld(signal.sender.id, signal.data.channel)
+    let homeyDevice = this.getDevice(signature);
+    if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
+    
+    switch (signal.code) {
+      case 0x1C5F:
+      case 0x1C5D:
+        // read floor heating status
+        if (this.homey.app.valueOK("temperature", signal.data.temperature.normal)) {
+          homeyDevice.updateLevel(signal.data.temperature.normal);
         }
+        homeyDevice.updateValve(signal.data.watering && signal.data.watering.status);
+        homeyDevice.updatePowerSwitch(signal.data.work && signal.data.work.status);
+        homeyDevice.currentData = signal.data;
+        return;
+
+      case 0xE3E8:
+        // read temperature
+        if (this.homey.app.valueOK("temperature", signal.data.temperature)) {
+          homeyDevice.updateTemperature(signal.data.temperature);
+        }          
     }
   }
 

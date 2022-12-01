@@ -175,5 +175,8 @@
   },
   "1.0.7": {
     "en": "Refactoring code to improve performance and future proofing"
+  },
+  "1.0.8": {
+    "en": "Reverting back curtain driver after previous bugfix"
   }
 }

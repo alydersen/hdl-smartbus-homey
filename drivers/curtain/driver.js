@@ -53,49 +53,59 @@ class CurtainDriver extends Homey.Driver {
     };
   }
 
+  getDeviceFromSignal(signal, channel) {
+    let hdl_subnet = this.homey.settings.get("hdl_subnet");
+
+    let deviceSignature = {
+      id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel || channel}`,
+      address: `${hdl_subnet}.${signal.sender.id}`,
+      channel: signal.data.channel || channel
+    };
+
+    return this.getDevice(deviceSignature);    
+  }
+
   async updateValues(signal) {
-    if (signal.parse)
-      signal.data = signal.parse(signal.payload);
-
-    // Parse and check the incoming signal, return if missing or invalid
-    if (signal.data == undefined) return;
-
-    if (signal.code == 0xE3E4) {
-      // This signal contains all channels, we need to process it for every device
-      signal.data.curtains.forEach((crtn, index) => {
-        // Get the device from Homey, return if not found or error
-        let signature = this.homey.app.devSignChnld(signal.sender.id, crtn.number)
-        let homeyDevice = this.getDevice(signature);
-        if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
-
-        // Update status only to idle (when autostop is used)
-        if (signal.data.curtains[index].status == 0) {
-          homeyDevice.updateStatus(signal.data.curtains[index].status);
-        }
-      });
-
-    } else {
-      // Get the device from Homey, return if not found or error
-      let signature = this.homey.app.devSignChnld(signal.sender.id, signal.data.curtain)
-      let homeyDevice = this.getDevice(signature);
-      if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
+      if (signal.parse)
+        signal.data = signal.parse(signal.payload);
         
-      switch (signal.code) {
-        case 0xE3E1:
-          device.updateStatus(signal.data.status);
-          break;
+      if (signal.data) {
+        if (signal.code == 0xE3E4) {
+          // This signal contains all channels, we need to process it for every device
+          signal.data.curtains.forEach((crtn, index) => {
+            let device = this.getDeviceFromSignal(signal, crtn.number);
+            if (typeof device !== 'undefined') {
+              if (device instanceof Error) return;
 
-        case 0xE3E3:
-          device.updateStatus(signal.data.status);
-          if (signal.data.duration != null) // in some cases duration is not in response
-            device.updateDuration(signal.data.duration);
-          break;
+              // Update status only to idle (when autostop is used)
+              if (signal.data.curtains[index].status == 0)
+                device.updateStatus(signal.data.curtains[index].status);
+            }
+          });
 
-        case 0xE801:
-          device.updateDuration(signal.data.duration);
-          break;
+        } else {
+          let device = this.getDeviceFromSignal(signal, signal.data.curtain);
+          if (typeof device !== 'undefined') {
+            if (device instanceof Error) return;
+            
+            switch (signal.code) {
+              case 0xE3E1:
+                device.updateStatus(signal.data.status);
+                break;
+
+              case 0xE3E3:
+                device.updateStatus(signal.data.status);
+                if (signal.data.duration != null) // in some cases duration is not in response
+                  device.updateDuration(signal.data.duration);
+                break;
+
+              case 0xE801:
+                device.updateDuration(signal.data.duration);
+                break;
+            }
+          }
+        }
       }
-    }
   }
 
   async onPairListDevices() {

@@ -8,45 +8,33 @@ class RelayDriver extends Homey.Driver {
     this.homey.app.log("HDL RelayDriver has been initiated");
   }
 
-  getDeviceFromSignal(signal, channel) {
-    let hdl_subnet = this.homey.settings.get("hdl_subnet");
-
-    let deviceSignature = {
-      id: `${hdl_subnet}.${signal.sender.id}.${signal.data.channel || channel}`,
-      address: `${hdl_subnet}.${signal.sender.id}`,
-      channel: signal.data.channel || channel
-    };
+  getDeviceFromSignal(id, channel) {
     try {
-      var homeyDevice = this.getDevice(deviceSignature);
+      var homeyDevice = this.getDevice(this.homey.app.devSignChnld(id, channel));
     } catch (error) {
       var homeyDevice = undefined;
     }
     return homeyDevice;
   }
 
+  async updateDevice(id, channel, level) {
+    if (level == undefined || channel == undefined) return;
+    let homeyDevice = this.getDeviceFromSignal(id, channel);
+    if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
+    homeyDevice.updateHomeyLevel(level);
+  }
+
   async updateValues(signal) {
-    // Parse and check the incoming signal, return if missing or invalid
-    if (signal.data == undefined) return;
-    if (signal.data.level == undefined) return;
-    if (signal.sender.id == undefined) return;
-
+    // One channel received
     if (signal.data.channel != undefined && signal.data.level != undefined) {
-      // This signal contains one channel, so we can process only that channel
-      let homeyDevice = this.getDeviceFromSignal(signal, signal.data.channel);
-      if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
-
-      // Update the device with the new values and add the capability if missing
-      homeyDevice.updateHomeyLevel(signal.data.level);
+      this.updateDevice(signal.sender.id, signal.data.channel, signal.data.level);
     }
 
+    // Multiple channels received
     if (signal.data.channels != undefined) {
-      signal.data.channels.forEach(function(chnl) {
+      signal.data.channels.forEach((chnl) => {
         if (chnl.level == undefined || chnl.number == undefined) return;
-        let homeyDevice = this.getDeviceFromSignal(signal, chnl.number);
-        if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
-  
-        // Update the device with the new values and add the capability if missing
-        homeyDevice.updateHomeyLevel(chnl.level);
+        this.updateDevice(signal.sender.id, chnl.number, chnl.level);
       });
     }
   }

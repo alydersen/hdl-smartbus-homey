@@ -172,5 +172,8 @@
   },
   "1.0.6": {
     "en": "Adding support for MSP02.4C motion and lux-sensors"
+  },
+  "1.0.7": {
+    "en": "Refactoring code to improve performance and future proofing"
   }
 }

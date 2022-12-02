@@ -19,7 +19,8 @@ class HDLSmartBus extends Homey.App {
       "multisensor",
       "universal-switch",
       "floorheater",
-      "curtain"
+      "curtain",
+      "panel",
     ];
     this._hdlFoundUnits = {}
     for (let i = 0; i < this._driverlist.length; i++) {

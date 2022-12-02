@@ -18,8 +18,6 @@ class PanelDriver extends Driver {
       if (signal.sender.id == undefined) return;
       if (!this.homey.app.valueOK("temperature", signal.data.temperature)) return;
 
-      this.log(signal.data);
-  
       // Get the device from Homey, return if not found or error
       let hdl_subnet = this.homey.settings.get("hdl_subnet");
       let homeyDevice = this.getDevice({id: `${hdl_subnet}.${signal.sender.id}`});

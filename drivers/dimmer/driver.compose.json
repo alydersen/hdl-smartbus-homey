@@ -7,6 +7,10 @@
     "dim",
     "onoff"
   ],
+  "capabilitiesOptions": {
+    "dim": { "duration": true },
+    "onoff": { "setOnDim": false } 
+  },
   "icon": "/drivers/dimmer/assets/icon.svg",
   "images": {
     "large": "/drivers/dimmer/assets/images/large.png",

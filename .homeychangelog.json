@@ -181,5 +181,8 @@
   },
   "1.0.9": {
     "en": "Adding DLP Panels as temperature sensors"
+  },
+  "1.1.0": {
+    "en": "Dimming durations on flows (gradually turning on dimmers over x seconds)"
   }
 }

@@ -9,7 +9,7 @@ Temperature sensors are a built-in capability in Homey, and as such have very go
 First of all, temperature sensors are one-way only, meanings readings come from the HDL side and are set in Homey. You can not send anything back to the sensor. The sensors are sending out updates with semi-regular intervals, and usually when changes in temperature occurs. I would generally not recommend trusting readings to be very fast, if you need logic that responds quickly to changes in temperature.
 
 ## Noisy sensors
-Temperature sensors that are mot properly set up can be very noisy on teh bus, meaning that they will sned out a lot of updates. If you have a four-channel sensor with some channels not being connected to a physical temperature probe, remember to disable the channel in your HDL configuration. This also makes sense because the readings will be way off if there is nothing connected.
+Temperature sensors that are mot properly set up can be very noisy on the bus, meaning that they will send out a lot of updates. If you have a four-channel sensor with some channels not being connected to a physical temperature probe, remember to disable the channel in your HDL configuration. This also makes sense because the readings will be way off if there is nothing connected.
 
 ## Temperature scope
 The app will disregard any readings that are below -40 or above 70 degrees celsius.

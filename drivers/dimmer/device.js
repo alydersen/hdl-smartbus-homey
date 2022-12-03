@@ -1,6 +1,7 @@
 'use strict';
 
 const Homey = require("homey");
+const DEFAULT_DIM_DURATION = 0
 
 class DimmerDevice extends Homey.Device {
 
@@ -13,7 +14,14 @@ class DimmerDevice extends Homey.Device {
  
     // register a capability listener
     this.registerCapabilityListener("onoff", this.onCapabilityOnoff.bind(this));
-    this.registerCapabilityListener("dim", this.onCapabilityDim.bind(this));
+    this.registerCapabilityListener("dim", async (value, options) => {
+      await this.onCapabilityDim({
+        level: value,
+        duration: typeof options.duration === "number"
+          ? options.duration
+          : DEFAULT_DIM_DURATION,
+      });
+    });
 
     // Ask for channel status
     if (this.homey.app.isBusConnected()) { this.requestUpdate() }
@@ -37,13 +45,13 @@ class DimmerDevice extends Homey.Device {
   }
 
   async updateDeviceByBus(level) {
-    this._controller().send(
+    this.homey.app.controller().send(
       {
         target: this.getData().address,
         command: 0x0031,
         data: {
           channel: this.getData().channel,
-          level: level
+          level: level * 100
         }
       },
       function(err) {
@@ -54,16 +62,24 @@ class DimmerDevice extends Homey.Device {
     );
   }
 
-  async onCapabilityOnoff(value, opts) {
-    let level = value === true ? 100 : 0;
-    let dimlevel = value === true ? 1 : 0;
+  async onCapabilityOnoff(value) {
+    let level = value === true ? 1 : 0;
     this.updateDeviceByBus(level);
-    this.setCapabilityValue("dim", dimlevel).catch(this.error);
+    this.setCapabilityValue("dim", level).catch(this.error);
   }
 
-  async onCapabilityDim(value, opts) {
-    this.updateDeviceByBus(value * 100);
-    this.setCapabilityValue("onoff", value > 0).catch(this.error);
+  async onCapabilityDim(opts) {
+    var dev = this;
+    await this.setCapabilityValue("onoff", opts.level > 0).catch(this.error);
+    if (opts.duration === 0) {      
+      dev.updateDeviceByBus(opts.level);
+    } else {
+      var current_level = await this.getCapabilityValue("dim");
+      var step = (opts.level - current_level) / 10;
+      [ ...Array(10) ].forEach(async (e, i) => {
+        setTimeout(function () {dev.updateDeviceByBus(current_level + (step * (i+1)))}, (opts.duration / 10) * i);
+      });
+    }
   }
 }
 

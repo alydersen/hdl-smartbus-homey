@@ -30,3 +30,4 @@ Devices broadcasts their state on the bus and the Homey App reads them and updat
 - [Multisensors](DEVICES_MULTISENSORS.md)
 - [Curtain Controllers](DEVICES_CURTAINS.md)
 - [Floor Heater Controllers](DEVICES_FLOORHEATERS.md)
+- [DLP Panels](DEVICES_PANELS.md)

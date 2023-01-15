@@ -184,5 +184,8 @@
   },
   "1.1.0": {
     "en": "Dimming durations on flows (gradually turning on dimmers over x seconds)"
+  },
+  "1.1.1": {
+    "en": "Adding more curtain controllers by Martin Horák"
   }
 }

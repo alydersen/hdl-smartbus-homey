@@ -187,5 +187,8 @@
   },
   "1.1.1": {
     "en": "Adding more curtain controllers by Martin Horák"
+  },
+  "1.1.2": {
+    "en": "New device file and added several dimmers"
   }
 }

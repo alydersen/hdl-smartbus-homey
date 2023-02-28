@@ -51,9 +51,12 @@ class DimmerDriver extends Homey.Driver {
       for (const device of Object.values(this.homey.app.getDevicesOfType("dimmer"))) {
         let devicelist = new HdlDevicelist()
         var channel;
+        var channels = await devicelist.numberOfChannels(device.type.toString());
+        var zone;
+        var zones = await devicelist.numberOfZones(device.type.toString());
         for (
           channel = 1;
-          channel < await devicelist.numberOfChannels(device.type.toString()) + 1;
+          channel < channels + 1;
           channel++
         ) {
           devices.push({
@@ -64,6 +67,22 @@ class DimmerDriver extends Homey.Driver {
               channel: channel
             }
           });
+        }
+        if (zones > 0) {
+          for (
+            zone = 1;
+            zone < zones + 1;
+            zone++
+          ) {
+            devices.push({
+              name: `HDL Dimmer (${hdl_subnet}.${device.id} zone ${zone})`,
+              data: {
+                id: `${hdl_subnet}.${device.id}.${zone + channels}`,
+                address: `${hdl_subnet}.${device.id}`,
+                channel: zone + channels
+              }
+            });
+          }
         }
       }
       return devices.sort(DimmerDriver._compareHomeyDevice);

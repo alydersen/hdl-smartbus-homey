@@ -34,7 +34,7 @@ class HdlTypelist {
 
     async excludeCapabilities(id) {
         if (this.list[id] == undefined) return null;
-        if (this.list[id].exclude == undefined) return null;
+        if (this.list[id].exclude == undefined) return [];
 
         return this.list[id].exclude;
     }

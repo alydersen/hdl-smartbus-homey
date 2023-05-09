@@ -190,5 +190,8 @@
   },
   "1.1.2": {
     "en": "New device file and added several dimmers"
+  },
+  "1.2.0": {
+    "en": "More temperature sensors, Zone support for DALI and the granite touch panel"
   }
 }

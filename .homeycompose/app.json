@@ -1,6 +1,6 @@
 {
   "id": "com.github.alydersen.hdl-smartbus-homey",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
@@ -49,13 +49,6 @@
   "homepage": "https://alydersen.github.io/hdl-smartbus-homey/",
   "bugs": {
     "url": "https://github.com/alydersen/hdl-smartbus-homey/issues"
-  },
-  "contributing": {
-    "donate": {
-      "paypal": {
-        "username": "alydersen"
-      }
-    }
   },
   "source": "https://github.com/alydersen/hdl-smartbus-homey"
 }

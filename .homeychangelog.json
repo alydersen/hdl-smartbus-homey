@@ -196,5 +196,8 @@
   },
   "1.2.1": {
     "en": "More relays added"
+  },
+  "1.2.2": {
+    "en": "Added a panel and some relays, and removed donate function"
   }
 }

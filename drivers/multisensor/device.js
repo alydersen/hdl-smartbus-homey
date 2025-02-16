@@ -14,7 +14,7 @@ class MultisensorDevice extends Homey.Device {
       if (this.homey.app.isBusConnected()) {
         this._controller().send(
           { target: this.getData().id, command: commands[i] },
-          function(err) {
+          (err) => {
             if (err) {
               this.homey.app.log(err);
             }

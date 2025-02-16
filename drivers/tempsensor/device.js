@@ -20,7 +20,7 @@ class TempsensorDevice extends Homey.Device {
               channel: this.getData().channel
             }
           },
-          function(err) {
+          (err) => {
             if (err) {
               this.homey.app.log(err);
             }

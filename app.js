@@ -11,6 +11,7 @@ class HDLSmartBus extends Homey.App {
     this._bus = null;
     this._controller = null;
     this._hdlDevicelist = new HdlDevicelist();
+    this._driversInitialized = false;
     // All new devicetypes must be added here
     this._driverlist = [
       "dimmer",
@@ -30,6 +31,12 @@ class HDLSmartBus extends Homey.App {
     this.log("Homey HDL SmartBus app has been initialized...");
 
     try {
+      // Wait for all drivers to initialize
+      await Promise.all(this._driverlist.map(async (driverId) => {
+        await this.homey.drivers.getDriver(driverId).ready();
+      }));
+      this._driversInitialized = true;
+      
       await this.connect();
     } catch (err) {
       this.log(err.message);
@@ -182,12 +189,12 @@ class HDLSmartBus extends Homey.App {
 
   async _updateDevice(hdlSenderType, signal) {
     if (signal.code == 0xF) return; // Ignore discovery signals
+    if (!this._driversInitialized) return; // Don't process signals until drivers are ready
 
     const unknownDeviceMessages = ["invalid_device", "device is not defined", "Could not get device by device data"]
     await this.homey.drivers.getDriver(hdlSenderType).updateValues(signal).catch((error) => {
-      if (! (unknownDeviceMessages.includes(error.message))) {
+      if (!(unknownDeviceMessages.includes(error.message))) {
         this.log(`Error for ${hdlSenderType} ${signal.sender.id}: ${error.message}`);
-        
       }
     });
   }

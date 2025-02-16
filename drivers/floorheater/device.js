@@ -51,7 +51,7 @@ class FloorheaterDevice extends Homey.Device {
       data: {
         channel: this.getData().channel
       }
-      }, function(err) {
+      }, (err) => {
         if (err) {
         this.homey.app.log(err);
         }
@@ -64,7 +64,7 @@ class FloorheaterDevice extends Homey.Device {
       data: {
         channel: this.getData().channel
       }
-    }, function(err) {
+    }, (err) => {
       if (err) {
         this.homey.app.log(err);
       }
@@ -89,7 +89,7 @@ class FloorheaterDevice extends Homey.Device {
       command: 0x1C5C,
       data: this.currentData
     },
-    function(err) {
+    (err) => {
       if (err) {
         this.homey.app.log(err);
       }
@@ -110,7 +110,7 @@ class FloorheaterDevice extends Homey.Device {
       command: 0x1C5C,
       data: this.currentData
     },
-    function(err) {
+    (err) => {
       if (err) {
         this.homey.app.log(err);
       }

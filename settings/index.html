@@ -187,23 +187,23 @@
             );
           }
 
-          Homey.set("hdl_ip_address", ipElement.value, function(err) {
+          Homey.set("hdl_ip_address", ipElement.value, (err) => {
             if (err) return Homey.alert(err);
           });
 
-          Homey.set("hdl_subnet", subnetElement.value, function(err) {
+          Homey.set("hdl_subnet", subnetElement.value, (err) => {
             if (err) return Homey.alert(err);
           });
 
-          Homey.set("hdl_id", idElement.value, function(err) {
+          Homey.set("hdl_id", idElement.value, (err) => {
             if (err) return Homey.alert(err);
           });
 
-          Homey.set("hdl_universal_motion", motionElement.value, function(err) {
+          Homey.set("hdl_universal_motion", motionElement.value, (err) => {
             if (err) return Homey.alert(err);
           });
 
-          Homey.set("hdl_logic_controller", logicElement.value, function(err) {
+          Homey.set("hdl_logic_controller", logicElement.value, (err) => {
             if (err) return Homey.alert(err);
           });
 

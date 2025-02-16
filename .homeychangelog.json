@@ -199,5 +199,8 @@
   },
   "1.2.2": {
     "en": "Added a panel and some relays, and removed donate function"
+  },
+  "1.2.3": {
+    "en": "Adding temperature sensors to the HDL-MSP02.4C device"
   }
 }

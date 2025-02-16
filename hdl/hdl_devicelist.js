@@ -101,7 +101,7 @@ class HdlTypelist {
             "318": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
             "321": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
             "322": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
-            "323": { type: "multisensor", main_capability: "alarm_motion", exclude: ["measure_humidity", "measure_temperature"]},
+            "323": { type: "multisensor", main_capability: "alarm_motion", exclude: ["measure_humidity"]},
             "327": { type: "multisensor", main_capability: "alarm_motion", exclude: ["measure_humidity", "measure_temperature"]},
             "328": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
             "329": { type: "multisensor", main_capability: "alarm_motion", exclude: []},

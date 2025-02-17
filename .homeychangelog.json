@@ -202,5 +202,11 @@
   },
   "1.2.3": {
     "en": "Adding temperature sensors to the HDL-MSP02.4C device"
+  },
+  "1.2.4": {
+    "en": "Better error handling"
+  },
+  "1.2.5": {
+    "en": "Rollback to 1.2.3"
   }
 }

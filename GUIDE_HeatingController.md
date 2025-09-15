@@ -42,7 +42,6 @@ When you bring in Homey Pro, things change:
 
 📌 Changes made on the DLP automatically show up in Homey, and changes made in Homey show up on the DLP.
 
-## 
 
 ## Configuration
 
@@ -74,8 +73,6 @@ When you bring in Homey Pro, things change:
 
    * If you use other HDL-sensors, you’ll need to configure those later in the heating controller.  
    
-
-
 5. Set the **Mode** to *Normal*. Disable Day, Night, Away, and Timer.
 
 6. Leave things like **PID, Always-On, Sync** alone unless you actually want to change them. If PID is already enabled, it’s probably for a good reason. Disabling it can cause issues. 
@@ -89,7 +86,7 @@ Figure 1: Typical Floor Heating tab. Inner sensor enabled to report the temperat
 
 Figure 2: When clicking the “Master” button as seen in figure 1, this menu appears. Subnet and Device ID is self-explanatory. Channel is the heating channel.   
 ![alt text](assets/images/HeatingGuideImage2.png)
----
+
 
 ### Step 3 – Configure the Heating Controller
 
@@ -141,8 +138,6 @@ Once configuration is done:
 
 * **Unstable or conflicting behavior** → Make sure the old Logic Controller heating logic is disabled.
 
-## 
-
 ## Homey Automation Considerations
 
 * **Consider DLP user input:** When creating automations in Homey, consider what should happen if a user changes a temperature manually on the DLP, should the automation be postponed for an hour, 12 hours, disabled etc. Think through this carefully.
@@ -154,4 +149,3 @@ Once configuration is done:
 * **Automatic HDL Programs such as flushing, are overridden by Homey:**If you use flushing, this might be overridden by temperature-adjustments or flows running from Homey. Homey can't trigger flushing directly, but can simulate similar procedures using carefully planned flows. This might be tricky during the summer, when indoor temperatures can exceed established temperature thresholds. If you require flushing in your heating-system, disabling flows automatically when flushing occurs solved it for me. 
 
 * **Leveraging flows together with sensors (ie. motion) can be a great source for saving energy:** We automatically reduce our indoor temperature when no motion has been detected in our house for 24 hours. This is especially useful if household members have increased the temperatures without regard for policy or common sense (*https://www.youtube.com/watch?v=C05qUz1ukWo)*. Using sensors, schedules or simple UV-switches leveraged by Homey to get the “most comfort for your buck” is both interesting and fun to experiment with. 
-

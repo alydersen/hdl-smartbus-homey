@@ -1,7 +1,5 @@
 # HDL Heating Controller and Homey Pro
 
----
-
 ## Introduction
 
 This guide explains how to connect and configure **HDL Heating Controllers** with **Homey Pro**.
@@ -17,8 +15,6 @@ HDL equipment comes in many flavours, with different firmware and setups, so you
 * Back up everything using **HDL Setup Tool v2**, including heating controllers, DLP panels, logic controllers — basically all devices you’re about to change.
 
 💡 **Tip**: Don’t do this for the first time in the middle of winter. If something breaks, you don’t want to be without heating.
-
-## 
 
 ## How the System Works
 

@@ -3,7 +3,7 @@
 const Homey = require("homey");
 const HdlDevicelist = require("./../../hdl/hdl_devicelist");
 
-const consoleLogging = true;
+const consoleLogging = false;
 
 class DryContactDriver extends Homey.Driver {
   async onInit() {

@@ -11,13 +11,16 @@ class DryContactDriver extends Homey.Driver {
     this._doubleMaxInterval = 800;
     this._tripleMaxInterval = 1500;
     this._duplicateSuppressionMs = 150;
+    this._singleTriggerAll = this.homey.flow.getDeviceTriggerCard('dry_contact_single');
     this._doubleTriggerAll = this.homey.flow.getDeviceTriggerCard('dry_contact_double');
     this._tripleTriggerAll = this.homey.flow.getDeviceTriggerCard('dry_contact_triple');
+    this._singleTriggers = new Map();
     this._doubleTriggers = new Map();
     this._tripleTriggers = new Map();
     this._clickSequences = new Map();
 
     for (let i = 1; i <= 8; i++) {
+      this._singleTriggers.set(i, this.homey.flow.getDeviceTriggerCard(`dry_contact_${i}_single`));
       this._doubleTriggers.set(i, this.homey.flow.getDeviceTriggerCard(`dry_contact_${i}_double`));
       this._tripleTriggers.set(i, this.homey.flow.getDeviceTriggerCard(`dry_contact_${i}_triple`));
     }
@@ -141,11 +144,13 @@ class DryContactDriver extends Homey.Driver {
   }
 
   async _handleClickSequence(homeyDevice, channelIndex, newValue) {
+    const channelSingleCard = this._singleTriggers?.get(channelIndex);
     const channelDoubleCard = this._doubleTriggers?.get(channelIndex);
     const channelTripleCard = this._tripleTriggers?.get(channelIndex);
+    const hasSingle = Boolean(channelSingleCard || this._singleTriggerAll);
     const hasDouble = Boolean(channelDoubleCard || this._doubleTriggerAll);
     const hasTriple = Boolean(channelTripleCard || this._tripleTriggerAll);
-    if (!hasDouble && !hasTriple) return;
+    if (!hasSingle && !hasDouble && !hasTriple) return;
 
     const deviceId = homeyDevice.getData().id;
     const deviceState = this._getOrCreateDeviceState(deviceId);
@@ -159,6 +164,9 @@ class DryContactDriver extends Homey.Driver {
     const sequenceExpired = state.count > 0 && (now - state.start) > this._tripleMaxInterval;
     if (state.count === 0 || sequenceExpired) {
       this._initializeSequence(state, now, newValue);
+      if (hasSingle) {
+        this._armSingleTimer(homeyDevice, deviceId, channelIndex, state);
+      }
       this._scheduleCleanup(deviceId, channelIndex, state);
       return;
     }
@@ -167,6 +175,9 @@ class DryContactDriver extends Homey.Driver {
     const sinceLast = previousEdge !== undefined ? now - previousEdge : null;
     if (sinceLast !== null && sinceLast > this._tripleMaxInterval) {
       this._initializeSequence(state, now, newValue);
+      if (hasSingle) {
+        this._armSingleTimer(homeyDevice, deviceId, channelIndex, state);
+      }
       this._scheduleCleanup(deviceId, channelIndex, state);
       return;
     }
@@ -177,6 +188,11 @@ class DryContactDriver extends Homey.Driver {
     state.count += 1;
 
     if (state.count === 2) {
+      if (hasSingle) {
+        this._clearTimer(state, "singleTimer");
+        state.pendingSingle = false;
+      }
+
       if (sinceLast !== null && sinceLast <= this._doubleMaxInterval && (now - state.start) <= this._doubleMaxInterval) {
         if (!hasTriple) {
           await this._triggerDouble(homeyDevice, channelIndex);
@@ -199,6 +215,9 @@ class DryContactDriver extends Homey.Driver {
       }
 
       this._initializeSequence(state, now, newValue);
+      if (hasSingle) {
+        this._armSingleTimer(homeyDevice, deviceId, channelIndex, state);
+      }
       this._scheduleCleanup(deviceId, channelIndex, state);
       return;
     }
@@ -213,12 +232,38 @@ class DryContactDriver extends Homey.Driver {
       }
 
       this._initializeSequence(state, now, newValue);
+      if (hasSingle) {
+        this._armSingleTimer(homeyDevice, deviceId, channelIndex, state);
+      }
       this._scheduleCleanup(deviceId, channelIndex, state);
       return;
     }
 
     this._initializeSequence(state, now, newValue);
+    if (hasSingle) {
+      this._armSingleTimer(homeyDevice, deviceId, channelIndex, state);
+    }
     this._scheduleCleanup(deviceId, channelIndex, state);
+  }
+
+  async _finalizeSingle(homeyDevice, deviceId, channelIndex, sequenceId) {
+    const deviceState = this._clickSequences.get(deviceId);
+    if (!deviceState) return;
+
+    const state = deviceState.get(channelIndex);
+    if (!state) return;
+
+    this._clearTimer(state, "singleTimer");
+
+    if (!state.pendingSingle || state.sequenceId !== sequenceId) {
+      return;
+    }
+
+    state.pendingSingle = false;
+    state.pendingDouble = null;
+
+    await this._triggerSingle(homeyDevice, channelIndex);
+    this._resetSequenceState(deviceId, channelIndex);
   }
 
   async _finalizeDouble(homeyDevice, deviceId, channelIndex, sequenceId) {
@@ -232,6 +277,7 @@ class DryContactDriver extends Homey.Driver {
 
     if (!state.pendingDouble || state.sequenceId !== sequenceId) {
       state.pendingDouble = null;
+      state.pendingSingle = false;
       if (!state.count || state.count === 0) {
         this._resetSequenceState(deviceId, channelIndex);
       } else {
@@ -242,6 +288,7 @@ class DryContactDriver extends Homey.Driver {
     }
 
     state.pendingDouble = null;
+    state.pendingSingle = false;
 
     await this._triggerDouble(homeyDevice, channelIndex);
     this._resetSequenceState(deviceId, channelIndex);
@@ -249,14 +296,28 @@ class DryContactDriver extends Homey.Driver {
 
   _initializeSequence(state, timestamp, newValue) {
     this._clearTimer(state, "doubleTimer");
+    this._clearTimer(state, "singleTimer");
     this._clearTimer(state, "cleanupTimer");
     state.count = 1;
     state.start = timestamp;
     state.lastEdge = timestamp;
     state.prevEdge = undefined;
+    state.pendingSingle = false;
     state.pendingDouble = null;
     state.sequenceId = (state.sequenceId || 0) + 1;
     state.lastValue = newValue;
+  }
+
+  _armSingleTimer(homeyDevice, deviceId, channelIndex, state) {
+    state.pendingSingle = true;
+    this._clearTimer(state, "singleTimer");
+    const sequenceId = state.sequenceId;
+    state.singleTimer = setTimeout(() => {
+      this._finalizeSingle(homeyDevice, deviceId, channelIndex, sequenceId).catch(this.error);
+    }, this._doubleMaxInterval);
+    if (state.singleTimer && typeof state.singleTimer.unref === "function") {
+      state.singleTimer.unref();
+    }
   }
 
   _scheduleCleanup(deviceId, channelIndex, state) {
@@ -274,7 +335,10 @@ class DryContactDriver extends Homey.Driver {
     if (!state) return;
 
     this._clearTimer(state, "doubleTimer");
+    this._clearTimer(state, "singleTimer");
     this._clearTimer(state, "cleanupTimer");
+    state.pendingSingle = false;
+    state.pendingDouble = null;
 
     deviceState.delete(channelIndex);
     if (deviceState.size === 0) {
@@ -289,7 +353,10 @@ class DryContactDriver extends Homey.Driver {
     const state = deviceState.get(channelIndex);
     if (state) {
       this._clearTimer(state, "doubleTimer");
+      this._clearTimer(state, "singleTimer");
       this._clearTimer(state, "cleanupTimer");
+      state.pendingSingle = false;
+      state.pendingDouble = null;
     }
 
     deviceState.delete(channelIndex);
@@ -323,14 +390,39 @@ class DryContactDriver extends Homey.Driver {
         lastEdge: undefined,
         prevEdge: undefined,
         lastValue: undefined,
+        singleTimer: null,
         doubleTimer: null,
         cleanupTimer: null,
+        pendingSingle: false,
         pendingDouble: null,
         sequenceId: 0
       };
       deviceState.set(channelIndex, state);
     }
     return state;
+  }
+
+  async _triggerSingle(homeyDevice, channelIndex) {
+    const channelCard = this._singleTriggers?.get(channelIndex);
+    if (channelCard) {
+      try {
+        await channelCard.trigger(homeyDevice);
+      } catch (err) {
+        this.error(err);
+      }
+    }
+
+    if (this._singleTriggerAll) {
+      try {
+        await this._singleTriggerAll.trigger(
+          homeyDevice,
+          { channel: channelIndex },
+          { channel: channelIndex }
+        );
+      } catch (err) {
+        this.error(err);
+      }
+    }
   }
 
   async _triggerDouble(homeyDevice, channelIndex) {

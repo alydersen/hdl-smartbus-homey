@@ -81,6 +81,19 @@
         ]
       },
       {
+        "id": "dry_contact_1_single",
+        "title": {
+          "en": "Dry contact 1 single click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
         "id": "dry_contact_1_triple",
         "title": {
           "en": "Dry contact 1 triple click"
@@ -129,6 +142,19 @@
             "type": "device",
             "name": "device",
             "filter": "driver_id=multisensor|dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_2_single",
+        "title": {
+          "en": "Dry contact 2 single click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
           }
         ]
       },
@@ -185,6 +211,19 @@
         ]
       },
       {
+        "id": "dry_contact_3_single",
+        "title": {
+          "en": "Dry contact 3 single click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
         "id": "dry_contact_3_triple",
         "title": {
           "en": "Dry contact 3 triple click"
@@ -237,6 +276,19 @@
         ]
       },
       {
+        "id": "dry_contact_4_single",
+        "title": {
+          "en": "Dry contact 4 single click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
         "id": "dry_contact_4_triple",
         "title": {
           "en": "Dry contact 4 triple click"
@@ -279,6 +331,19 @@
         "id": "dry_contact_5_false",
         "title": {
           "en": "Dry contact 5 deactivated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_5_single",
+        "title": {
+          "en": "Dry contact 5 single click"
         },
         "args": [
           {
@@ -341,6 +406,19 @@
         ]
       },
       {
+        "id": "dry_contact_6_single",
+        "title": {
+          "en": "Dry contact 6 single click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
         "id": "dry_contact_6_triple",
         "title": {
           "en": "Dry contact 6 triple click"
@@ -383,6 +461,19 @@
         "id": "dry_contact_7_false",
         "title": {
           "en": "Dry contact 7 deactivated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_7_single",
+        "title": {
+          "en": "Dry contact 7 single click"
         },
         "args": [
           {
@@ -445,6 +536,19 @@
         ]
       },
       {
+        "id": "dry_contact_8_single",
+        "title": {
+          "en": "Dry contact 8 single click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
         "id": "dry_contact_8_triple",
         "title": {
           "en": "Dry contact 8 triple click"
@@ -474,6 +578,28 @@
         "id": "dry_contact_double",
         "title": {
           "en": "Dry contact double click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "channel",
+            "type": "number",
+            "title": {
+              "en": "Channel"
+            }
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_single",
+        "title": {
+          "en": "Dry contact single click"
         },
         "args": [
           {

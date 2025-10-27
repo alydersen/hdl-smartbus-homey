@@ -1,0 +1,11 @@
+{
+  "id": "dry_contact_6_true",
+  "title": { "en": "Dry contact 6 activated" },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dry-contact"
+    }
+  ]
+}

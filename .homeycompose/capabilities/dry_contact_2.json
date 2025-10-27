@@ -6,5 +6,6 @@
     "setable": false,
     "uiComponent": "sensor",
     "uiQuickAction": false,
-    "icon": "/drivers/multisensor/assets/drycontact.svg"
+    "icon": "/drivers/multisensor/assets/drycontact.svg",
+    "insights": true
   }

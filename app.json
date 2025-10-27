@@ -52,6 +52,470 @@
     "url": "https://github.com/alydersen/hdl-smartbus-homey/issues"
   },
   "source": "https://github.com/alydersen/hdl-smartbus-homey",
+  "flow": {
+    "triggers": [
+      {
+        "id": "dry_contact_1_double",
+        "title": {
+          "en": "Dry contact 1 double click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_1_false",
+        "title": {
+          "en": "Dry contact 1 deactivated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor|dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_1_triple",
+        "title": {
+          "en": "Dry contact 1 triple click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_1_true",
+        "title": {
+          "en": "Dry contact 1 activated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor|dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_2_double",
+        "title": {
+          "en": "Dry contact 2 double click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_2_false",
+        "title": {
+          "en": "Dry contact 2 deactivated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor|dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_2_triple",
+        "title": {
+          "en": "Dry contact 2 triple click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_2_true",
+        "title": {
+          "en": "Dry contact 2 activated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor|dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_3_double",
+        "title": {
+          "en": "Dry contact 3 double click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_3_false",
+        "title": {
+          "en": "Dry contact 3 deactivated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor|dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_3_triple",
+        "title": {
+          "en": "Dry contact 3 triple click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_3_true",
+        "title": {
+          "en": "Dry contact 3 activated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor|dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_4_double",
+        "title": {
+          "en": "Dry contact 4 double click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_4_false",
+        "title": {
+          "en": "Dry contact 4 deactivated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor|dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_4_triple",
+        "title": {
+          "en": "Dry contact 4 triple click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_4_true",
+        "title": {
+          "en": "Dry contact 4 activated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor|dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_5_double",
+        "title": {
+          "en": "Dry contact 5 double click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_5_false",
+        "title": {
+          "en": "Dry contact 5 deactivated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_5_triple",
+        "title": {
+          "en": "Dry contact 5 triple click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_5_true",
+        "title": {
+          "en": "Dry contact 5 activated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_6_double",
+        "title": {
+          "en": "Dry contact 6 double click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_6_false",
+        "title": {
+          "en": "Dry contact 6 deactivated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_6_triple",
+        "title": {
+          "en": "Dry contact 6 triple click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_6_true",
+        "title": {
+          "en": "Dry contact 6 activated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_7_double",
+        "title": {
+          "en": "Dry contact 7 double click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_7_false",
+        "title": {
+          "en": "Dry contact 7 deactivated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_7_triple",
+        "title": {
+          "en": "Dry contact 7 triple click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_7_true",
+        "title": {
+          "en": "Dry contact 7 activated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_8_double",
+        "title": {
+          "en": "Dry contact 8 double click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_8_false",
+        "title": {
+          "en": "Dry contact 8 deactivated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_8_triple",
+        "title": {
+          "en": "Dry contact 8 triple click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_8_true",
+        "title": {
+          "en": "Dry contact 8 activated"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_double",
+        "title": {
+          "en": "Dry contact double click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "channel",
+            "type": "number",
+            "title": {
+              "en": "Channel"
+            }
+          }
+        ]
+      },
+      {
+        "id": "dry_contact_triple",
+        "title": {
+          "en": "Dry contact triple click"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=dry-contact"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "channel",
+            "type": "number",
+            "title": {
+              "en": "Channel"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "drivers": [
     {
       "name": {
@@ -121,6 +585,42 @@
         }
       ],
       "id": "dimmer"
+    },
+    {
+      "name": {
+        "en": "Dry Contact"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "dry_contact_1",
+        "dry_contact_2",
+        "dry_contact_3",
+        "dry_contact_4",
+        "dry_contact_5",
+        "dry_contact_6",
+        "dry_contact_7",
+        "dry_contact_8",
+        "measure_temperature"
+      ],
+      "icon": "/drivers/dry-contact/assets/icon.svg",
+      "images": {
+        "large": "/drivers/dry-contact/assets/images/large.png",
+        "small": "/drivers/dry-contact/assets/images/small.png"
+      },
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "dry-contact"
     },
     {
       "name": {
@@ -305,62 +805,6 @@
       "id": "universal-switch"
     }
   ],
-  "flow": {
-    "triggers": [
-      {
-        "id": "dry_contact_1_true",
-        "title": {
-          "en": "Dry contact 1 activated"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=multisensor"
-          }
-        ]
-      },
-      {
-        "id": "dry_contact_1_false",
-        "title": {
-          "en": "Dry contact 1 deactivated"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=multisensor"
-          }
-        ]
-      },
-      {
-        "id": "dry_contact_2_true",
-        "title": {
-          "en": "Dry contact 2 activated"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=multisensor"
-          }
-        ]
-      },
-      {
-        "id": "dry_contact_2_false",
-        "title": {
-          "en": "Dry contact 2 deactivated"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=multisensor"
-          }
-        ]
-      }
-    ]
-  },
   "capabilities": {
     "dry_contact_1": {
       "type": "boolean",
@@ -371,7 +815,8 @@
       "setable": false,
       "uiComponent": "sensor",
       "uiQuickAction": false,
-      "icon": "/drivers/multisensor/assets/drycontact.svg"
+      "icon": "/drivers/multisensor/assets/drycontact.svg",
+      "insights": true
     },
     "dry_contact_2": {
       "type": "boolean",
@@ -382,7 +827,8 @@
       "setable": false,
       "uiComponent": "sensor",
       "uiQuickAction": false,
-      "icon": "/drivers/multisensor/assets/drycontact.svg"
+      "icon": "/drivers/multisensor/assets/drycontact.svg",
+      "insights": true
     },
     "dry_contact_3": {
       "type": "boolean",
@@ -393,7 +839,8 @@
       "setable": false,
       "uiComponent": "sensor",
       "uiQuickAction": false,
-      "icon": "/drivers/multisensor/assets/drycontact.svg"
+      "icon": "/drivers/multisensor/assets/drycontact.svg",
+      "insights": true
     },
     "dry_contact_4": {
       "type": "boolean",
@@ -404,7 +851,56 @@
       "setable": false,
       "uiComponent": "sensor",
       "uiQuickAction": false,
-      "icon": "/drivers/multisensor/assets/drycontact.svg"
+      "icon": "/drivers/multisensor/assets/drycontact.svg",
+      "insights": true
+    },
+    "dry_contact_5": {
+      "type": "boolean",
+      "title": {
+        "en": "Dry Contact 5"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": false,
+      "icon": "/drivers/multisensor/assets/drycontact.svg",
+      "insights": true
+    },
+    "dry_contact_6": {
+      "type": "boolean",
+      "title": {
+        "en": "Dry Contact 6"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": false,
+      "icon": "/drivers/multisensor/assets/drycontact.svg",
+      "insights": true
+    },
+    "dry_contact_7": {
+      "type": "boolean",
+      "title": {
+        "en": "Dry Contact 7"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": false,
+      "icon": "/drivers/multisensor/assets/drycontact.svg",
+      "insights": true
+    },
+    "dry_contact_8": {
+      "type": "boolean",
+      "title": {
+        "en": "Dry Contact 8"
+      },
+      "getable": true,
+      "setable": false,
+      "uiComponent": "sensor",
+      "uiQuickAction": false,
+      "icon": "/drivers/multisensor/assets/drycontact.svg",
+      "insights": true
     },
     "meter_valve": {
       "type": "string",

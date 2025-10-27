@@ -1,0 +1,18 @@
+{
+  "id": "dry_contact_double",
+  "title": { "en": "Dry contact double click" },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dry-contact"
+    }
+  ],
+  "tokens": [
+    {
+      "name": "channel",
+      "type": "number",
+      "title": { "en": "Channel" }
+    }
+  ]
+}

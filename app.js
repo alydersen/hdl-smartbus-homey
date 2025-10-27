@@ -5,7 +5,6 @@ const SmartBus = require("smart-bus");
 const HdlDevicelist = require("./hdl/hdl_devicelist");
 
 class HDLSmartBus extends Homey.App {
-
   async onInit() {
     this._busConnected = false;
     this._bus = null;
@@ -17,6 +16,7 @@ class HDLSmartBus extends Homey.App {
       "relay",
       "tempsensor",
       "multisensor",
+      "dry-contact",
       "universal-switch",
       "floorheater",
       "curtain",

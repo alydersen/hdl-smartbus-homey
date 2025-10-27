@@ -1,0 +1,35 @@
+{
+  "name": {
+    "en": "Dry Contact"
+  },
+  "class": "sensor",
+  "capabilities": [
+    "dry_contact_1",
+    "dry_contact_2",
+    "dry_contact_3",
+    "dry_contact_4",
+    "dry_contact_5",
+    "dry_contact_6",
+    "dry_contact_7",
+    "dry_contact_8",
+    "measure_temperature"
+  ],
+  "icon": "/drivers/dry-contact/assets/icon.svg",
+  "images": {
+    "large": "/drivers/dry-contact/assets/images/large.png",
+    "small": "/drivers/dry-contact/assets/images/small.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

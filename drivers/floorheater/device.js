@@ -28,47 +28,30 @@ class FloorheaterDevice extends Homey.Device {
   }
 
   updatePowerSwitch(pwr) {
-    this.setCapabilityValue("onoff", !!pwr).catch(function () {
-      //nothing
+    this.setCapabilityValue("onoff", !!pwr).catch(() => {
+      // nothing
     });
   }
 
   updateValve(valve) {
-    var x = valve ? "Open" : "Closed";
-    this.setCapabilityValue("meter_valve", x).catch(function () {
-      //nothing
+    const label = valve ? "Open" : "Closed";
+    const numeric = valve ? 1 : 0;
+    this.setCapabilityValue("meter_valve", label).catch(() => {
+      // nothing
     });
-    var i = valve ? 1 : 0;
-    this.setCapabilityValue("meter_valve_number", i).catch(function () {
-      //nothing
+    this.setCapabilityValue("meter_valve_number", numeric).catch(() => {
+      // nothing
     });
   }
 
   async requestUpdate() {
-    this._controller().send({
-      target: this.getData().address,
-      command: 0x1C5E,
-      data: {
-        channel: this.getData().channel
-      }
-      }, function(err) {
-        if (err) {
-        this.homey.app.log(err);
-        }
-      }
-    );
+    if (!this.homey.app.isBusConnected()) return;
 
-    this._controller().send({
-      target: this.getData().address,
-      command: 0xE3E7,
-      data: {
-        channel: this.getData().channel
-      }
-    }, function(err) {
-      if (err) {
-        this.homey.app.log(err);
-      }
-    });
+    const payload = { channel: this.getData().channel };
+    await Promise.all([
+      this._sendCommand(0x1C5E, payload),
+      this._sendCommand(0xE3E7, payload)
+    ]);
   }
 
   _controller() {
@@ -76,44 +59,49 @@ class FloorheaterDevice extends Homey.Device {
   }
 
   async onTemperatureChange(value, opts) {
-    if (this.currentData == null){
+    if (this.currentData == null) {
       return; // No template data to send
     }
 
+    this.currentData.temperature = this.currentData.temperature || {};
     this.currentData.watering = this.currentData.watering || {};
     this.currentData.work = this.currentData.work || {};
     this.currentData.temperature.normal = value;
 
-    this._controller().send({
-      target: this.getData().address,
-      command: 0x1C5C,
-      data: this.currentData
-    },
-    function(err) {
-      if (err) {
-        this.homey.app.log(err);
-      }
-    });
+    await this._sendCommand(0x1C5C, this.currentData);
   }
 
   async onPowerSwitchChange(value, opts) {
-    if (this.currentData == null){
+    if (this.currentData == null) {
       return; // No template data to send
     }
 
+    this.currentData.temperature = this.currentData.temperature || {};
     this.currentData.watering = this.currentData.watering || {};
     this.currentData.work = this.currentData.work || {};
     this.currentData.work.status = value;
 
-    this._controller().send({
-      target: this.getData().address,
-      command: 0x1C5C,
-      data: this.currentData
-    },
-    function(err) {
-      if (err) {
-        this.homey.app.log(err);
-      }
+    await this._sendCommand(0x1C5C, this.currentData);
+  }
+
+  async _sendCommand(command, data) {
+    const controller = this._controller();
+    if (!controller) return;
+
+    await new Promise((resolve) => {
+      controller.send(
+        {
+          target: this.getData().address,
+          command,
+          data
+        },
+        (err) => {
+          if (err) {
+            this.homey.app.log(err);
+          }
+          resolve();
+        }
+      );
     });
   }
 }

@@ -3,7 +3,7 @@
 const Homey = require("homey");
 const HdlDevicelist = require("./../../hdl/hdl_devicelist");
 
-const consoleLogging = false;
+const consoleLogging = true;
 
 class DryContactDriver extends Homey.Driver {
   async onInit() {
@@ -109,7 +109,7 @@ class DryContactDriver extends Homey.Driver {
       if (await applyMaskUpdate(channelMask, level > 0, `${cmdHex}/mask`)) statusUpdated = true;
     }
 
-    if (!statusUpdated && data.dryContacts !== undefined) {
+    if (!statusUpdated && data.dryContacts !== undefined && commandCode !== 0xe3d9) {
       for (const dryContact in data.dryContacts) {
         const contactIndex = parseInt(dryContact, 10);
         if (Number.isNaN(contactIndex)) continue;
@@ -137,9 +137,26 @@ class DryContactDriver extends Homey.Driver {
     }
 
     if (!statusUpdated && commandCode === 0xe3d9 && payload && payload.length >= 3) {
-      const channelMask = payload.readUInt8(1);
-      const ackState = payload.readUInt8(2) > 0;
-      if (await applyMaskUpdate(channelMask, ackState, `${cmdHex}/ack`)) statusUpdated = true;
+      let handledAck = false;
+      const sentinelIndex = payload.lastIndexOf(0x11);
+      if (sentinelIndex >= 0 && (sentinelIndex + 2) < payload.length) {
+        const channelIndex = payload.readUInt8(sentinelIndex + 1);
+        const ackState = payload.readUInt8(sentinelIndex + 2) > 0;
+        const channelLimit = Math.max(maxChannels, 8);
+        if (channelIndex >= 1 && channelIndex <= channelLimit) {
+          await updateChannel(channelIndex, ackState, `${cmdHex}/ack/channel`);
+          statusUpdated = true;
+          handledAck = true;
+        } else if (consoleLogging) {
+          this.log(`DryContact ${cmdHex} unexpected channel ${channelIndex}`);
+          handledAck = true;
+        }
+      }
+      if (!handledAck) {
+        const channelMask = payload.readUInt8(1);
+        const ackState = payload.readUInt8(2) > 0;
+        if (await applyMaskUpdate(channelMask, ackState, `${cmdHex}/ack`)) statusUpdated = true;
+      }
     }
   }
 

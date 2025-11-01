@@ -1,0 +1,11 @@
+{
+  "id": "dry_contact_4_true",
+  "title": { "en": "Dry contact 4 activated" },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=multisensor|dry-contact"
+    }
+  ]
+}

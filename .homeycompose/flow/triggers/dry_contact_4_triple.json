@@ -1,0 +1,11 @@
+{
+  "id": "dry_contact_4_triple",
+  "title": { "en": "Dry contact 4 triple click" },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dry-contact"
+    }
+  ]
+}

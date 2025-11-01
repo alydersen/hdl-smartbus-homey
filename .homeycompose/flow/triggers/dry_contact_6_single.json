@@ -1,0 +1,11 @@
+{
+  "id": "dry_contact_6_single",
+  "title": { "en": "Dry contact 6 single click" },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dry-contact"
+    }
+  ]
+}

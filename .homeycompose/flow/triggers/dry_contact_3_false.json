@@ -1,0 +1,11 @@
+{
+  "id": "dry_contact_3_false",
+  "title": { "en": "Dry contact 3 deactivated" },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=multisensor|dry-contact"
+    }
+  ]
+}

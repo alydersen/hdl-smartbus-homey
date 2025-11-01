@@ -87,14 +87,20 @@ class MultisensorDriver extends Homey.Driver {
     // Set DryContacts
     if ( hasDryContact ) {
       for (const dryContact in signal.data.dryContacts) {
-        if ((parseInt(dryContact) + 1) <= 4) {
-          let registered_drycontact = `dry_contact_${parseInt(dryContact) + 1}`;
-          consoleLogging ? this.log(`Dry Contact input for ${signal.sender.id}/${registered_drycontact}: ${signal.data.dryContacts[dryContact].status}`) : null;
-          await this.checkCapabilityAdded(homeyDevice, registered_drycontact);
-          homeyDevice
-            .setCapabilityValue(registered_drycontact, signal.data.dryContacts[dryContact].status)
-            .catch(this.error);
-        }
+        const contactIndex = parseInt(dryContact);
+        if (Number.isNaN(contactIndex)) continue;
+
+        const capabilityIndex = contactIndex + 1;
+        if (capabilityIndex > 8) continue;
+
+        const registered_drycontact = `dry_contact_${capabilityIndex}`;
+        const contactStatus = Boolean(signal.data.dryContacts[dryContact].status);
+
+        consoleLogging ? this.log(`Dry Contact input for ${signal.sender.id}/${registered_drycontact}: ${contactStatus}`) : null;
+        await this.checkCapabilityAdded(homeyDevice, registered_drycontact);
+        homeyDevice
+          .setCapabilityValue(registered_drycontact, contactStatus)
+          .catch(this.error);
       }
     }
   }

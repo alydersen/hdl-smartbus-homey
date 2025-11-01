@@ -1,0 +1,11 @@
+{
+  "id": "dry_contact_8_false",
+  "title": { "en": "Dry contact 8 deactivated" },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dry-contact"
+    }
+  ]
+}

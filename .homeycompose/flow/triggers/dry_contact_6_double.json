@@ -1,0 +1,11 @@
+{
+  "id": "dry_contact_6_double",
+  "title": { "en": "Dry contact 6 double click" },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dry-contact"
+    }
+  ]
+}

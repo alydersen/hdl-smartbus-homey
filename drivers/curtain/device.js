@@ -250,7 +250,7 @@ class CurtainDevice extends Homey.Device {
       command: command,
       data: data
     },
-    function(err) {
+    (err) => {
       if (err) {
         this.homey.app.log(err);
       }

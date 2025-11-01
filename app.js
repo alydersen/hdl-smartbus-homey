@@ -59,15 +59,15 @@ class HDLSmartBus extends Homey.App {
       return;
 
     // Return if not proper ip, subnet or id
-    const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/g;
-    const subnetRegex = /^\d{1,3}$/g;
-    if (!hdl_ip_address.match(ipRegex)) return;
-    if (!hdl_subnet.match(subnetRegex)) return;
+    const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
+    const subnetRegex = /^\d{1,3}$/;
+    if (!ipRegex.test(hdl_ip_address)) return;
+    if (!subnetRegex.test(hdl_subnet)) return;
     let hdl_subnet_int = parseInt(hdl_subnet);
     if (hdl_subnet_int < 1) return;
     if (hdl_subnet_int > 254) return;
     if (hdl_id != undefined && hdl_id != "") {
-      if (!hdl_id.match(subnetRegex)) return;
+      if (!subnetRegex.test(hdl_id)) return;
       let hdl_id_int = parseInt(hdl_id);
       if (hdl_id_int < 1) return;
       if (hdl_id_int > 254) return;
@@ -94,7 +94,7 @@ class HDLSmartBus extends Homey.App {
         target: "255.255",
         command: 0x000e,
       },
-      function (err) {
+      (err) => {
         if (err) {
           this.homey.app.log(err);
         }
@@ -165,15 +165,15 @@ class HDLSmartBus extends Homey.App {
     if (typeof value === "undefined") return false;
     switch (type) {
       case "temperature":
-        if (! typeof value === "number") return false;
+        if (typeof value !== "number") return false;
         if (value < -40 || value > 80) return false;
         return true;
       case "humidity":
-        if (! typeof value === "number") return false;
+        if (typeof value !== "number") return false;
         if (value < 0 || value > 100) return false;
         return true;
       case "lux":
-        if (! typeof value === "number") return false;
+        if (typeof value !== "number") return false;
         if (value < 0 || value > 100000) return false;
         return true;
     }
@@ -217,7 +217,7 @@ class HDLSmartBus extends Homey.App {
 
     // Allow failing signal data only if the device is a curtain
     // (curtains are extending the signal data)
-    if (!foundType == "curtain" && dataFromSignal == undefined) return;
+    if (foundType != "curtain" && dataFromSignal == undefined) return;
     if (signal.sender.id == undefined) return;
 
     // Add the device to the list of found devices

@@ -103,7 +103,7 @@ class HdlTypelist {
             "322": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
             "323": { type: "multisensor", main_capability: "alarm_motion", exclude: ["measure_humidity"]},
             "327": { type: "multisensor", main_capability: "alarm_motion", exclude: ["measure_humidity", "measure_temperature"]},
-            "328": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
+            // removed duplicate 328 earlier to keep the later definition
             "329": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
             "330": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
             "334": { type: "multisensor", main_capability: "alarm_motion", exclude: ["measure_humidity", "measure_temperature"]},
@@ -195,9 +195,6 @@ class HdlTypelist {
             "488": { type: "relay", channels: 8 },
             "489": { type: "relay", channels: 12 },
             "495": { type: "relay", channels: 8 },
-            "498": { type: "relay", channels: 8 },
-            "498": { type: "relay", channels: 8 },
-            "498": { type: "relay", channels: 8 },
             "498": { type: "relay", channels: 8 },
             "501": { type: "relay", channels: 3 },
             "502": { type: "relay", channels: 4 },

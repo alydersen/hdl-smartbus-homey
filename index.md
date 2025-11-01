@@ -28,7 +28,8 @@ Devices broadcasts their state on the bus and the Homey App reads them and updat
 - [Temperature Sensors](DEVICES_TEMPSENSORS.md)
 - [Universal Switches](DEVICES_UVSWITCHES.md)
 - [Dry Contact Modules](DEVICES_DRYCONTACTS.md)
-- [Multisensors](DEVICES_MULTISENSORS.md)
+- [Multisensors](DEVICES_MULTISENSORS.md), [Read the guide](GUIDE_Multisensor.md)
 - [Curtain Controllers](DEVICES_CURTAINS.md)
-- [Floor Heater Controllers](DEVICES_FLOORHEATERS.md)
+- [Floor Heater Controllers](DEVICES_FLOORHEATERS.md), [Read the guide](GUIDE_HeatingController.md)
 - [DLP Panels](DEVICES_PANELS.md)
+

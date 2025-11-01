@@ -208,5 +208,8 @@
   },
   "1.2.5": {
     "en": "Rollback to 1.2.3"
+  },
+  "1.2.6": {
+    "en": "Adding dry-contact driver by Martin Horák, ready for Node.js 22, Updating docs with guides by [torbjoernm](https://github.com/torbjoernm)"
   }
 }

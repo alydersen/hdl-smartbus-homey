@@ -21,7 +21,7 @@ class CurtainDriver extends Homey.Driver {
       
       encode: function(data) {
         let duration = data.duration * 10;
-        return new Buffer([data.curtain, data.status, (duration >> 8) & 0xFF, duration & 0xFF]);
+        return Buffer.from([data.curtain, data.status, (duration >> 8) & 0xFF, duration & 0xFF]);
       }      
     };
 
@@ -34,7 +34,7 @@ class CurtainDriver extends Homey.Driver {
       },
 
       encode: function(data) {
-        return new Buffer([data.channel]);
+        return Buffer.from([data.channel]);
       }
     };
 
@@ -48,7 +48,7 @@ class CurtainDriver extends Homey.Driver {
       },
 
       encode: function(data) {
-        return new Buffer([data.channel]);
+        return Buffer.from([data.channel]);
       }
     };
   }

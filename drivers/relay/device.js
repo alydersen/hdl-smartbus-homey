@@ -25,7 +25,7 @@ class RelayDevice extends Homey.Device {
   async requestUpdate() {
     this._controller().send(
       { target: this.getData().address, command: 0x0033 },
-      function(err) {
+      (err) => {
         if (err) {
           this.homey.app.log(err);
         }
@@ -43,7 +43,7 @@ class RelayDevice extends Homey.Device {
           level: level
         }
       },
-      function(err) {
+      (err) => {
         if (err) {
           this.homey.app.log(err);
         }

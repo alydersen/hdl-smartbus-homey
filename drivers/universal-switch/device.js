@@ -21,7 +21,7 @@ class HdlUniversalSwitchDevice extends Homey.Device {
         command: 0xE01D,
         data: { switch: this.getData().switch, status: this.getCapabilityValue("onoff") }
       },
-      function(err) {
+      (err) => {
         if (err) {
           this.homey.app.log(err);
         }
@@ -36,7 +36,7 @@ class HdlUniversalSwitchDevice extends Homey.Device {
         command: 0xe018,
         data: { switch: this.getData().switch }
       },
-      function(err) {
+      (err) => {
         if (err) {
           this.homey.app.log(err);
         }
@@ -58,7 +58,7 @@ class HdlUniversalSwitchDevice extends Homey.Device {
           status: status
         }
       },
-      function(err) {
+      (err) => {
         if (err) {
           this.homey.app.log(err);
         }

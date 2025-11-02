@@ -39,9 +39,18 @@ class FloorHeaterDriver extends Homey.Driver {
         return;
 
       case 0xE3E8:
-        // read temperature
+      case 0x1949:
+        // read temperature (legacy 0xE3E8 and extended 0x1949)
         if (this.homey.app.valueOK("temperature", signal.data.temperature)) {
-          homeyDevice.updateTemperature(signal.data.temperature);
+          const rawPayload = (Buffer.isBuffer(signal.payload) && signal.payload.length)
+            ? signal.payload
+            : (Buffer.isBuffer(signal.raw) ? signal.raw : null);
+          const rawHex = rawPayload ? rawPayload.toString("hex") : "";
+          this.homey.app.log(
+            `[Floorheater] temp frame ${signal.sender.id}.${signal.data.channel} cmd=0x${signal.code.toString(16)} value=${signal.data.temperature}` +
+            (rawHex ? ` raw=${rawHex}` : "")
+          );
+          homeyDevice.updateTemperature(signal.data.temperature, { command: signal.code });
         }          
     }
   }

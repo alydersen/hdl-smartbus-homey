@@ -18,11 +18,21 @@ class FloorHeaterDriver extends Homey.Driver {
   }
 
   async updateValues(signal) {
-    // Parse and check the incoming signal, return if missing or invalid
-    if (signal.data.channel == undefined) return;
+    const bufferPayload = (signal.payload && Buffer.isBuffer(signal.payload))
+      ? signal.payload
+      : (signal.raw && Buffer.isBuffer(signal.raw) ? signal.raw : null);
+
+    let channel = signal.data && signal.data.channel;
+    if (typeof channel === "undefined") {
+      if (signal.code === 0x7263 && bufferPayload && bufferPayload.length > 0) {
+        channel = bufferPayload.readUInt8(0);
+      } else {
+        return;
+      }
+    }
 
     // Get the device from Homey, return if not found or error
-    let signature = this.homey.app.devSignChnld(signal.sender.id, signal.data.channel)
+    let signature = this.homey.app.devSignChnld(signal.sender.id, channel);
     let homeyDevice = this.getDevice(signature);
     if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
     
@@ -30,10 +40,23 @@ class FloorHeaterDriver extends Homey.Driver {
       case 0x1C5F:
       case 0x1C5D:
         // read floor heating status
-        if (this.homey.app.valueOK("temperature", signal.data.temperature.normal)) {
+        if (signal.data.temperature && this.homey.app.valueOK("temperature", signal.data.temperature.normal)) {
           homeyDevice.updateLevel(signal.data.temperature.normal);
         }
-        homeyDevice.updateValve(signal.data.watering && signal.data.watering.status);
+        const valueSource = bufferPayload;
+        const valveRaw =
+          Buffer.isBuffer(valueSource) && valueSource.length > 9
+            ? valueSource.readUInt8(signal.code === 0x1C5F ? 9 : 8)
+            : undefined;
+        const payloadHex = Buffer.isBuffer(valueSource) ? valueSource.toString("hex") : "";
+        const pumpActive = typeof signal.data.PWD !== "undefined" ? Boolean(signal.data.PWD) : undefined;
+        const wateringActive = signal.data.watering && typeof signal.data.watering.status !== "undefined"
+          ? Boolean(signal.data.watering.status)
+          : undefined;
+        const computedValve = typeof pumpActive !== "undefined"
+          ? pumpActive
+          : (typeof wateringActive !== "undefined" ? wateringActive : Boolean(signal.data.work && signal.data.work.status));
+        homeyDevice.updateValve(computedValve, { raw: valveRaw, payload: payloadHex });
         homeyDevice.updatePowerSwitch(signal.data.work && signal.data.work.status);
         homeyDevice.currentData = signal.data;
         return;
@@ -42,14 +65,6 @@ class FloorHeaterDriver extends Homey.Driver {
       case 0x1949:
         // read temperature (legacy 0xE3E8 and extended 0x1949)
         if (this.homey.app.valueOK("temperature", signal.data.temperature)) {
-          const rawPayload = (Buffer.isBuffer(signal.payload) && signal.payload.length)
-            ? signal.payload
-            : (Buffer.isBuffer(signal.raw) ? signal.raw : null);
-          const rawHex = rawPayload ? rawPayload.toString("hex") : "";
-          this.homey.app.log(
-            `[Floorheater] temp frame ${signal.sender.id}.${signal.data.channel} cmd=0x${signal.code.toString(16)} value=${signal.data.temperature}` +
-            (rawHex ? ` raw=${rawHex}` : "")
-          );
           homeyDevice.updateTemperature(signal.data.temperature, { command: signal.code });
         }          
     }

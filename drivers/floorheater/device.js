@@ -12,14 +12,14 @@ class FloorheaterDevice extends Homey.Device {
   _lastExtendedTimestamp = null;
 
   async onInit() {
-    this.homey.app.log(`Initated "${this.getName()}" (Floor Heater/${this.getClass()}) ${this.getData().id}`);
+    
     try {
       const storedFlag = await this.getStoreValue("supportsExtendedTemperature");
       if (typeof storedFlag === "boolean") {
         this._supportsExtendedTemperature = storedFlag;
       }
     } catch (err) {
-      this.homey.app.log(`Unable to load extended temperature support flag: ${err.message}`);
+      
     }
  
     // register a capability listener
@@ -46,26 +46,20 @@ class FloorheaterDevice extends Homey.Device {
         });
       }
       this._lastExtendedTimestamp = Date.now();
-      this.homey.app.log(
-        `[Floorheater:${this.getData().id}] received extended temperature ${temperature}`
-      );
+      // Keep track of last extended result to decide legacy fallback
     } else if (command === 0xE3E8 && this._supportsExtendedTemperature) {
-      this.homey.app.log(
-        `[Floorheater:${this.getData().id}] ignoring legacy temperature ${temperature}`
-      );
       return; // Ignore legacy reading once extended mode is available
     }
 
     const rounded = Math.round(temperature * 10) / 10;
-    this.homey.app.log(
-      `[Floorheater:${this.getData().id}] updating measure_temperature -> ${rounded} (command 0x${Number(command).toString(16)})`
-    );
     // invalid_capability 
     this.setCapabilityValue("measure_temperature", rounded).catch(this.error);
   }
 
   updatePowerSwitch(pwr) {
-    this.setCapabilityValue("onoff", !!pwr).catch(() => {
+    const nextValue = !!pwr;
+    if (this.getCapabilityValue("onoff") === nextValue) return;
+    this.setCapabilityValue("onoff", nextValue).catch(() => {
       // nothing
     });
   }
@@ -73,6 +67,9 @@ class FloorheaterDevice extends Homey.Device {
   updateValve(valve) {
     const label = valve ? "Open" : "Closed";
     const numeric = valve ? 1 : 0;
+    const currentLabel = this.getCapabilityValue("meter_valve");
+    const currentNumeric = this.getCapabilityValue("meter_valve_number");
+    if (currentLabel === label && currentNumeric === numeric) return;
     this.setCapabilityValue("meter_valve", label).catch(() => {
       // nothing
     });
@@ -92,7 +89,7 @@ class FloorheaterDevice extends Homey.Device {
       try {
         await this._performPoll();
       } catch (err) {
-        this.homey.app.log(`[Floorheater:${this.getData().id}] poll error: ${err.message}`);
+        
         this.error(err);
       } finally {
         this._isPollScheduled = false;
@@ -119,18 +116,21 @@ class FloorheaterDevice extends Homey.Device {
 
   async _performPoll() {
     const payload = { channel: this.getData().channel };
-    const commands = [0x1C5E, 0x1948];
+    const rawPayload = Buffer.from([this.getData().channel]);
+    const commands = [
+      { command: 0x1C5E, data: payload },
+      { command: 0x1948, data: payload }
+    ];
 
     if (this._shouldUseLegacyRead()) {
-      commands.push(0xE3E7);
+      commands.push({ command: 0xE3E7, data: payload });
     }
 
-    for (const command of commands) {
-      this.homey.app.log(
-        `[Floorheater:${this.getData().id}] requestUpdate sending 0x${command.toString(16)}`
-      );
-      await this._sendCommand(command, payload);
-      await delay(this._delayAfterCommand(command));
+    commands.push({ command: 0x7262, payload: rawPayload });
+
+    for (const entry of commands) {
+      await this._sendCommand(entry.command, entry.data, entry.payload);
+      await delay(this._delayAfterCommand(entry.command));
     }
   }
 
@@ -149,6 +149,8 @@ class FloorheaterDevice extends Homey.Device {
         return 220;
       case 0xE3E7:
         return 250;
+      case 0x7262:
+        return 200;
       default:
         return 200;
     }
@@ -184,7 +186,7 @@ class FloorheaterDevice extends Homey.Device {
     await this._sendCommand(0x1C5C, this.currentData);
   }
 
-  async _sendCommand(command, data) {
+  async _sendCommand(command, data, payloadBuffer) {
     const controller = this._controller();
     if (!controller) return;
 
@@ -193,7 +195,8 @@ class FloorheaterDevice extends Homey.Device {
         {
           target: this.getData().address,
           command,
-          data
+          data,
+          payload: payloadBuffer
         },
         (err) => {
           if (err) {

@@ -121,7 +121,7 @@
             );
           }
 
-          let subnet = parseInt(subnetElement.value);
+          let subnet = parseInt(subnetElement.value, 10);
           if (subnet < 1) {
             return Homey.alert(
               "Not a valid HDL Subnet (less than 0). Please use 1-254 (usually 1)"
@@ -141,7 +141,7 @@
             );
           }
 
-          let id = parseInt(idElement.value);
+          let id = parseInt(idElement.value, 10);
           if (id < 1) {
             return Homey.alert(
               "Not a valid HDL ID (less than 0). Please use 1-254"
@@ -161,7 +161,7 @@
             );
           }
 
-          let motion = parseInt(motionElement.value);
+          let motion = parseInt(motionElement.value, 10);
           if (motion < 1) {
             return Homey.alert(
               "Not a valid Universal Switch Number. Please use 1-254 "
@@ -174,7 +174,7 @@
             );
           }
 
-          let logic = parseInt(logicElement.value);
+          let logic = parseInt(logicElement.value, 10);
           if (logic < 1) {
             return Homey.alert(
               "Not a valid Logic Controller Number. Please use 1-254 "

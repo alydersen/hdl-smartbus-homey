@@ -103,10 +103,24 @@ class DryContactDriver extends Homey.Driver {
 
     let statusUpdated = false;
 
-    if (commandCode === 0x0031 && payload && payload.length >= 5) {
+    if (commandCode === 0x0031 && payload && payload.length >= 4) {
       const level = payload.readUInt8(1);
-      const channelMask = payload.readUInt8(payload.length - 1);
-      if (await applyMaskUpdate(channelMask, level > 0, `${cmdHex}/mask`)) statusUpdated = true;
+      let handled0031 = false;
+
+      if (payload.length >= 5) {
+        const contactIndex = payload.readUInt8(4);
+        if (contactIndex >= 1 && contactIndex <= maxChannels) {
+          if (await updateChannel(contactIndex, level > 0, `${cmdHex}/contact`)) {
+            statusUpdated = true;
+          }
+          handled0031 = true;
+        }
+      }
+
+      if (!handled0031) {
+        const channelMask = payload.readUInt8(payload.length - 1);
+        if (await applyMaskUpdate(channelMask, level > 0, `${cmdHex}/mask`)) statusUpdated = true;
+      }
     }
 
     if (!statusUpdated && data.dryContacts !== undefined && commandCode !== 0xe3d9) {

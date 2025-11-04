@@ -26,6 +26,15 @@ class FloorheaterDevice extends Homey.Device {
     this.registerCapabilityListener("target_temperature", this.onTemperatureChange.bind(this));
     this.registerCapabilityListener("onoff", this.onPowerSwitchChange.bind(this));
 
+    try {
+      await this.setCapabilityOptions("target_temperature", {
+        step: 1,
+        decimals: 0
+      });
+    } catch (err) {
+      this.error(err);
+    }
+
     // Ask for channel status
     if (this.homey.app.isBusConnected()) {
       await this.requestUpdate();

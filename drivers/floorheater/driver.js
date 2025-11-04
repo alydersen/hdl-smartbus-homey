@@ -15,6 +15,7 @@ const HdlDevicelist = require("./../../hdl/hdl_devicelist");
 class FloorHeaterDriver extends Homey.Driver {
   async onInit() {
     this.homey.app.log("HDL FloorHeaterDriver has been initiated");
+    this._lastValveValue = new Map();
   }
 
   async updateValues(signal) {
@@ -49,15 +50,37 @@ class FloorHeaterDriver extends Homey.Driver {
             ? valueSource.readUInt8(signal.code === 0x1C5F ? 9 : 8)
             : undefined;
         const payloadHex = Buffer.isBuffer(valueSource) ? valueSource.toString("hex") : "";
-        const pumpActive = typeof signal.data.PWD !== "undefined" ? Boolean(signal.data.PWD) : undefined;
-        const wateringActive = signal.data.watering && typeof signal.data.watering.status !== "undefined"
-          ? Boolean(signal.data.watering.status)
-          : undefined;
-        const computedValve = typeof pumpActive !== "undefined"
-          ? pumpActive
-          : (typeof wateringActive !== "undefined" ? wateringActive : Boolean(signal.data.work && signal.data.work.status));
-        homeyDevice.updateValve(computedValve, { raw: valveRaw, payload: payloadHex });
-        homeyDevice.updatePowerSwitch(signal.data.work && signal.data.work.status);
+        const valveState = (() => {
+          if (typeof signal.data.PWD !== "undefined") return Boolean(signal.data.PWD);
+          if (signal.data.watering && typeof signal.data.watering.status !== "undefined") {
+            return Boolean(signal.data.watering.status);
+          }
+          if (signal.data.work && typeof signal.data.work.status !== "undefined") {
+            return Boolean(signal.data.work.status);
+          }
+          if (Buffer.isBuffer(valueSource) && valueSource.length > 10) {
+            return valueSource.readUInt8(10) > 0;
+          }
+          if (Buffer.isBuffer(valueSource) && valueSource.length > 11) {
+            return valueSource.readUInt8(11) > 0;
+          }
+          if (typeof signal.data.valve !== "undefined") return Boolean(signal.data.valve);
+          return undefined;
+        })();
+
+        if (typeof valveState === "boolean") {
+          const key = signature.id;
+          const last = this._lastValveValue && this._lastValveValue.get(key);
+          if (last !== valveState) {
+            homeyDevice.updateValve(valveState, { raw: valveRaw, payload: payloadHex });
+            this._lastValveValue.set(key, valveState);
+          }
+        }
+
+        if (signal.data.work && typeof signal.data.work.status !== "undefined") {
+          homeyDevice.updatePowerSwitch(Boolean(signal.data.work.status));
+        }
+
         homeyDevice.currentData = signal.data;
         return;
 
@@ -108,3 +131,5 @@ class FloorHeaterDriver extends Homey.Driver {
 }
 
 module.exports = FloorHeaterDriver;
+
+

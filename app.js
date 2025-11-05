@@ -10,6 +10,7 @@ class HDLSmartBus extends Homey.App {
     this._bus = null;
     this._controller = null;
     this._hdlDevicelist = new HdlDevicelist();
+    this._updateInterval = null;
     // All new devicetypes must be added here
     this._driverlist = [
       "dimmer",
@@ -61,16 +62,25 @@ class HDLSmartBus extends Homey.App {
     // Return if not proper ip, subnet or id
     const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
     const subnetRegex = /^\d{1,3}$/;
+    
+    // Validate IPv4 address and ensure each octet is 0-255
     if (!ipRegex.test(hdl_ip_address)) return;
+    const ipOctets = hdl_ip_address.split('.');
+    for (const octet of ipOctets) {
+      const octetValue = parseInt(octet, 10);
+      if (octetValue < 0 || octetValue > 255) return;
+    }
+    
+    // Validate subnet (1-254)
     if (!subnetRegex.test(hdl_subnet)) return;
-    let hdl_subnet_int = parseInt(hdl_subnet);
-    if (hdl_subnet_int < 1) return;
-    if (hdl_subnet_int > 254) return;
+    let hdl_subnet_int = parseInt(hdl_subnet, 10);
+    if (hdl_subnet_int < 1 || hdl_subnet_int > 254) return;
+    
+    // Validate ID if provided (1-254)
     if (hdl_id != undefined && hdl_id != "") {
       if (!subnetRegex.test(hdl_id)) return;
-      let hdl_id_int = parseInt(hdl_id);
-      if (hdl_id_int < 1) return;
-      if (hdl_id_int > 254) return;
+      let hdl_id_int = parseInt(hdl_id, 10);
+      if (hdl_id_int < 1 || hdl_id_int > 254) return;
     }
 
     // Close if the bus is already is running
@@ -78,6 +88,12 @@ class HDLSmartBus extends Homey.App {
     if (this._bus != null) {
       this._bus.close();
       this._bus = null;
+    }
+    
+    // Clear any existing update interval
+    if (this._updateInterval != null) {
+      clearInterval(this._updateInterval);
+      this._updateInterval = null;
     }
 
     // Connect the bus
@@ -106,7 +122,7 @@ class HDLSmartBus extends Homey.App {
       try {
         this.homey.app._signalReceived(signal);
       } catch (err) {
-        console.log(`Could not parse received data: ${err}`);
+        this.log(`Could not parse received data: ${err}`);
       }
     });
 
@@ -114,7 +130,7 @@ class HDLSmartBus extends Homey.App {
     this._busConnected = true;
     this.log("Homey HDL SmartBus is running...");
     this.log("Initializing recurring update...");
-    setInterval(async () => {
+    this._updateInterval = setInterval(async () => {
       this.homey.app.callForUpdate(this._bus);
     }, 60000);
   }
@@ -125,7 +141,7 @@ class HDLSmartBus extends Homey.App {
       this.homey.drivers
         .getDriver(this._driverlist[i])
         .getDevices()
-        .forEach(function (device) {
+        .forEach((device) => {
           device.requestUpdate();
         });
     }
@@ -183,19 +199,28 @@ class HDLSmartBus extends Homey.App {
   async _updateDevice(hdlSenderType, signal) {
     if (signal.code == 0xF) return; // Ignore discovery signals
 
-    const unknownDeviceMessages = ["invalid_device", "device is not defined", "Could not get device by device data"]
+    // Silently ignore expected errors that don't need logging
+    // "Driver Not Initialized" can happen during app startup when signals arrive
+    // before drivers have finished initializing - this is normal and resolves quickly
+    const silentErrors = [
+      "invalid_device", 
+      "device is not defined", 
+      "Could not get device by device data", 
+      "Driver Not Initialized"
+    ];
+    
     await this.homey.drivers.getDriver(hdlSenderType).updateValues(signal).catch((error) => {
-      if (! (unknownDeviceMessages.includes(error.message))) {
+      // Only log unexpected errors
+      if (!silentErrors.includes(error.message)) {
         this.log(`Error for ${hdlSenderType} ${signal.sender.id}: ${error.message}`);
-        
       }
     });
   }
 
   async _signalReceived(signal) {
     // Check to see that the subnet is the same
-    let allowed_subnets = [parseInt(this.homey.settings.get("hdl_subnet")), 255];
-    if (!allowed_subnets.includes(parseInt(signal.sender.subnet))) return;
+    let allowed_subnets = [parseInt(this.homey.settings.get("hdl_subnet"), 10), 255];
+    if (!allowed_subnets.includes(parseInt(signal.sender.subnet, 10))) return;
 
     // Catch errors when trying to access the signal.data
     try {

@@ -21,7 +21,7 @@ class MultisensorDriver extends Homey.Driver {
     if (signal.sender.type == undefined) return;
 
     // Get the Motion UVS from Homey settings
-    let hdlUVSwitch = parseInt(this.homey.settings.get("hdl_universal_motion"));
+    let hdlUVSwitch = parseInt(this.homey.settings.get("hdl_universal_motion"), 10);
 
     // Check which signals are present and range
     let hasTemp = this.homey.app.valueOK("temperature", signal.data.temperature);
@@ -87,7 +87,7 @@ class MultisensorDriver extends Homey.Driver {
     // Set DryContacts
     if ( hasDryContact ) {
       for (const dryContact in signal.data.dryContacts) {
-        const contactIndex = parseInt(dryContact);
+        const contactIndex = parseInt(dryContact, 10);
         if (Number.isNaN(contactIndex)) continue;
 
         const capabilityIndex = contactIndex + 1;

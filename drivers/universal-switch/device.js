@@ -68,7 +68,7 @@ class HdlUniversalSwitchDevice extends Homey.Device {
 
   async onCapabilityOnoff(value, opts) {
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
-    let hdl_id = parseInt(this.homey.settings.get("hdl_id"));
+    let hdl_id = parseInt(this.homey.settings.get("hdl_id"), 10);
     let hdl_logic_controller = this.homey.settings.get("hdl_logic_controller");
 
     // Broadcast the change
@@ -77,7 +77,7 @@ class HdlUniversalSwitchDevice extends Homey.Device {
     // Treat sending differently if there is a logic controller present
     if (hdl_logic_controller !== undefined) {
       // If present - only send to the logiccontroller (broadcast already sent)
-      let logic = parseInt(hdl_logic_controller);
+      let logic = parseInt(hdl_logic_controller, 10);
       this.updateDeviceByBus(`${hdl_subnet}.${logic}`, value)
     } else {
       // If not present - send to all addresses individually (broadcast already sent)

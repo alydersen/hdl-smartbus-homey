@@ -4,7 +4,6 @@ First off all, thank you for taking the time to contribute!
 
 The App is free and open source and built by people on their spare time, so please don't expect people to be as into your situation as you are. The best way to contribute is to code yourself, so please read [This excellent guide](https://www.contribution-guide.org)
 
-
 ## Before submitting a bug, feature request or pull request
 
 * **Have you actually read the error message**?
@@ -36,5 +35,5 @@ Capable programmers should always attempt to investigate and fix problems themse
 * Minimal commits. Please squash to a single commit before sending your pull request.
 * No conflicts. Please rebase off the latest master before submitting.
 * Code conforming to the existing conventions and formats. i.e. Please don't reformat whitespace.
-* Passing tests in the test folder (if applicable). Use existing tests as a reference.
+* Passing tests in the test folder. Run `npm test` before submitting. See `test/README.md` for details.
 * Relevant documentation.

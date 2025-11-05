@@ -5,3 +5,6 @@ node_modules
 
 # Added by Homey CLI
 /.homeybuild/
+
+# Testing coverage reports
+/coverage/

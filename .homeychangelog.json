@@ -211,5 +211,8 @@
   },
   "1.2.6": {
     "en": "Adding dry-contact driver by Martin Horák, ready for Node.js 22, Updating docs with guides by [torbjoernm](https://github.com/torbjoernm)"
+  },
+  "1.3.0": {
+    "en": "Cleaning up the dry-contacts by Martin Horák. Several improvements and modernization of the code."
   }
 }

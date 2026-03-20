@@ -134,21 +134,7 @@ class DryContactDriver extends Homey.Driver {
       }
     }
 
-    if (!statusUpdated && commandCode === 0x6f00 && payload && payload.length >= 8) {
-      const declaredChannels = payload[3];
-      const channelTotal = Math.min(declaredChannels || maxChannels, maxChannels);
-      const statusMask = payload.readUInt16BE(4);
-
-      if (consoleLogging) this.log(`DryContact 0x6f00 mask 0x${statusMask.toString(16)} channels ${channelTotal}`);
-
-      let changed = false;
-      for (let i = 0; i < channelTotal; i++) {
-        const contactStatus = (statusMask & (1 << i)) !== 0;
-        if (await updateChannel(i + 1, contactStatus, `${cmdHex}/status`)) changed = true;
-      }
-
-      if (changed) statusUpdated = true;
-    }
+    // 0x6F00 parsing now handled by smart-bus 0.9.0+ via signal.data.dryContacts above
 
     if (!statusUpdated && commandCode === 0xe3d9 && payload && payload.length >= 3) {
       let handledAck = false;

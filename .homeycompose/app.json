@@ -1,6 +1,6 @@
 {
   "id": "com.github.alydersen.hdl-smartbus-homey",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
@@ -23,7 +23,8 @@
   "homeyCommunityTopicId": 26575,
   "permissions": [],
   "images": {
-    "large": "/assets/images/large.png",
+    "large": "/assets/images/medium.png",
+    "xlarge": "/assets/images/large.png",
     "small": "/assets/images/small.png"
   },
   "author": {

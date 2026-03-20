@@ -25,7 +25,7 @@ class CurtainManualProcess {
     this.srcLevel = this.device.level;
 
     // Stop if the curtain level is on the edge 
-    if (this.device.duration == null || (this.srcLevel == 0 && this.direction == -1 || this.srcLevel == 1 && this.direction == 1)) {
+    if (this.device.duration === null || ((this.srcLevel === 0 && this.direction === -1) || (this.srcLevel === 1 && this.direction === 1))) {
       this.stop(true);
       return;
     }
@@ -48,7 +48,7 @@ class CurtainManualProcess {
       this.device.updateLevel(lastPos);
 
       // Stop if the curtain level is on the edge
-      if ((lastPos <= 0 && this.direction == -1 || lastPos >= 1 && this.direction == 1))
+      if ((lastPos <= 0 && this.direction === -1) || (lastPos >= 1 && this.direction === 1))
         this.stop(true);
       
       lastFrameTime = currentFrameTime;
@@ -61,16 +61,15 @@ class CurtainManualProcess {
    * @returns 
    */
   stop(autostop) {
-    if (autostop == true)
-      this.device.stop()
-      //setTimeout(() => this.device.stop(), 1000); // enable to going through the edges
-    
+    if (autostop === true)
+      this.device.stop();
+
     // Stop timer
     if (this.timer)
       clearInterval(this.timer);
     this.timer = null;  
     
-    if (this.device.duration == null)
+    if (this.device.duration === null)
       return;
 
     // Finally re-update total level
@@ -101,7 +100,7 @@ class CurtainLevelProcess {
     let srcLevel = this.device.level;
 
     // Stop if there is nothing to do
-    if (srcLevel - this.destLevel == 0) {
+    if (srcLevel - this.destLevel === 0) {
       this.stop(true);
       return;
     }
@@ -137,7 +136,7 @@ class CurtainLevelProcess {
    * @returns 
    */
    stop(autostop) {
-    if (autostop == true) 
+    if (autostop === true)
       this.device.stop();
 
     // Stop timer
@@ -154,6 +153,13 @@ class CurtainDevice extends Homey.Device {
 
   async onInit() {
     this.homey.app.log(`Initated "${this.getName()}" (Curtain/${this.getClass()}) ${this.getData().id}`);
+  }
+
+  async onUninit() {
+    if (this.process) {
+      this.process.stop();
+      this.process = null;
+    }
  
     // register a capability listener
     this.registerCapabilityListener("windowcoverings_set", (value, opts) => this.onPositionChange(value, opts));
@@ -237,7 +243,7 @@ class CurtainDevice extends Homey.Device {
    * @param state 0 - idle, 1 - up, 2 - down
    */
   sendState(state) {
-    this.startProcess(state == 0 ? null : new CurtainManualProcess(this, state == 1 ? 1 : -1));
+    this.startProcess(state === 0 ? null : new CurtainManualProcess(this, state === 1 ? 1 : -1));
     this.sendCommand(0xE3E0, {
       curtain: this.getData().channel,
       status: state

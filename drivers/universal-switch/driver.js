@@ -8,14 +8,14 @@ class HdlUniversalSwitchDriver extends Homey.Driver {
   }
 
   async updateValues(signal) {
-    if (signal.data == undefined) return;  // RETURN IF NO DATA
-    if (signal.data.switch == undefined) return;  // RETURN IF NO CONTENT
+    if (signal.data === undefined) return;  // RETURN IF NO DATA
+    if (signal.data.switch === undefined) return;  // RETURN IF NO CONTENT
     if (
-      signal.data.switch == parseInt(this.homey.settings.get("hdl_universal_motion"), 10)
+      signal.data.switch === parseInt(this.homey.settings.get("hdl_universal_motion"), 10)
     )
       return;  // RETURN IF THE SIGNAL IS FOR UNIVERSAL MOTION
     if (
-      signal.sender.id == parseInt(this.homey.settings.get("hdl_id"), 10)
+      signal.sender.id === parseInt(this.homey.settings.get("hdl_id"), 10)
     )
       return;  // RETURN IF THE SIGNAL IS FROM MYSELF
 
@@ -41,9 +41,8 @@ class HdlUniversalSwitchDriver extends Homey.Driver {
       return new Error("Please configure the app settings first.");
     } else {
       this.homey.app.log("onPairListDevices from UniversalSwitches");
-      var i;
-      for (i = 1; i < 255; i++) {
-        if (i == parseInt(this.homey.settings.get("hdl_universal_motion"), 10))
+      for (let i = 1; i < 255; i++) {
+        if (i === parseInt(this.homey.settings.get("hdl_universal_motion"), 10))
           continue;
         devices.push({
           name: `HDL Universal Switch (${hdl_subnet}.${i})`,
@@ -55,6 +54,12 @@ class HdlUniversalSwitchDriver extends Homey.Driver {
       }
       return devices.sort(HdlUniversalSwitchDriver._compareHomeyDevice);
     }
+  }
+
+  static _compareHomeyDevice(a, b) {
+    if (a.name < b.name) return -1;
+    if (a.name > b.name) return 1;
+    return 0;
   }
 }
 

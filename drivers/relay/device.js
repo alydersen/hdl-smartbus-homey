@@ -19,7 +19,7 @@ class RelayDevice extends Homey.Device {
   }
 
   async updateHomeyLevel(level) {
-    this.setCapabilityValue("onoff", level != 0).catch(this.error);
+    this.setCapabilityValue("onoff", level !== 0).catch(this.error);
   }
 
   async requestUpdate() {

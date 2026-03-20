@@ -28,9 +28,9 @@ class DimmerDevice extends Homey.Device {
   }
 
   async updateHomeyLevel(level) {
-    var corrected_level = level / 100;
+    const corrected_level = level / 100;
     this.setCapabilityValue("dim", corrected_level).catch(this.error);
-    this.setCapabilityValue("onoff", corrected_level != 0).catch(this.error);
+    this.setCapabilityValue("onoff", corrected_level !== 0).catch(this.error);
   }
 
   async requestUpdate() {
@@ -69,16 +69,15 @@ class DimmerDevice extends Homey.Device {
   }
 
   async onCapabilityDim(opts) {
-    var dev = this;
     await this.setCapabilityValue("onoff", opts.level > 0).catch(this.error);
-    if (opts.duration === 0) {      
-      dev.updateDeviceByBus(opts.level);
+    if (opts.duration === 0) {
+      this.updateDeviceByBus(opts.level);
     } else {
-      var current_level = await this.getCapabilityValue("dim");
-      var step = (opts.level - current_level) / 10;
-      [ ...Array(10) ].forEach(async (e, i) => {
-        setTimeout(function () {dev.updateDeviceByBus(current_level + (step * (i+1)))}, (opts.duration / 10) * i);
-      });
+      const current_level = await this.getCapabilityValue("dim");
+      const step = (opts.level - current_level) / 10;
+      for (let i = 0; i < 10; i++) {
+        setTimeout(() => { this.updateDeviceByBus(current_level + (step * (i + 1))); }, (opts.duration / 10) * i);
+      }
     }
   }
 }

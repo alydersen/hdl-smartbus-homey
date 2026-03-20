@@ -9,16 +9,17 @@ class DimmerDriver extends Homey.Driver {
   }
 
   getDeviceFromSignal(id, channel) {
+    let homeyDevice;
     try {
-      var homeyDevice = this.getDevice(this.homey.app.devSignChnld(id, channel));
+      homeyDevice = this.getDevice(this.homey.app.devSignChnld(id, channel));
     } catch (error) {
-      var homeyDevice = undefined;
+      homeyDevice = undefined;
     }
     return homeyDevice;   
   }
 
   async updateDevice(id, channel, level) {
-    if (level == undefined || channel == undefined) return;
+    if (level === undefined || channel === undefined) return;
     let homeyDevice = this.getDeviceFromSignal(id, channel);
     if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
     homeyDevice.updateHomeyLevel(level);
@@ -26,14 +27,14 @@ class DimmerDriver extends Homey.Driver {
 
   async updateValues(signal) {
     // One channel received
-    if (signal.data.channel != undefined && signal.data.level != undefined) {
+    if (signal.data.channel !== undefined && signal.data.level !== undefined) {
       this.updateDevice(signal.sender.id, signal.data.channel, signal.data.level);
     }
 
     // Multiple channels received
-    if (signal.data.channels != undefined) {
+    if (signal.data.channels !== undefined) {
       signal.data.channels.forEach((chnl) => {
-        if (chnl.level == undefined || chnl.number == undefined) return;
+        if (chnl.level === undefined || chnl.number === undefined) return;
         this.updateDevice(signal.sender.id, chnl.number, chnl.level);
       });
     }
@@ -50,10 +51,10 @@ class DimmerDriver extends Homey.Driver {
       this.homey.app.log("onPairListDevices from Dimmer");
       for (const device of Object.values(this.homey.app.getDevicesOfType("dimmer"))) {
         let devicelist = new HdlDevicelist()
-        var channel;
-        var channels = await devicelist.numberOfChannels(device.type.toString());
-        var zone;
-        var zones = await devicelist.numberOfZones(device.type.toString());
+        let channel;
+        const channels = await devicelist.numberOfChannels(device.type.toString());
+        let zone;
+        const zones = await devicelist.numberOfZones(device.type.toString());
         for (
           channel = 1;
           channel < channels + 1;

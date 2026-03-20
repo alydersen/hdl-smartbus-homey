@@ -214,5 +214,8 @@
   },
   "1.3.0": {
     "en": "Cleaning up the dry-contacts by Martin Horák. Several improvements and modernization of the code."
+  },
+  "1.3.1": {
+    "en": "Bug fixes, upgraded smart-bus to 0.9.0 (native curtain and dry-contact commands), updated app store images, improved code quality and test coverage."
   }
 }

@@ -14,8 +14,8 @@ class PanelDriver extends Driver {
 
   async updateValues(signal) {
       // Parse and check the incoming signal, return if missing or invalid
-      if (signal.data == undefined) return;
-      if (signal.sender.id == undefined) return;
+      if (signal.data === undefined) return;
+      if (signal.sender.id === undefined) return;
       if (!this.homey.app.valueOK("temperature", signal.data.temperature)) return;
 
       // Get the device from Homey, return if not found or error
@@ -53,6 +53,12 @@ class PanelDriver extends Driver {
       });
     }
     return devices.sort(PanelDriver._compareHomeyDevice);
+  }
+
+  static _compareHomeyDevice(a, b) {
+    if (a.name < b.name) return -1;
+    if (a.name > b.name) return 1;
+    return 0;
   }
 
 }

@@ -10,8 +10,8 @@ class TempsensorDriver extends Homey.Driver {
 
   async updateValues(signal) {
     // Parse and check the incoming signal, return if missing or invalid
-    if (signal.data.temperature == undefined) return;
-    if (signal.data.channel == undefined) return;
+    if (signal.data.temperature === undefined) return;
+    if (signal.data.channel === undefined) return;
 
     // Disregard signals if the readings are out of range
     if (!this.homey.app.valueOK("temperature", signal.data.temperature)) return;
@@ -43,7 +43,7 @@ class TempsensorDriver extends Homey.Driver {
       this.homey.app.log("onPairListDevices from Tempsensor");
       for (const device of Object.values(this.homey.app.getDevicesOfType("tempsensor"))) {
         let devicelist = new HdlDevicelist()
-        var channel;
+        let channel;
         for (
           channel = 1;
           channel < await devicelist.numberOfChannels(device.type.toString()) + 1;

@@ -44,18 +44,18 @@ class HDLSmartBus extends Homey.App {
     let hdl_motion = this.homey.settings.get("hdl_universal_motion");
 
     // Set the universal motion if not set
-    if (hdl_motion == undefined || hdl_motion == "") {
+    if (hdl_motion === undefined || hdl_motion === "") {
       this.homey.settings.set("hdl_universal_motion", "212");
     }
 
     // Return if settings are not defined
     if (
-      hdl_ip_address == undefined ||
-      hdl_ip_address == "" ||
-      hdl_subnet == undefined ||
-      hdl_subnet == "" ||
-      hdl_id == undefined ||
-      hdl_id == ""
+      hdl_ip_address === undefined ||
+      hdl_ip_address === "" ||
+      hdl_subnet === undefined ||
+      hdl_subnet === "" ||
+      hdl_id === undefined ||
+      hdl_id === ""
     )
       return;
 
@@ -77,7 +77,7 @@ class HDLSmartBus extends Homey.App {
     if (hdl_subnet_int < 1 || hdl_subnet_int > 254) return;
     
     // Validate ID if provided (1-254)
-    if (hdl_id != undefined && hdl_id != "") {
+    if (hdl_id !== undefined && hdl_id !== "") {
       if (!subnetRegex.test(hdl_id)) return;
       let hdl_id_int = parseInt(hdl_id, 10);
       if (hdl_id_int < 1 || hdl_id_int > 254) return;
@@ -85,13 +85,13 @@ class HDLSmartBus extends Homey.App {
 
     // Close if the bus is already is running
     this._busConnected = false;
-    if (this._bus != null) {
+    if (this._bus !== null) {
       this._bus.close();
       this._bus = null;
     }
-    
+
     // Clear any existing update interval
-    if (this._updateInterval != null) {
+    if (this._updateInterval !== null) {
       clearInterval(this._updateInterval);
       this._updateInterval = null;
     }
@@ -197,7 +197,7 @@ class HDLSmartBus extends Homey.App {
   }
 
   async _updateDevice(hdlSenderType, signal) {
-    if (signal.code == 0xF) return; // Ignore discovery signals
+    if (signal.code === 0xF) return; // Ignore discovery signals
 
     // Silently ignore expected errors that don't need logging
     // "Driver Not Initialized" can happen during app startup when signals arrive
@@ -223,33 +223,45 @@ class HDLSmartBus extends Homey.App {
     if (!allowed_subnets.includes(parseInt(signal.sender.subnet, 10))) return;
 
     // Catch errors when trying to access the signal.data
+    let dataFromSignal;
     try {
-      var dataFromSignal = signal.data;
+      dataFromSignal = signal.data;
     } catch(err) {
-      var dataFromSignal = undefined;
+      dataFromSignal = undefined;
     }
 
     // Check for universal switch
-    if (dataFromSignal != undefined && dataFromSignal.switch != undefined) {
+    if (dataFromSignal !== undefined && dataFromSignal.switch !== undefined) {
       await this._updateDevice("universal-switch", signal);
     }
 
     // Check if the device type is known
-    var foundType = await this._hdlDevicelist.typeOfDevice(signal.sender.type.toString());  
+    const foundType = await this._hdlDevicelist.typeOfDevice(signal.sender.type.toString());
 
     // Return if no type was found
-    if (foundType == null) return;
+    if (foundType === null) return;
 
     // Allow failing signal data only if the device is a curtain
     // (curtains are extending the signal data)
-    if (foundType != "curtain" && dataFromSignal == undefined) return;
-    if (signal.sender.id == undefined) return;
+    if (foundType !== "curtain" && dataFromSignal === undefined) return;
+    if (signal.sender.id === undefined) return;
 
     // Add the device to the list of found devices
     this._hdlFoundUnits[foundType][signal.sender.id] = signal.sender;
 
     // Update the driver with the signal
     await this._updateDevice(foundType, signal);
+  }
+  async onUninit() {
+    if (this._updateInterval !== null) {
+      clearInterval(this._updateInterval);
+      this._updateInterval = null;
+    }
+    if (this._bus !== null) {
+      this._bus.close();
+      this._bus = null;
+    }
+    this._busConnected = false;
   }
 }
 module.exports = HDLSmartBus;

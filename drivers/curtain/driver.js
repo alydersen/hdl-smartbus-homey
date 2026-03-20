@@ -2,55 +2,11 @@
 
 const Homey = require("homey");
 const HdlDevicelist = require("./../../hdl/hdl_devicelist");
-const HdlCommands = require("smart-bus/lib/commands");
 
 class CurtainDriver extends Homey.Driver {
   async onInit() {
     this.homey.app.log("HDL CurtainDriver has been initiated");
-
-    // Fix of 0xE3E3 response (its probably response of 0xE800 request also - instead of 0xE801)
-    HdlCommands[0xE3E3] = {
-      parse: function(buffer) {
-        let duration = buffer.readUInt16BE(2) / 10;
-        return {
-          curtain: buffer.readUInt8(0),
-          status: buffer.readUInt8(1),
-          duration: duration
-        };
-      },
-      
-      encode: function(data) {
-        let duration = data.duration * 10;
-        return Buffer.from([data.curtain, data.status, (duration >> 8) & 0xFF, duration & 0xFF]);
-      }      
-    };
-
-    // Added request to get duration value
-    HdlCommands[0xE800] = {
-      parse: function(buffer) {
-        return { 
-          channel: buffer.readUInt8(0),
-        }
-      },
-
-      encode: function(data) {
-        return Buffer.from([data.channel]);
-      }
-    };
-
-    // Added response of get duration value
-    HdlCommands[0xE801] = {
-      parse: function(buffer) {
-        return { 
-          channel: buffer.readUInt8(0),
-          duration: buffer.readUInt16BE(2)
-        }
-      },
-
-      encode: function(data) {
-        return Buffer.from([data.channel]);
-      }
-    };
+    // Commands 0xE3E3, 0xE800, 0xE801 now provided by smart-bus 0.9.0+
   }
 
   getDeviceFromSignal(signal, channel) {
@@ -78,7 +34,7 @@ class CurtainDriver extends Homey.Driver {
               if (device instanceof Error) return;
 
               // Update status only to idle (when autostop is used)
-              if (signal.data.curtains[index].status == 0)
+              if (signal.data.curtains[index].status === 0)
                 device.updateStatus(signal.data.curtains[index].status);
             }
           });
@@ -95,7 +51,7 @@ class CurtainDriver extends Homey.Driver {
 
               case 0xE3E3:
                 device.updateStatus(signal.data.status);
-                if (signal.data.duration != null) // in some cases duration is not in response
+                if (signal.data.duration !== null) // in some cases duration is not in response
                   device.updateDuration(signal.data.duration);
                 break;
 
@@ -119,7 +75,7 @@ class CurtainDriver extends Homey.Driver {
       this.homey.app.log("onPairListDevices from Curtain");
       for (const device of Object.values(this.homey.app.getDevicesOfType("curtain"))) {
         let devicelist = new HdlDevicelist()
-        var channel;
+        let channel;
         for (
           channel = 1;
           channel < await devicelist.numberOfChannels(device.type.toString()) + 1;

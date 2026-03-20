@@ -72,21 +72,20 @@ class HdlUniversalSwitchDevice extends Homey.Device {
     let hdl_logic_controller = this.homey.settings.get("hdl_logic_controller");
 
     // Broadcast the change
-    this.updateDeviceByBus("255.255", value)
+    await this.updateDeviceByBus("255.255", value);
 
     // Treat sending differently if there is a logic controller present
     if (hdl_logic_controller !== undefined) {
       // If present - only send to the logiccontroller (broadcast already sent)
       let logic = parseInt(hdl_logic_controller, 10);
-      this.updateDeviceByBus(`${hdl_subnet}.${logic}`, value)
+      await this.updateDeviceByBus(`${hdl_subnet}.${logic}`, value);
     } else {
       // If not present - send to all addresses individually (broadcast already sent)
-      var i;
-      for (i = 1; i < 256; i++) {
-        if (i != hdl_id) {
-          this.updateDeviceByBus(`${hdl_subnet}.${i}`, value)
+      for (let i = 1; i < 256; i++) {
+        if (i !== hdl_id) {
+          await this.updateDeviceByBus(`${hdl_subnet}.${i}`, value);
         }
-      }  
+      }
     }
   }
 }

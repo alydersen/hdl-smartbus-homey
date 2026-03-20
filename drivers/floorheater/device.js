@@ -170,7 +170,7 @@ class FloorheaterDevice extends Homey.Device {
   }
 
   async onTemperatureChange(value, opts) {
-    if (this.currentData == null) {
+    if (this.currentData === null) {
       return; // No template data to send
     }
 
@@ -183,7 +183,7 @@ class FloorheaterDevice extends Homey.Device {
   }
 
   async onPowerSwitchChange(value, opts) {
-    if (this.currentData == null) {
+    if (this.currentData === null) {
       return; // No template data to send
     }
 

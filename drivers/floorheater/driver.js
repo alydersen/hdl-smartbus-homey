@@ -104,7 +104,7 @@ class FloorHeaterDriver extends Homey.Driver {
     this.homey.app.log("onPairListDevices from Floorheater");
     for (const device of Object.values(this.homey.app.getDevicesOfType("floorheater"))) {
       let devicelist = new HdlDevicelist()
-      var channel;
+      let channel;
       for (
         channel = 1;
         channel < await devicelist.numberOfChannels(device.type.toString()) + 1;

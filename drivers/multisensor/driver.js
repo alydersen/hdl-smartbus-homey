@@ -18,7 +18,7 @@ class MultisensorDriver extends Homey.Driver {
 
   async updateValues(signal) {
     // Parse and check the incoming signal, return if missing or invalid
-    if (signal.sender.type == undefined) return;
+    if (signal.sender.type === undefined) return;
 
     // Get the Motion UVS from Homey settings
     let hdlUVSwitch = parseInt(this.homey.settings.get("hdl_universal_motion"), 10);
@@ -27,9 +27,9 @@ class MultisensorDriver extends Homey.Driver {
     let hasTemp = this.homey.app.valueOK("temperature", signal.data.temperature);
     let hasHum = this.homey.app.valueOK("humidity", signal.data.humidity);
     let hasLux = this.homey.app.valueOK("lux", signal.data.brightness);
-    let hasMotion = signal.data.movement != undefined;
-    let hasDryContact = signal.data.dryContacts != undefined;
-    let hasUV = signal.data.switch != undefined && signal.data.status != undefined && hdlUVSwitch == signal.data.switch;
+    let hasMotion = signal.data.movement !== undefined;
+    let hasDryContact = signal.data.dryContacts !== undefined;
+    let hasUV = signal.data.switch !== undefined && signal.data.status !== undefined && hdlUVSwitch === signal.data.switch;
 
     // Get the device from Homey, return if not found or error
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
@@ -68,7 +68,7 @@ class MultisensorDriver extends Homey.Driver {
 
     // Set brighness
     if ( hasLux && !exclude.includes("measure_luminance")) {
-      consoleLogging ? this.log(`Luminance input for ${signal.sender.id}: ${signal.data.temperature}`) : null;
+      consoleLogging ? this.log(`Luminance input for ${signal.sender.id}: ${signal.data.brightness}`) : null;
       await this.checkCapabilityAdded(homeyDevice, "measure_luminance");
       homeyDevice
         .setCapabilityValue("measure_luminance", signal.data.brightness)
@@ -77,7 +77,7 @@ class MultisensorDriver extends Homey.Driver {
 
     // Set humidity
     if ( hasHum && !exclude.includes("measure_humidity")) {
-      consoleLogging ? this.log(`Humidity input for ${signal.sender.id}: ${signal.data.temperature}`) : null;
+      consoleLogging ? this.log(`Humidity input for ${signal.sender.id}: ${signal.data.humidity}`) : null;
       await this.checkCapabilityAdded(homeyDevice, "measure_humidity");
       homeyDevice
         .setCapabilityValue("measure_humidity", signal.data.humidity)

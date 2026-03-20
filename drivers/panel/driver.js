@@ -1,7 +1,6 @@
 'use strict';
 
 const { Driver } = require('homey');
-const HdlDevicelist = require("./../../hdl/hdl_devicelist");
 
 class PanelDriver extends Driver {
 

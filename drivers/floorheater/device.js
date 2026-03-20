@@ -18,10 +18,10 @@ class FloorheaterDevice extends Homey.Device {
       if (typeof storedFlag === "boolean") {
         this._supportsExtendedTemperature = storedFlag;
       }
-    } catch (err) {
-      
+    } catch (_err) {
+      // ignore
     }
- 
+
     // register a capability listener
     this.registerCapabilityListener("target_temperature", this.onTemperatureChange.bind(this));
     this.registerCapabilityListener("onoff", this.onPowerSwitchChange.bind(this));
@@ -169,7 +169,7 @@ class FloorheaterDevice extends Homey.Device {
     return this.homey.app.controller();
   }
 
-  async onTemperatureChange(value, opts) {
+  async onTemperatureChange(value, _opts) {
     if (this.currentData === null) {
       return; // No template data to send
     }
@@ -182,7 +182,7 @@ class FloorheaterDevice extends Homey.Device {
     await this._sendCommand(0x1C5C, this.currentData);
   }
 
-  async onPowerSwitchChange(value, opts) {
+  async onPowerSwitchChange(value, _opts) {
     if (this.currentData === null) {
       return; // No template data to send
     }

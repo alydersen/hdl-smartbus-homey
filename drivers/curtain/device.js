@@ -213,7 +213,7 @@ class CurtainDevice extends Homey.Device {
    * @param opts Nothing
    * @returns 
    */
-  async onPositionChange(value, opts) {
+  async onPositionChange(value, _opts) {
     this.startProcess(new CurtainLevelProcess(this, value));
 
     let direction = value - this.level;
@@ -234,7 +234,7 @@ class CurtainDevice extends Homey.Device {
    * @param state "up" | "down" | "idle"
    * @param opts 
    */
-  async onButton(state, opts) {
+  async onButton(state, _opts) {
     this.sendState(this.stateToInt(state));
   }
 

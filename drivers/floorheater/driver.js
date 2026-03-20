@@ -39,7 +39,7 @@ class FloorHeaterDriver extends Homey.Driver {
     
     switch (signal.code) {
       case 0x1C5F:
-      case 0x1C5D:
+      case 0x1C5D: {
         // read floor heating status
         if (signal.data.temperature && this.homey.app.valueOK("temperature", signal.data.temperature.normal)) {
           homeyDevice.updateLevel(signal.data.temperature.normal);
@@ -83,6 +83,7 @@ class FloorHeaterDriver extends Homey.Driver {
 
         homeyDevice.currentData = signal.data;
         return;
+      }
 
       case 0xE3E8:
       case 0x1949:

@@ -72,7 +72,7 @@ class MockI18n {
     this.translations = {};
   }
   
-  __(key, tokens) {
+  __(key, _tokens) {
     return key;
   }
 }
@@ -97,19 +97,19 @@ class MockDevice {
     return 'mock_device';
   }
   
-  hasCapability(capability) {
+  hasCapability(_capability) {
     return false;
   }
   
-  async addCapability(capability) {
+  async addCapability(_capability) {
     return Promise.resolve();
   }
   
-  async setCapabilityValue(capability, value) {
+  async setCapabilityValue(_capability, _value) {
     return Promise.resolve();
   }
   
-  async getCapabilityValue(capability) {
+  async getCapabilityValue(_capability) {
     return null;
   }
 }

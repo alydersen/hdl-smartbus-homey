@@ -10,7 +10,7 @@ class DryContactDevice extends Homey.Device {
       if (!Array.isArray(history)) {
         await this.setStoreValue("history", []);
       }
-    } catch (err) {
+    } catch (_err) {
       await this.setStoreValue("history", []);
     }
 
@@ -51,7 +51,7 @@ class DryContactDevice extends Homey.Device {
       if (Array.isArray(stored)) {
         history = stored;
       }
-    } catch (err) {
+    } catch (_err) {
       // ignore
     }
 

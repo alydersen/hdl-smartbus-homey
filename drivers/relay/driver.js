@@ -12,7 +12,7 @@ class RelayDriver extends Homey.Driver {
     let homeyDevice;
     try {
       homeyDevice = this.getDevice(this.homey.app.devSignChnld(id, channel));
-    } catch (error) {
+    } catch (_error) {
       homeyDevice = undefined;
     }
     return homeyDevice;

@@ -51,7 +51,7 @@ class RelayDevice extends Homey.Device {
     );
   }
 
-  async onCapabilityOnoff(value, opts) {
+  async onCapabilityOnoff(value, _opts) {
     let level = value === true ? 100 : 0;
     this.updateDeviceByBus(level);
   }

@@ -135,7 +135,7 @@ class HDLSmartBus extends Homey.App {
     }, 60000);
   }
 
-  async callForUpdate(bus) {
+  async callForUpdate(_bus) {
     this.log("Update called - looping through drivers");
     for (let i = 0; i < this._driverlist.length; i++) {
       this.homey.drivers
@@ -226,7 +226,7 @@ class HDLSmartBus extends Homey.App {
     let dataFromSignal;
     try {
       dataFromSignal = signal.data;
-    } catch(err) {
+    } catch(_err) {
       dataFromSignal = undefined;
     }
 

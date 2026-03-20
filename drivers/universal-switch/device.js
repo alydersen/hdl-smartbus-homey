@@ -66,7 +66,7 @@ class HdlUniversalSwitchDevice extends Homey.Device {
     );
   }
 
-  async onCapabilityOnoff(value, opts) {
+  async onCapabilityOnoff(value, _opts) {
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
     let hdl_id = parseInt(this.homey.settings.get("hdl_id"), 10);
     let hdl_logic_controller = this.homey.settings.get("hdl_logic_controller");

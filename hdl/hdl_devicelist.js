@@ -39,6 +39,13 @@ class HdlTypelist {
         return this.list[id].exclude;
     }
 
+    async sensorChannels(id) {
+        if (this.list[id] == undefined) return [];
+        if (this.list[id].sensorChannels == undefined) return [];
+
+        return this.list[id].sensorChannels;
+    }
+
 
     get list() {
         return {
@@ -83,12 +90,12 @@ class HdlTypelist {
             "188": { type: "panel" },
             "196": { type: "panel" },
             "198": { type: "panel" },
-            "207": { type: "floorheater", channels: 6 },
-            "208": { type: "floorheater", channels: 6 },
-            "209": { type: "floorheater", channels: 6 },
-            "210": { type: "floorheater", channels: 6 },
-            "211": { type: "floorheater", channels: 6 },
-            "212": { type: "floorheater", channels: 6 },
+            "207": { type: "floorheater", channels: 6, sensorChannels: [13, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62] },
+            "208": { type: "floorheater", channels: 6, sensorChannels: [13, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62] },
+            "209": { type: "floorheater", channels: 6, sensorChannels: [13, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62] },
+            "210": { type: "floorheater", channels: 6, sensorChannels: [13, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62] },
+            "211": { type: "floorheater", channels: 6, sensorChannels: [13, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62] },
+            "212": { type: "floorheater", channels: 6, sensorChannels: [13, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62] },
             "305": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
             "307": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
             "308": { type: "multisensor", main_capability: "alarm_motion", exclude: []},

@@ -120,6 +120,18 @@ class FloorHeaterDriver extends Homey.Driver {
           }
         });
       }
+      // Digital temperature sensors connected to the floor heating controller
+      const sensorChannels = await devicelist.sensorChannels(device.type.toString());
+      for (const sensorChannel of sensorChannels) {
+        devices.push({
+          name: `HDL Floor Sensor (${hdl_subnet}.${device.id} ch ${sensorChannel})`,
+          data: {
+            id: `${hdl_subnet}.${device.id}.${sensorChannel}`,
+            address: `${hdl_subnet}.${device.id}`,
+            channel: sensorChannel
+          }
+        });
+      }
     }
     return devices.sort(FloorHeaterDriver._compareHomeyDevice);
   }

@@ -145,7 +145,6 @@ class DryContactDriver extends Homey.Driver {
         const channelLimit = Math.max(maxChannels, 8);
         if (channelIndex >= 1 && channelIndex <= channelLimit) {
           await updateChannel(channelIndex, ackState, `${cmdHex}/ack/channel`);
-          statusUpdated = true;
           handledAck = true;
         } else if (consoleLogging) {
           this.log(`DryContact ${cmdHex} unexpected channel ${channelIndex}`);
@@ -155,7 +154,7 @@ class DryContactDriver extends Homey.Driver {
       if (!handledAck) {
         const channelMask = payload.readUInt8(1);
         const ackState = payload.readUInt8(2) > 0;
-        if (await applyMaskUpdate(channelMask, ackState, `${cmdHex}/ack`)) statusUpdated = true;
+        await applyMaskUpdate(channelMask, ackState, `${cmdHex}/ack`);
       }
     }
   }

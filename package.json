@@ -16,8 +16,9 @@
     "*.js": "eslint"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.1",
-    "eslint": "^9.39.4",
+    "eslint": "^10.2.0",
     "husky": "^9.1.7",
     "jest": "^30.3.0",
     "lint-staged": "^16.4.0"

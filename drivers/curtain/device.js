@@ -153,14 +153,7 @@ class CurtainDevice extends Homey.Device {
 
   async onInit() {
     this.homey.app.log(`Initated "${this.getName()}" (Curtain/${this.getClass()}) ${this.getData().id}`);
-  }
 
-  async onUninit() {
-    if (this.process) {
-      this.process.stop();
-      this.process = null;
-    }
- 
     // register a capability listener
     this.registerCapabilityListener("windowcoverings_set", (value, opts) => this.onPositionChange(value, opts));
     this.registerCapabilityListener("windowcoverings_state", (value, opts) => this.onButton(value, opts));
@@ -168,6 +161,13 @@ class CurtainDevice extends Homey.Device {
     // Ask for channel status
     if (this.homey.app.isBusConnected()) {
       await this.requestUpdate();
+    }
+  }
+
+  async onUninit() {
+    if (this.process) {
+      this.process.stop();
+      this.process = null;
     }
   }
 

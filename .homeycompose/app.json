@@ -1,6 +1,6 @@
 {
   "id": "com.github.alydersen.hdl-smartbus-homey",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
@@ -53,6 +53,6 @@
   },
   "source": "https://github.com/alydersen/hdl-smartbus-homey",
   "changelog": {
-    "en": "Fixed curtain devices not responding to commands due to capability listeners not being registered on initialization."
+    "en": "Fixed app failing to start due to missing smart-bus dependency not being bundled in the release package."
   }
 }

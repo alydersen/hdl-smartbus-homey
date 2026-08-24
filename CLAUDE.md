@@ -60,6 +60,14 @@ Source of truth for `app.json` (auto-generated at build), custom capability defi
 
 Tests live in `test/` and use Jest. The Homey SDK is mocked via `test/mocks/homey.js` (configured in `jest.config.js` moduleNameMapper). When adding mock functionality, extend `test/mocks/homey.js`.
 
+## Version Bumps
+
+When bumping the version, always update all four of these files:
+1. `.homeycompose/app.json` — version field + `changelog` field (current release note)
+2. `package.json` — version field
+3. `package-lock.json` — version field in both the root object and `packages[""]`
+4. `.homeychangelog.json` — add a new entry for the new version
+
 ## Key Conventions
 
 - `'use strict'` at the top of every JS file

@@ -1,0 +1,64 @@
+name: Bug report
+description: Something isn't working as expected
+labels: bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before submitting, please check:
+        * Have you searched for similar issues?
+        * Have you updated Homey, all apps, and the development tools?
+        * Is the problem in this App, or in one of the devices on your bus?
+        * Capable programmers should attempt to fix the problem themselves and submit a pull request instead of an issue. See [CONTRIBUTING.md](../CONTRIBUTING.md) and [AGENTS.md](../AGENTS.md).
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What were you trying to achieve?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Detailed steps to reproduce from scratch. Try isolating the minimal amount needed.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual behavior
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: App version
+      description: Found in the Homey app under this App's settings.
+    validations:
+      required: true
+  - type: input
+    id: homey-firmware
+    attributes:
+      label: Homey firmware version
+  - type: input
+    id: device-type
+    attributes:
+      label: HDL device type
+      description: Device type and model, e.g. "Mulitple_8in1_2B sensor" or "Dimmer 4CH".
+  - type: input
+    id: device-address
+    attributes:
+      label: Device address (subnet.deviceId.channel)
+      description: e.g. 1.52.1. Leave empty if not device-specific.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Log lines from Homey (Settings > this App). Include timestamps around the failure.
+      render: shell
+  - type: textarea
+    id: investigation
+    attributes:
+      label: Investigation so far
+      description: What you've already looked into, your theory on the cause, and a possible solution if you have one.

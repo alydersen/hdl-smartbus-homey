@@ -1,0 +1,37 @@
+name: Feature request
+description: Suggest a new feature or improvement
+labels: enhancement
+body:
+  - type: textarea
+    id: current-situation
+    attributes:
+      label: Current situation
+      description: How the App behaves today.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Why is this problematic?
+      description: What's the practical impact of the current behavior?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Detailed proposal
+      description: How the problem could be solved. A pull request demonstrating the solution is even better — see [AGENTS.md](../AGENTS.md) for how agents can pick this up.
+    validations:
+      required: true
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: Who needs this feature and why?
+    validations:
+      required: true
+  - type: textarea
+    id: caveats
+    attributes:
+      label: Caveats
+      description: Edge cases, compat concerns, or device models this might not work with.

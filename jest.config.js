@@ -3,6 +3,9 @@ module.exports = {
   testMatch: [
     '**/test/**/*.test.js'
   ],
+  testPathIgnorePatterns: [
+    '<rootDir>/.homeybuild/'
+  ],
   collectCoverageFrom: [
     'app.js',
     'drivers/**/*.js',

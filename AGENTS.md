@@ -64,6 +64,10 @@ Source of truth for `app.json` (auto-generated at build), custom capability defi
 
 Tests live in `test/` and use Jest. The Homey SDK is mocked via `test/mocks/homey.js` (configured in `jest.config.js` moduleNameMapper). When adding mock functionality, extend `test/mocks/homey.js`.
 
+## Dependencies
+
+All runtime dependencies are in `smart-bus` (currently the only one). Everything else is dev/test tooling. One advisory is knowingly accepted: `sprintf-js` (GHSA-hp3w-g68c-fv3c, dev-only via jest coverage tooling) has no fixed version upstream — do not re-investigate or override it unless the advisory gains a fix. Check dependencies with `osv-scanner --lockfile=package-lock.json`.
+
 ## Version Bumps
 
 When bumping the version, always update all four of these files:

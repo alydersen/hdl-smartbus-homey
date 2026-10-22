@@ -4,6 +4,10 @@ First off all, thank you for taking the time to contribute!
 
 The App is free and open source and built by people on their spare time, so please don't expect people to be as into your situation as you are. The best way to contribute is to code yourself, so please read [This excellent guide](https://www.contribution-guide.org)
 
+## AI-assisted contributions
+
+If you use an AI coding agent (Claude Code, Codex, Cursor, etc.) to work on this repository, have it read [AGENTS.md](AGENTS.md) before it starts. That file is the authoritative guide to the codebase: build/test commands, architecture, conventions, and the version bump procedure. It applies to all contributors, not just agents.
+
 ## Before submitting a bug, feature request or pull request
 
 * **Have you actually read the error message**?

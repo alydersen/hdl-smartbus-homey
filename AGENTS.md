@@ -2,6 +2,10 @@
 
 This file provides guidance to AI coding agents when working with code in this repository.
 
+## Skills
+
+A repo-local skill is available in `.agents/skills/hdl-device-development/`. Load it when setting up local Homey development, listening to the HDL bus to identify devices, or adding support for new device types or commands.
+
 ## Project Overview
 
 Open-source Homey app (SDK v3) that integrates HDL SmartBus home automation devices with the Homey smart home hub. Uses the `smart-bus` npm package for HDL protocol communication over IP.

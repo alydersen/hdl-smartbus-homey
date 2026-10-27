@@ -15,6 +15,7 @@ describe('HdlDevicelist', () => {
     test('should return correct device type for known IDs', async () => {
       expect(await devicelist.typeOfDevice('16')).toBe('dimmer');
       expect(await devicelist.typeOfDevice('150')).toBe('relay');
+      expect(await devicelist.typeOfDevice('491')).toBe('relay');
       expect(await devicelist.typeOfDevice('124')).toBe('tempsensor');
       expect(await devicelist.typeOfDevice('48')).toBe('panel');
       expect(await devicelist.typeOfDevice('207')).toBe('floorheater');
@@ -32,6 +33,7 @@ describe('HdlDevicelist', () => {
     test('should return correct channel counts', async () => {
       expect(await devicelist.numberOfChannels('16')).toBe(48);
       expect(await devicelist.numberOfChannels('150')).toBe(12);
+      expect(await devicelist.numberOfChannels('491')).toBe(1);
       expect(await devicelist.numberOfChannels('124')).toBe(2);
       expect(await devicelist.numberOfChannels('355')).toBe(4);
     });
@@ -88,4 +90,3 @@ describe('HdlDevicelist', () => {
     });
   });
 });
-

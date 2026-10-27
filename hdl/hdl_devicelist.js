@@ -201,6 +201,7 @@ class HdlTypelist {
             "487": { type: "relay", channels: 4 },
             "488": { type: "relay", channels: 8 },
             "489": { type: "relay", channels: 12 },
+            "491": { type: "relay", channels: 1 },
             "495": { type: "relay", channels: 8 },
             "498": { type: "relay", channels: 8 },
             "501": { type: "relay", channels: 3 },

@@ -121,6 +121,11 @@ class MockDevice {
     return Promise.resolve();
   }
 
+  registerMultipleCapabilityListener(capabilities, listener) {
+    this._capabilityListeners[capabilities.join('+')] = listener;
+    return Promise.resolve();
+  }
+
   async setCapabilityOptions(_capability, _options) {
     return Promise.resolve();
   }

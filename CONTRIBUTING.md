@@ -41,3 +41,27 @@ Capable programmers should always attempt to investigate and fix problems themse
 * Code conforming to the existing conventions and formats. i.e. Please don't reformat whitespace.
 * Passing tests in the test folder. Run `npm test` before submitting. See `test/README.md` for details.
 * Relevant documentation.
+
+## Documentation
+
+The documentation is the markdown files in the repository root, published at
+[alydersen.github.io/hdl-smartbus-homey](https://alydersen.github.io/hdl-smartbus-homey/).
+The site is rendered by [Docsify](https://docsify.js.org/) directly from these
+files — there is no build step, and the same files also render on github.com.
+
+When you contribute documentation:
+
+* **New pages**: create the `.md` file in the repository root and add it to
+  `_sidebar.md`. The sidebar is the only navigation on the site — a page that
+  is missing from it can only be reached by typing its URL. Also link the page
+  from `index.md` (the site's front page) and from other relevant pages.
+* **Linking**: use relative links to the `.md` files
+  (e.g. `[Relays](DEVICES_RELAYS.md)`). They work both on GitHub and on the
+  documentation site.
+* **Search**: automatic. The search plugin indexes the pages with headings up
+  to and including `###` — give your pages meaningful headings.
+* **Homepages**: `index.md` is the front page of the documentation site;
+  `README.md` is the GitHub repository landing page and is not part of the
+  site's navigation.
+* **Naming**: device documentation is named `DEVICES_<TYPE>.md`, setup guides
+  `GUIDE_<Topic>.md`.

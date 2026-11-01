@@ -127,7 +127,10 @@ For a new driver:
 5. Tests in `test/drivers/<type>_driver.test.js`, following the existing
    pattern (Homey SDK is mocked via `test/mocks/homey.js`; extend the mock if
    needed). Cover `updateValues` and pairing.
-6. Documentation: add `DEVICES_<TYPE>.md` and link it from `index.md`.
+6. Documentation: add `DEVICES_<TYPE>.md`, link it from `index.md`, and
+   add it to `_sidebar.md` — the sidebar is the only navigation on the
+   Docsify-published documentation site, so a page missing from it is
+   unreachable (see AGENTS.md, "Documentation").
 
 Conventions that reviewers check: `'use strict'` in every file, value bounds
 via `valueOK` in `app.js` (temperature -40..80, humidity 0..100,

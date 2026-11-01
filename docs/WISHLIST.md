@@ -331,12 +331,23 @@ stated otherwise. State labels:
 ## E. Bugs and loose ends
 
 ### E1. DMX dimmer SB-DN-48DMX flashes to 100% before dim level
-- **Status:** Open
+- **Status:** Done (pending release)
 - **Asked for:** When a flow sets a dim level, the light flashes to 100%
   before going to the requested level. (Eivind_Bo #124)
-- **Current state:** No code error found at the time; never resolved.
-  Possibly related to gradual dimming (added later, #214) or the unit
-  handling on/off + level commands.
+- **Current state:** Root cause found in the dimmer driver. `onoff` and
+  `dim` had separate capability listeners, and the `onoff(true)` listener
+  always sent a hard-coded 100% level. When a flow or the Homey UI
+  changes both (e.g. "turn on" + "dim to 50%", or dragging the dim slider
+  on an off light), the bus received 100% followed by the target level —
+  an invisible transient on relay/triac dimmers, but a visible flash on
+  DMX dimmers, which apply their own fade processing to each command.
+  The fix follows the official Homey lights best practice: the two
+  listeners are replaced by one debounced
+  `registerMultipleCapabilityListener(["onoff", "dim"], …)` that sends a
+  single channel-control command for the final state. Turning on without
+  a dim value now restores the current dim level instead of always going
+  to 100%. (Homey's `setOnDim: false` capability option, set since 1.1.0,
+  already covered flows that dim without an explicit "turn on" card.)
 
 ### E2. Intermittent wrong device state in Homey
 - **Status:** Recurring / configuration-dependent

@@ -64,20 +64,70 @@
     </fieldset>
 
     <fieldset>
-      <legend>Logic Controller</legend>
+      <legend>Universal Switches</legend>
       <p>
-        Universal Switches are published on the HDL bus as a broadcast and individually to
-        all addresses on the subnet. If you set the address for a logic controller here, a 
-        copy of any changes on an Universal Switch from this Homey App will only be sent to
-        the controller in addition to a broadcast.
+        When you change a Universal Switch in the app, the change is always
+        sent as a broadcast on the HDL bus. In addition to the broadcast,
+        the app sends the change according to the send mode below. The
+        legacy mode is the behavior of earlier app versions and is kept as
+        the default; if your installation works with broadcasts alone,
+        switching to "Broadcast only" puts far less traffic on the HDL bus.
+      </p>
+      <div class="field row">
+        <label for="hdl_uv_send_mode">Send mode</label>
+        <select id="hdl_uv_send_mode">
+          <option value="spray">Legacy: broadcast + all addresses or logic controller</option>
+          <option value="logic">Broadcast + logic controller</option>
+          <option value="broadcast">Broadcast only</option>
+        </select>
+      </div>
+      <p>
+        If you set the ID of a logic controller here, a copy of any change
+        on a Universal Switch from this Homey app is sent to that
+        controller in addition to the broadcast (for the send modes that
+        include the logic controller).
       </p>
       <div class="field row">
         <label for="hdl_logic_controller">
-          Logic Controllers ID (1-255)
+          Logic Controller ID (1-254, leave empty if not used)
         </label>
         <input id="hdl_logic_controller" type="text" value="" />
       </div>
     </fieldset>
+
+    <fieldset>
+      <legend>Universal Switch Troubleshooting</legend>
+      <p>
+        Enable this to record the last 100 universal switch signals the app
+        received on the bus, including signals that are normally filtered
+        out. This is useful if switches appear to change on their own.
+        Keep it off when you do not need it.
+      </p>
+      <div class="field row">
+        <label for="hdl_uv_debug">Log universal switch signals</label>
+        <input id="hdl_uv_debug" type="checkbox" />
+      </div>
+      <div class="field row">
+        <button id="uv_log_refresh" class="left">Refresh log</button>
+        <button id="uv_log_clear" class="left">Clear log</button>
+      </div>
+      <div id="uv_debug_log_container" style="max-height: 300px; overflow-y: auto;">
+        <table id="uv_debug_log" style="width: 100%; font-size: 12px;">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Sender</th>
+              <th>Type</th>
+              <th>Switch</th>
+              <th>Status</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </fieldset>
+
 
     <button id="save" class="right">Save changes</button>
 
@@ -88,7 +138,14 @@
         var idElement = document.getElementById("hdl_id");
         var motionElement = document.getElementById("hdl_universal_motion");
         var logicElement = document.getElementById("hdl_logic_controller");
+        var sendModeElement = document.getElementById("hdl_uv_send_mode");
         var pollElement = document.getElementById("hdl_poll_interval");
+        var uvDebugElement = document.getElementById("hdl_uv_debug");
+        var uvLogRefreshElement = document.getElementById("uv_log_refresh");
+        var uvLogClearElement = document.getElementById("uv_log_clear");
+        var uvLogBody = document
+          .getElementById("uv_debug_log")
+          .getElementsByTagName("tbody")[0];
         var saveElement = document.getElementById("save");
 
         Homey.get("hdl_ip_address", function(err, hdl_ip_address) {
@@ -115,6 +172,66 @@
           if (err) return Homey.alert(err);
           logicElement.value = hdl_logic_controller;
         });
+
+        Homey.get("hdl_uv_send_mode", function(err, hdl_uv_send_mode) {
+          if (err) return Homey.alert(err);
+          sendModeElement.value = hdl_uv_send_mode || "spray";
+        });
+
+        Homey.get("hdl_uv_debug", function(err, hdl_uv_debug) {
+          if (err) return Homey.alert(err);
+          uvDebugElement.checked = hdl_uv_debug === true;
+        });
+
+        function renderUvLog(entries) {
+          while (uvLogBody.firstChild) {
+            uvLogBody.removeChild(uvLogBody.firstChild);
+          }
+          if (!Array.isArray(entries) || entries.length === 0) {
+            var row = uvLogBody.insertRow();
+            var cell = row.insertCell(0);
+            cell.colSpan = 6;
+            cell.textContent = "No universal switch signals logged yet";
+            return;
+          }
+          entries.slice().reverse().forEach(function(entry) {
+            var row = uvLogBody.insertRow();
+            var time = new Date(entry.t);
+            row.insertCell(0).textContent = isNaN(time)
+              ? ""
+              : time.toLocaleString();
+            row.insertCell(1).textContent = entry.sender || "";
+            row.insertCell(2).textContent =
+              entry.type === undefined ? "" : entry.type;
+            row.insertCell(3).textContent =
+              entry.switch === undefined ? "" : entry.switch;
+            row.insertCell(4).textContent =
+              entry.status === undefined
+                ? ""
+                : entry.status ? "ON" : "OFF";
+            row.insertCell(5).textContent = entry.note || "";
+          });
+        }
+
+        function loadUvLog() {
+          Homey.get("hdl_uv_debug_log", function(err, hdl_uv_debug_log) {
+            if (err) return Homey.alert(err);
+            renderUvLog(hdl_uv_debug_log);
+          });
+        }
+
+        uvLogRefreshElement.addEventListener("click", function(e) {
+          loadUvLog();
+        });
+
+        uvLogClearElement.addEventListener("click", function(e) {
+          Homey.set("hdl_uv_debug_log", [], function(err) {
+            if (err) return Homey.alert(err);
+            renderUvLog([]);
+          });
+        });
+
+        loadUvLog();
 
         Homey.get("hdl_poll_interval", function(err, hdl_poll_interval) {
           if (err) return Homey.alert(err);
@@ -189,17 +306,26 @@
             );
           }
 
-          let logic = parseInt(logicElement.value, 10);
-          if (logic < 1) {
-            return Homey.alert(
-              "Not a valid Logic Controller Number. Please use 1-254 "
-            );
-          }
+          // Verify logic controller (an empty value means "not used")
+          if (logicElement.value !== "") {
+            if (!logicElement.value.match(subnetRegex)) {
+              return Homey.alert(
+                "Not a valid Logic Controller ID. Please use 1-254"
+              );
+            }
 
-          if (logic > 254) {
-            return Homey.alert(
-              "Not a valid Logic Controller Number. Please use 1-254"
-            );
+            let logic = parseInt(logicElement.value, 10);
+            if (logic < 1) {
+              return Homey.alert(
+                "Not a valid Logic Controller ID. Please use 1-254"
+              );
+            }
+
+            if (logic > 254) {
+              return Homey.alert(
+                "Not a valid Logic Controller ID. Please use 1-254"
+              );
+            }
           }
 
           // Verify polling interval
@@ -239,6 +365,14 @@
           });
 
           Homey.set("hdl_logic_controller", logicElement.value, function(err) {
+            if (err) return Homey.alert(err);
+          });
+
+          Homey.set("hdl_uv_send_mode", sendModeElement.value, function(err) {
+            if (err) return Homey.alert(err);
+          });
+
+          Homey.set("hdl_uv_debug", uvDebugElement.checked, function(err) {
             if (err) return Homey.alert(err);
           });
 

@@ -144,7 +144,7 @@ describe('DryContactDriver', () => {
     describe('parsed dryContacts data', () => {
       test('should update channels from parsed contact statuses', async () => {
         const signal = {
-          code: 0x6F00,
+          code: 0xdb01,
           sender: { id: 42, type: 62 },
           data: {
             dryContacts: {
@@ -160,12 +160,53 @@ describe('DryContactDriver', () => {
 
       test('should skip contact indices beyond configured channels', async () => {
         const signal = {
-          code: 0x6F00,
+          code: 0xdb01,
           sender: { id: 42, type: 62 },
           data: {
             dryContacts: {
               8: { status: 1 }
             }
+          }
+        };
+        await driver.updateValues(signal);
+        expect(channelSetCalls(9)).toHaveLength(0);
+      });
+    });
+
+    describe('0x6F00 - multi-channel status mask', () => {
+      test('should update channels from smart-bus parsed channels array', async () => {
+        const signal = {
+          code: 0x6f00,
+          sender: { id: 42, type: 62 },
+          data: {
+            declaredChannels: 8,
+            statusMask: 0b0101,
+            channels: [
+              { number: 1, status: true },
+              { number: 2, status: false },
+              { number: 3, status: true },
+              { number: 4, status: false }
+            ]
+          }
+        };
+        await driver.updateValues(signal);
+        expect(channelSetCalls(1)).toContainEqual(['dry_contact_1', true]);
+        expect(channelSetCalls(3)).toContainEqual(['dry_contact_3', true]);
+        // inactive channels are only seeded with false by ensureCapability,
+        // never set to true
+        expect(channelSetCalls(2)).not.toContainEqual(['dry_contact_2', true]);
+      });
+
+      test('should skip channel numbers beyond configured channels', async () => {
+        const signal = {
+          code: 0x6f00,
+          sender: { id: 42, type: 62 },
+          data: {
+            declaredChannels: 16,
+            statusMask: 0x0100,
+            channels: [
+              { number: 9, status: true }
+            ]
           }
         };
         await driver.updateValues(signal);

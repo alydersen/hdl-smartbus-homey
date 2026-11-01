@@ -158,12 +158,13 @@ stated otherwise. State labels:
   installation/configuration and were never reproduced or resolved.
 
 ### D3. Configurable polling interval
-- **Status:** Open
+- **Status:** In progress — implemented on branch
+  `feature/configurable-poll-interval`, not yet released
 - **Asked for:** Several reports of slow state updates implicitly trace back
   to the fixed 60-second poll (see B2, B4, #252).
-- **Current state:** Hardcoded 60 s in `callForUpdate()`. An app setting
-  (with a sensible floor value to protect the bus) would give affected users
-  a lever.
+- **Current state:** Poll interval is an app setting (`hdl_poll_interval`,
+  10–600 seconds, default 60). Per-device status requests are staggered
+  evenly across the interval instead of firing one burst on the bus.
 
 ### D4. Energy tab support for relays
 - **Status:** Open

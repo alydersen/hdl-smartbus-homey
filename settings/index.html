@@ -36,6 +36,15 @@
         <label for="hdl_id">This apps ID in HDL subnet (1-255)</label>
         <input id="hdl_id" type="text" value="" />
       </div>
+      <p>
+        The app polls all devices for their state at a regular interval.
+        The default is every 60 seconds. A shorter interval makes Homey
+        notice state changes faster, but puts more traffic on the HDL bus.
+      </p>
+      <div class="field row">
+        <label for="hdl_poll_interval">Polling interval in seconds (10-600)</label>
+        <input id="hdl_poll_interval" type="text" value="" />
+      </div>
     </fieldset>
 
     <fieldset>
@@ -79,6 +88,7 @@
         var idElement = document.getElementById("hdl_id");
         var motionElement = document.getElementById("hdl_universal_motion");
         var logicElement = document.getElementById("hdl_logic_controller");
+        var pollElement = document.getElementById("hdl_poll_interval");
         var saveElement = document.getElementById("save");
 
         Homey.get("hdl_ip_address", function(err, hdl_ip_address) {
@@ -104,6 +114,11 @@
         Homey.get("hdl_logic_controller", function(err, hdl_logic_controller) {
           if (err) return Homey.alert(err);
           logicElement.value = hdl_logic_controller;
+        });
+
+        Homey.get("hdl_poll_interval", function(err, hdl_poll_interval) {
+          if (err) return Homey.alert(err);
+          pollElement.value = hdl_poll_interval;
         });
 
         saveElement.addEventListener("click", function(e) {
@@ -187,6 +202,26 @@
             );
           }
 
+          // Verify polling interval
+          if (!pollElement.value.match(subnetRegex)) {
+            return Homey.alert(
+              "Not a valid polling interval. Please use 10-600 seconds"
+            );
+          }
+
+          let poll = parseInt(pollElement.value, 10);
+          if (poll < 10) {
+            return Homey.alert(
+              "Not a valid polling interval (less than 10). Please use 10-600 seconds"
+            );
+          }
+
+          if (poll > 600) {
+            return Homey.alert(
+              `Not a valid polling interval (more than 600 - ${poll}). Please use 10-600 seconds`
+            );
+          }
+
           Homey.set("hdl_ip_address", ipElement.value, function(err) {
             if (err) return Homey.alert(err);
           });
@@ -204,6 +239,10 @@
           });
 
           Homey.set("hdl_logic_controller", logicElement.value, function(err) {
+            if (err) return Homey.alert(err);
+          });
+
+          Homey.set("hdl_poll_interval", pollElement.value, function(err) {
             if (err) return Homey.alert(err);
           });
 

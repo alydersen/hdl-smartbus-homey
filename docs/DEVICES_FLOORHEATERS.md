@@ -13,3 +13,11 @@ Sensor devices are read-only: they only expose a measured temperature. They are 
 The sensor channels are mapped as follows:
 - **Channel 13** — Outdoor temperature sensor
 - **Channels 51-62** — Digital sensors (sensor ID + 50, so sensor ID 1 = channel 51, sensor ID 12 = channel 62)
+
+## Missing sensor values
+Controllers report fixed sentinel values when a channel has no sensor attached, so a paired sensor channel may never show a reading. These values are not bugs:
+
+- **Channel 13 (0x1949 response)** answers `-50.0` (little-endian float `00 00 48 C2`) when no outdoor sensor is wired.
+- The 0x1C5F status response reports `0x80` as the current temperature of a channel without a sensor.
+
+Both sentinels fall outside the app's valid temperature range (-40..80 °C, see `valueOK()` in `app.js`), so they are silently discarded instead of being shown as readings. Do not widen the validation bounds to accommodate them; -50.0 and 0x80 mean "no sensor", not a real temperature.

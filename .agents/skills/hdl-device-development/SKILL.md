@@ -134,4 +134,23 @@ via `valueOK` in `app.js` (temperature -40..80, humidity 0..100,
 lux 0..100000), expected errors suppressed silently. Run `homey app validate`
 before submitting.
 
-Submit using the checklist in `.github/PULL_REQUEST_TEMPLATE.md`.
+## 5. Submit a pull request
+
+Always open PRs with the GitHub CLI (`gh`) — it is installed and already
+authenticated on the development machine. Do not attempt the GitHub REST API,
+`curl`, or web automation: they fail because no API token is available to the
+agent environment.
+
+1. Work on a task branch off the latest `master`; squash to a single commit
+   and rebase to avoid conflicts (see CONTRIBUTING.md, "A great pull request
+   contains").
+2. Push the branch: `git push -u origin <branch>`.
+3. Copy `.github/PULL_REQUEST_TEMPLATE.md`, fill in the Description, and check
+   off completed checklist items. Open the PR with the filled template:
+
+   ```bash
+   gh pr create --base master --head <branch> \
+     --title "<short summary>" --body-file <filled-template.md>
+   ```
+
+4. Afterwards, `gh pr view` and `gh pr checks` show the PR URL and CI status.

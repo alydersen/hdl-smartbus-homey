@@ -31,6 +31,8 @@
     "unrs-resolver@1.12.2": true
   },
   "overrides": {
-    "image-size": "^2.0.4"
+    "image-size": "^2.0.4",
+    "minimatch": "^11.0.1",
+    "glob": "^14.0.2"
   }
 }

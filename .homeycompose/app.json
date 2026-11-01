@@ -1,6 +1,6 @@
 {
   "id": "com.github.alydersen.hdl-smartbus-homey",
-  "version": "1.4.4",
+  "version": "1.5.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
@@ -53,6 +53,6 @@
   },
   "source": "https://github.com/alydersen/hdl-smartbus-homey",
   "changelog": {
-    "en": "Added support for newer floor heating controllers (device types 213-215). Digital sensor channels (13 and 51-62) are now shown as read-only temperature devices."
+    "en": "Configurable polling interval (10-600 seconds) with status requests spread evenly across the interval to reduce traffic on the HDL bus. Relays and dimmers now support approximated power usage in Homey Energy. All devices show their HDL bus address in the device settings. Fixed dry contact status updates not being processed."
   }
 }

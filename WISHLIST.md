@@ -158,8 +158,7 @@ stated otherwise. State labels:
   installation/configuration and were never reproduced or resolved.
 
 ### D3. Configurable polling interval
-- **Status:** In progress — implemented on branch
-  `feature/configurable-poll-interval`, not yet released
+- **Status:** Done — implemented in PR #102, released in 1.5.0
 - **Asked for:** Several reports of slow state updates implicitly trace back
   to the fixed 60-second poll (see B2, B4, #252).
 - **Current state:** Poll interval is an app setting (`hdl_poll_interval`,
@@ -167,8 +166,7 @@ stated otherwise. State labels:
   evenly across the interval instead of firing one burst on the bus.
 
 ### D4. Energy tab support for relays
-- **Status:** In progress — implemented on branch
-  `feature/energy-approximation`, not yet released
+- **Status:** Done — implemented in PR #103, released in 1.5.0
 - **Asked for:** Relay power usage ("Power usage when on (Watt)") should
   appear in Homey's Energy tab as a consumer. (horakmar #296)
 - **Current state:** The relay and dimmer drivers declare

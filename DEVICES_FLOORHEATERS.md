@@ -6,7 +6,9 @@ A floor heater controller has one or more heating zones as channels. Different H
 Each heating zone exposes a target temperature, measured temperature, on/off switch, and valve status in Homey.
 
 ## Digital Temperature Sensors
-Floor heating controllers (device types 207-212) support up to 13 external digital temperature sensors wired in parallel. These sensors are available for pairing alongside the regular heating zones and appear as "HDL Floor Sensor" during pairing.
+Floor heating controllers (device types 207-215) support up to 13 external digital temperature sensors wired in parallel. These sensors are available for pairing alongside the regular heating zones and appear as "HDL Floor Sensor" during pairing.
+
+Sensor devices are read-only: they only expose a measured temperature. The heating-zone capabilities (target temperature, on/off switch, valve status) are removed automatically for sensor channels.
 
 The sensor channels are mapped as follows:
 - **Channel 13** — Outdoor temperature sensor

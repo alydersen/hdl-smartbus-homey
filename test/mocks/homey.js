@@ -83,6 +83,10 @@ class MockDevice {
     this._data = data;
     this.driver = driver;
     this.homey = { app: null };
+    this._capabilities = new Set();
+    this._capabilityValues = {};
+    this._capabilityListeners = {};
+    this._store = {};
   }
   
   getData() {
@@ -97,21 +101,52 @@ class MockDevice {
     return 'mock_device';
   }
   
-  hasCapability(_capability) {
-    return false;
+  hasCapability(capability) {
+    return this._capabilities.has(capability);
   }
   
-  async addCapability(_capability) {
+  async addCapability(capability) {
+    this._capabilities.add(capability);
     return Promise.resolve();
   }
   
-  async setCapabilityValue(_capability, _value) {
+  async removeCapability(capability) {
+    this._capabilities.delete(capability);
+    return Promise.resolve();
+  }
+
+  registerCapabilityListener(capability, listener) {
+    this._capabilityListeners[capability] = listener;
+    return Promise.resolve();
+  }
+
+  async setCapabilityOptions(_capability, _options) {
     return Promise.resolve();
   }
   
-  async getCapabilityValue(_capability) {
-    return null;
+  async setCapabilityValue(capability, value) {
+    this._capabilityValues[capability] = value;
+    return Promise.resolve();
   }
+  
+  async getCapabilityValue(capability) {
+    return Object.prototype.hasOwnProperty.call(this._capabilityValues, capability)
+      ? this._capabilityValues[capability]
+      : null;
+  }
+
+  async getStoreValue(key) {
+    return this._store[key];
+  }
+
+  async setStoreValue(key, value) {
+    this._store[key] = value;
+    return Promise.resolve();
+  }
+
+  // The real SDK provides these; tests can override with jest.fn()
+  log() {}
+  error() {}
 }
 
 // Export mocks

@@ -19,6 +19,9 @@ describe('HdlDevicelist', () => {
       expect(await devicelist.typeOfDevice('124')).toBe('tempsensor');
       expect(await devicelist.typeOfDevice('48')).toBe('panel');
       expect(await devicelist.typeOfDevice('207')).toBe('floorheater');
+      expect(await devicelist.typeOfDevice('213')).toBe('floorheater');
+      expect(await devicelist.typeOfDevice('214')).toBe('floorheater');
+      expect(await devicelist.typeOfDevice('215')).toBe('floorheater');
       expect(await devicelist.typeOfDevice('305')).toBe('multisensor');
       expect(await devicelist.typeOfDevice('700')).toBe('curtain');
     });
@@ -45,6 +48,21 @@ describe('HdlDevicelist', () => {
 
     test('should return null for unknown devices', async () => {
       expect(await devicelist.numberOfChannels('9999')).toBe(null);
+    });
+  });
+
+  describe('sensorChannels', () => {
+    test('should return floor heater sensor channels', async () => {
+      const expected = [13, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62];
+      expect(await devicelist.sensorChannels('207')).toEqual(expected);
+      expect(await devicelist.sensorChannels('213')).toEqual(expected);
+      expect(await devicelist.sensorChannels('214')).toEqual(expected);
+      expect(await devicelist.sensorChannels('215')).toEqual(expected);
+    });
+
+    test('should return empty array for devices without sensor channels', async () => {
+      expect(await devicelist.sensorChannels('16')).toEqual([]);
+      expect(await devicelist.sensorChannels('9999')).toEqual([]);
     });
   });
 

@@ -229,5 +229,8 @@
   },
   "1.4.3": {
     "en": "Added support for the HDL-MPR0116-E.40 relay. Internal dependency updates."
+  },
+  "1.4.4": {
+    "en": "Added support for newer floor heating controllers (device types 213-215). Digital sensor channels (13 and 51-62) are now shown as read-only temperature devices."
   }
 }

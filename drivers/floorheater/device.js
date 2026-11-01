@@ -1,18 +1,27 @@
 'use strict';
 
 const Homey = require("homey");
+const HdlDevicelist = require("./../../hdl/hdl_devicelist");
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// Capabilities that only apply to heating zones, not digital sensors
+const ZONE_ONLY_CAPABILITIES = [
+  "target_temperature",
+  "onoff",
+  "meter_valve",
+  "meter_valve_number",
+];
+
 class FloorheaterDevice extends Homey.Device {
   currentData = null;
+  _isSensorChannel = false;
   _supportsExtendedTemperature = false;
   _isPollScheduled = false;
   _lastPollPromise = null;
   _lastExtendedTimestamp = null;
 
   async onInit() {
-    
     try {
       const storedFlag = await this.getStoreValue("supportsExtendedTemperature");
       if (typeof storedFlag === "boolean") {
@@ -22,17 +31,29 @@ class FloorheaterDevice extends Homey.Device {
       // ignore
     }
 
-    // register a capability listener
-    this.registerCapabilityListener("target_temperature", this.onTemperatureChange.bind(this));
-    this.registerCapabilityListener("onoff", this.onPowerSwitchChange.bind(this));
+    this._isSensorChannel = await this._detectSensorChannel();
 
-    try {
-      await this.setCapabilityOptions("target_temperature", {
-        step: 1,
-        decimals: 0
-      });
-    } catch (err) {
-      this.error(err);
+    if (this._isSensorChannel) {
+      // Digital sensor channels (13 and 50 + probe ID) are read-only
+      // temperature inputs, so drop the heating-zone capabilities
+      for (const capability of ZONE_ONLY_CAPABILITIES) {
+        if (this.hasCapability(capability)) {
+          await this.removeCapability(capability).catch(this.error);
+        }
+      }
+    } else {
+      // register a capability listener
+      this.registerCapabilityListener("target_temperature", this.onTemperatureChange.bind(this));
+      this.registerCapabilityListener("onoff", this.onPowerSwitchChange.bind(this));
+
+      try {
+        await this.setCapabilityOptions("target_temperature", {
+          step: 1,
+          decimals: 0
+        });
+      } catch (err) {
+        this.error(err);
+      }
     }
 
     // Ask for channel status
@@ -41,7 +62,38 @@ class FloorheaterDevice extends Homey.Device {
     }
   }
 
+  async _detectSensorChannel() {
+    const data = this.getData();
+    const channel = data ? data.channel : undefined;
+    if (typeof channel === "undefined") return false;
+
+    let type = null;
+    try {
+      const units = this.homey.app.getDevicesOfType("floorheater") || {};
+      for (const sender of Object.values(units)) {
+        if (sender && data.address === `${sender.subnet}.${sender.id}`) {
+          type = sender.type;
+          break;
+        }
+      }
+    } catch (_err) {
+      // fall through to the channel heuristic below
+    }
+
+    if (type !== null) {
+      const devicelist = new HdlDevicelist();
+      const sensorChannels = await devicelist.sensorChannels(type.toString());
+      if (sensorChannels.length > 0) return sensorChannels.includes(channel);
+    }
+
+    // Fallback for modules not yet seen on the bus: every supported floor
+    // heating controller has 6 heating zones, so any higher channel number
+    // is a digital sensor input (13 and 50 + probe ID)
+    return channel > 6;
+  }
+
   updateLevel(level) {
+    if (this._isSensorChannel) return;
     this.setCapabilityValue("target_temperature", level).catch(this.error);
   }
 
@@ -66,6 +118,7 @@ class FloorheaterDevice extends Homey.Device {
   }
 
   updatePowerSwitch(pwr) {
+    if (this._isSensorChannel) return;
     const nextValue = !!pwr;
     if (this.getCapabilityValue("onoff") === nextValue) return;
     this.setCapabilityValue("onoff", nextValue).catch(() => {
@@ -74,6 +127,7 @@ class FloorheaterDevice extends Homey.Device {
   }
 
   updateValve(valve) {
+    if (this._isSensorChannel) return;
     const label = valve ? "Open" : "Closed";
     const numeric = valve ? 1 : 0;
     const currentLabel = this.getCapabilityValue("meter_valve");
@@ -126,16 +180,23 @@ class FloorheaterDevice extends Homey.Device {
   async _performPoll() {
     const payload = { channel: this.getData().channel };
     const rawPayload = Buffer.from([this.getData().channel]);
-    const commands = [
-      { command: 0x1C5E, data: payload },
-      { command: 0x1948, data: payload }
-    ];
+    const commands = [];
+
+    // Sensor channels only support temperature reads; skip the
+    // heating-zone status and valve commands
+    if (!this._isSensorChannel) {
+      commands.push({ command: 0x1C5E, data: payload });
+    }
+
+    commands.push({ command: 0x1948, data: payload });
 
     if (this._shouldUseLegacyRead()) {
       commands.push({ command: 0xE3E7, data: payload });
     }
 
-    commands.push({ command: 0x7262, payload: rawPayload });
+    if (!this._isSensorChannel) {
+      commands.push({ command: 0x7262, payload: rawPayload });
+    }
 
     for (const entry of commands) {
       await this._sendCommand(entry.command, entry.data, entry.payload);
@@ -170,6 +231,8 @@ class FloorheaterDevice extends Homey.Device {
   }
 
   async onTemperatureChange(value, _opts) {
+    if (this._isSensorChannel) return; // read-only sensor channel
+
     if (this.currentData === null) {
       return; // No template data to send
     }
@@ -183,6 +246,8 @@ class FloorheaterDevice extends Homey.Device {
   }
 
   async onPowerSwitchChange(value, _opts) {
+    if (this._isSensorChannel) return; // read-only sensor channel
+
     if (this.currentData === null) {
       return; // No template data to send
     }

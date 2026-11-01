@@ -11,6 +11,19 @@
     "windowcoverings_state"
   ],
   "icon": "/drivers/curtain/assets/icon.svg",
+  "settings": [
+    {
+      "id": "hdl_address",
+      "type": "label",
+      "label": {
+        "en": "HDL bus address"
+      },
+      "value": "",
+      "hint": {
+        "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+      }
+    }
+  ],
   "images": {
     "large": "/drivers/curtain/assets/images/large.png",
     "small": "/drivers/curtain/assets/images/small.png"

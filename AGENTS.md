@@ -80,5 +80,6 @@ When bumping the version, always update all four of these files:
 
 - `'use strict'` at the top of every JS file
 - New device types must be added to `this._driverlist` in `app.js` and registered in `hdl_devicelist.js`
+- Every driver declares a read-only `hdl_address` settings label (`type: "label"` with an empty `value` default) in `driver.compose.json` and populates it from `this.getData().id` in the device's `onInit()`; new drivers must keep this pattern
 - Silent error handling: expected errors (e.g., "Driver Not Initialized", "invalid_device") are suppressed from logs; unexpected errors are logged
 - Value validation bounds: temperature -40..80°C, humidity 0..100%, lux 0..100,000

@@ -5,6 +5,9 @@ const Homey = require("homey");
 class MultisensorDevice extends Homey.Device {
   async onInit() {
     this.homey.app.log(`Initated "${this.getName()}" (Multisensor/${this.getClass()}) ${this.getData().id}`);
+
+    // Show the device's HDL bus address in the settings screen
+    await this.setSettings({ hdl_address: this.getData().id }).catch(this.error);
   }
 
   async requestUpdate() {

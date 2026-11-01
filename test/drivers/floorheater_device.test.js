@@ -48,6 +48,13 @@ describe('FloorheaterDevice', () => {
       expect(device._capabilityListeners.onoff).toBeDefined();
     });
 
+    test('should show the HDL bus address in the device settings on init', async () => {
+      const device = makeDevice({ id: '1.10.2', address: '1.10', channel: 2 });
+      await device.onInit();
+
+      expect(await device.getSettings()).toEqual({ hdl_address: '1.10.2' });
+    });
+
     test('should remove zone capabilities on a sensor channel (13)', async () => {
       const foundUnits = { 10: { id: 10, subnet: 1, type: 213 } };
       const device = makeDevice(

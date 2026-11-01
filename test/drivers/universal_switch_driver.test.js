@@ -1,6 +1,7 @@
 'use strict';
 
 const UniversalSwitchDriver = require('../../drivers/universal-switch/driver');
+const UniversalSwitchDevice = require('../../drivers/universal-switch/device');
 
 describe('UniversalSwitchDriver', () => {
   let driver;
@@ -113,5 +114,16 @@ describe('UniversalSwitchDriver', () => {
       expect(devices[0].name).toBe('HDL Universal Switch (1.1)');
       expect(devices[0].data).toEqual({ id: '1.1', switch: 1 });
     });
+  });
+});
+
+describe('UniversalSwitchDevice', () => {
+  test('should show the HDL bus address in the device settings on init', async () => {
+    const device = new UniversalSwitchDevice({ id: '1.42', switch: 42 }, null);
+    device.homey = { app: { log: jest.fn() } };
+
+    await device.onInit();
+
+    expect(await device.getSettings()).toEqual({ hdl_address: '1.42' });
   });
 });

@@ -120,7 +120,9 @@ stated otherwise. State labels:
 - **Asked for:** Reliable lux reporting from 8in1 multisensors; some users
   get no lux at all, others get values hours old. (Fredrik #113, #299, #306)
 - **Current state:** Confirmed against the official HDL-BUS Pro operation
-  codes document. The two 8in1 models differ fundamentally: type 314 reports
+  codes document (in-repo:
+  `assets/HDL-BUS Pro operation codes(Eng) Jan 08 2013.pdf`). The two 8in1
+  models differ fundamentally: type 314 reports
   brightness (0-5000 lux) in its status feedback and works in the app, while
   type 315 has no brightness measurement at all — its status feedback
   (`0xDB01`) only carries an "In LUX range" flag (0/1) relative to the range
@@ -194,9 +196,18 @@ stated otherwise. State labels:
     multisensor types share this driver — the devicelist needs per-type
     relay-channel metadata (e.g. a new field on entries 321/308) so relay
     capabilities are only added for those types (AndreasL's point in #262).
-  - **Open unknown (needs a bus capture):** whether the 12in1 *reports*
-    relay channel state back (via `0x0032`/`0x0033` or broadcasts) the way
-    relay modules do. Only the control direction is confirmed. Control
+  - **Feedback path (per the official operation codes doc, in-repo
+    `assets/HDL-BUS Pro operation codes(Eng) Jan 08 2013.pdf`):** the
+    12in1 Read Status feedback (`0x1646`) carries only temperature,
+    brightness, PIR, sonic and two dry contacts — **no relay state**. So
+    the sensor status poll can never reflect the relay outputs. If the
+    12in1 implements the standard single-channel command family, feedback
+    arrives via `0x0032` answerbacks, which are broadcasts carrying the
+    switch status of every channel, or `0x0034`/`0x0039` responses
+    (`0x0038` reads actual status). The bus capture should target these.
+  - **Open unknown (needs a bus capture):** whether the 12in1 actually
+    *reports* relay channel state back the way relay modules do (see the
+    feedback path above). Only the control direction is confirmed. Control
     would work without feedback, but state sync when the relay is switched
     from a DLP depends on this. Capture with a `DEBUG=smart-bus` listener
     (see `.agents/skills/hdl-device-development/`) before finalizing the

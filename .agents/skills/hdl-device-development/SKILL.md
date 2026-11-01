@@ -84,11 +84,16 @@ Take the reported `sender.type` and:
    already recognized.
 2. If missing, look it up in `assets/defDeviceType.xlsx` (official HDL device
    type IDs, column A) to identify what the hardware is.
-3. If the hardware belongs to an existing driver family (e.g. another dimmer
+3. The official command and payload reference is
+   `assets/HDL-BUS Pro operation codes(Eng) Jan 08 2013.pdf` — operate
+   codes, response formats, and per-device Read Status feedback layouts
+   (use it to verify buffer formats and payload positions; it is the
+   document that `smart-bus` implements and that the app's docs cite).
+4. If the hardware belongs to an existing driver family (e.g. another dimmer
    model), support may only need a new entry in `hdl_devicelist.js`
    (`type`, `channels`, `zones`, `main_capability`, optional `exclude`).
    See index.md, "How devices are recognized".
-4. Otherwise the device needs a new driver — continue to section 4.
+5. Otherwise the device needs a new driver — continue to section 4.
 
 ## 3. Missing command support: contribute upstream first
 

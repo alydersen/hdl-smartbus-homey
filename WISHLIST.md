@@ -116,22 +116,65 @@ stated otherwise. State labels:
 ## C. Device types
 
 ### C1. 12in1 multisensor relay output control
-- **Status:** Open
+- **Status:** Open (investigated; implementation not started)
 - **Asked for:** Control the relay output (e.g. garage door opener) on
   12in1 multisensors from Homey. (Eivind_Bo #261, #278, #283)
 - **Current state:** Multisensors are read-only in the app. AndreasL
   assessed it as doable (#262) — the difference vs. the relay driver is one
   device with 2 channels rather than one Homey device per channel. Never
   implemented.
+- **Investigation (2026-11-01, no code changes yet):**
+  - The 12in1 is device type **321** (HDL-MS12.2C / SB-CMS-12in1), with
+    type **308** (HDL-MS12) as the older variant (per
+    `assets/defDeviceType.xlsx`). Both are already registered as
+    `multisensor` in `hdl/hdl_devicelist.js`, so their signals already
+    reach the multisensor driver.
+  - **Protocol/library: supported.** The relay output is controlled with
+    the standard Single Channel Control command (`0x0031`, channel 1/2),
+    confirmed by Eivind_Bo (#261: DLPs and switches trigger it that way).
+    `smart-bus` fully supports `0x0031`, its response `0x0032`, and Read
+    Status of Channels `0x0033` — the same commands `drivers/relay/`
+    already uses. No upstream work needed; the gap is purely app-side.
+  - **App-side gap:** the multisensor driver is passive —
+    `driver.js:updateValues()` only looks for movement/temperature/
+    humidity/brightness/dry-contact payloads and ignores
+    `data.channel`/`level`; `device.js` has no capability listeners and only
+    polls sensor status (0xdb00, 0x1645, 0x1604).
+  - **Design sketch:** keep one Homey device per unit and add per-channel
+    relay capabilities (`relay_1`/`relay_2`), following the dry-contact
+    driver's lazy-capability pattern (custom capabilities in
+    `.homeycompose/capabilities/` plus per-channel flow cards). Capability
+    listeners in `device.js` send `0x0031` with the channel; `updateValues()`
+    additionally handles `data.channel`/`data.channels` for feedback, and
+    `requestUpdate()` can add an `0x0033` poll. The standard `onoff`
+    capability cannot be used (only one per device, and there are two
+    relay channels). Per-channel sub-devices relay-style would break the
+    unit-level pairing model.
+  - **Per-type gating:** only the 12in1 types have relay outputs, but all
+    multisensor types share this driver — the devicelist needs per-type
+    relay-channel metadata (e.g. a new field on entries 321/308) so relay
+    capabilities are only added for those types (AndreasL's point in #262).
+  - **Open unknown (needs a bus capture):** whether the 12in1 *reports*
+    relay channel state back (via `0x0032`/`0x0033` or broadcasts) the way
+    relay modules do. Only the control direction is confirmed. Control
+    would work without feedback, but state sync when the relay is switched
+    from a DLP depends on this. Capture with a `DEBUG=smart-bus` listener
+    (see `.agents/skills/hdl-device-development/`) before finalizing the
+    feedback design.
+  - Details also documented in `DEVICES_MULTISENSORS.md`, section
+    "Relay outputs (12in1)".
 
 ### C2. Generic/customizable relay or dimmer device
-- **Status:** Open (design question)
+- **Status:** Rejected by maintainer (2026-11-01)
 - **Asked for:** A "manual" device where the user enters subnet, device ID,
   channel count and selects relay/dimmer — covering odd units without app
   updates. (Eivind_Bo #263)
 - **Current state:** Rejected at the time as it required a rewrite of the
   signal handling. With the device-registry architecture
   (`hdl/hdl_devicelist.js`) this may be easier now.
+- **Decision:** Not pursued — maintainer prefers supporting devices
+  explicitly through the device registry (see C1 for the 12in1 relay
+  outputs). Revisit only if unregistered-device requests keep recurring.
 
 ### C3. IR module (HDL-MIR) support
 - **Status:** Blocked (library)

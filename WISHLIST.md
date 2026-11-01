@@ -74,13 +74,26 @@ stated otherwise. State labels:
   devices likely need to be re-added.
 
 ### B2. 8in1 lux values missing or stale
-- **Status:** Needs info
+- **Status:** Open (lux explained — protocol limitation on type 315;
+  optional follow-up below)
 - **Asked for:** Reliable lux reporting from 8in1 multisensors; some users
   get no lux at all, others get values hours old. (Fredrik #113, #299, #306)
-- **Current state:** Some 8in1 variants (type 315) don't report brightness;
-  others do (314). Stale values appear to be the device not broadcasting,
-  combined with the 60-second poll.
-- **Notes:** Possibly improved by allowing a shorter poll interval (D3).
+- **Current state:** Confirmed against the official HDL-BUS Pro operation
+  codes document. The two 8in1 models differ fundamentally: type 314 reports
+  brightness (0-5000 lux) in its status feedback and works in the app, while
+  type 315 has no brightness measurement at all — its status feedback
+  (`0xDB01`) only carries an "In LUX range" flag (0/1) relative to the range
+  configured in HDL Setup. A numeric lux value cannot be provided for the
+  type 315, regardless of app changes.
+- **Staleness:** The type 315 has no auto-broadcast command; it only answers
+  the app's status requests, so with the default poll its readings refresh
+  once a minute. Since 1.5.0 the poll interval is configurable down to 10
+  seconds (D3), which is the app's full remedy for stale readings.
+- **Notes:** smart-bus
+  [PR #25](https://github.com/caligo-mentis/smart-bus/pull/25) parses the
+  lux-range flag (and UV switch states) from `0xDB01`. If merged and
+  released, the app could surface an "in lux range" capability for type 315
+  sensors — the only lux-related data that model offers.
 
 ### B3. SB-CMS-PIR support
 - **Status:** Needs info

@@ -13,6 +13,11 @@ the local implementation should be removed and this document updated.
 - **[PR #23](https://github.com/caligo-mentis/smart-bus/pull/23)** — adds
   `0x000E` (device discovery broadcast) and `0x7262`/`0x7263` (floor heating
   extended temperature), version bump to **0.9.1**. Awaiting review/merge.
+- **[PR #25](https://github.com/caligo-mentis/smart-bus/pull/25)** — parses
+  the previously skipped `luxRange` and `uvSwitches` fields of `0xDB01`
+  (8in1 DeviceType315 sensors status feedback). No app-local override exists
+  for these fields; the app consumes them when the PR is merged and released.
+  Awaiting review/merge.
 - **[Issue #24](https://github.com/caligo-mentis/smart-bus/issues/24)** —
   design discussion for the dry-contact payload variants of `0x0031` and
   `0xE3D9` (see below). No implementation until the maintainer picks a

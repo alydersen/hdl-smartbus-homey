@@ -27,7 +27,14 @@ Homey has built in support for flows to be triggered when zones become active or
 
 ## Humidity readings
 We have found that some units reports humidity values even though they don't have the sensors. This normally results in a reading of 255%. Any reading outside the 0 to 100 scope will be disregarded.
-## Dry Contacts
+## Lux readings (8in1)
+There are two 8in1 models, and they handle light levels completely differently (per the official HDL-BUS Pro operation codes document):
+- **Type 314** reports a brightness value (0-5000 lux) in its Read Status feedback, which the app shows as `measure_luminance`.
+- **Type 315** does not measure brightness at all. Its Read Status feedback only carries an "In LUX range" flag (0 = no, 1 = yes), which tells whether the light level is inside the range configured for the sensor in the HDL Setup Tool. A numeric lux value can therefore never be shown in Homey for this model. The app does not surface the range flag yet; smart-bus [PR #25](https://github.com/caligo-mentis/smart-bus/pull/25) parses it, so it can be added as a capability later.
+
+Note that the type 315 does not broadcast its status on its own; it only responds to the app's periodic status requests. With the default poll interval this means its readings refresh about once a minute. The interval is configurable in the app settings, down to 10 seconds.
+
+## Dry Contacts
 Some multisensors have one or more dry contacts. These are "sensors" allowing you to connect different equipment and react if the equipment closes the circuit (e.g. with a magnetic contact sensor). These types of sensors are either "NO" or "NC", meaning that they are either Normally Open or Normally Closed, and you can configure this in the HDL configuration of the multisensor for some sensor types (e.g. 8-in-1). A NO sensor will trigger if the circuit is closed, and visa-versa for NC.
 
 Because special flow cards are added for these dry contacts, you can trigger flows based on their state. Be aware that not all sensor types (models) sends out a signal when the state of a dry contact changes, so for them the state won't be updated before a state update request is sent from the App (every 60 seconds). If you want this to be fast, set up your multisensor by logic to activate an Universal Switch when the Dry Contact is triggered, and deactivate it when it is not triggered. You can then base your flow on the Universal Switch.

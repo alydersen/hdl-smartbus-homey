@@ -167,12 +167,18 @@ stated otherwise. State labels:
   evenly across the interval instead of firing one burst on the bus.
 
 ### D4. Energy tab support for relays
-- **Status:** Open
+- **Status:** In progress — implemented on branch
+  `feature/energy-approximation`, not yet released
 - **Asked for:** Relay power usage ("Power usage when on (Watt)") should
   appear in Homey's Energy tab as a consumer. (horakmar #296)
-- **Current state:** Not implemented. Likely needs the
-  `"energy": { "cumulative": true }` flag on the relay capability to make
-  Homey treat the W value as an unmetered consumer.
+- **Current state:** The relay and dimmer drivers declare
+  `energy.approximation` (`usageOn`/`usageOff`, default 0), which gives every
+  channel the standard Homey "Power usage when on/off" settings. Homey
+  calculates consumption from on-time (scaled by dim level for dimmers).
+  Limitation (Homey design): approximated devices count towards the total
+  but are not included in the "Top Consumers" list. horakmar's
+  `"energy": {"cumulative": true}` suggestion applies to cumulative
+  `meter_power` meters, not to relays.
 
 ### D5. Homey Bridge support
 - **Status:** Blocked (platform)

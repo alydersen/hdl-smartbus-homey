@@ -241,8 +241,9 @@ class HDLSmartBus extends Homey.App {
     // Return if no type was found
     if (foundType === null) return;
 
-    // Allow failing signal data only if the device is a curtain
-    // (curtains are extending the signal data)
+    // Tolerate signals without parsable data for curtain devices so their
+    // senders are still recorded for pairing (empty-payload curtain
+    // commands); the curtain driver ignores empty signal data
     if (foundType !== "curtain" && dataFromSignal === undefined) return;
     if (signal.sender.id === undefined) return;
 

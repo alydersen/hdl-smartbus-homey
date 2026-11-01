@@ -22,9 +22,8 @@ class CurtainDriver extends Homey.Driver {
   }
 
   async updateValues(signal) {
-      if (signal.parse)
-        signal.data = signal.parse(signal.payload);
-        
+      // signal.data is parsed by smart-bus itself (0.9.0+ ships the
+      // curtain command parsers); a manual re-parse is no longer needed
       if (signal.data) {
         if (signal.code == 0xE3E4) {
           // This signal contains all channels, we need to process it for every device

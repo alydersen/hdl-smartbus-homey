@@ -98,19 +98,23 @@ identified by the bus frame header. Already works today (empty payload means
 no encoder is needed); PR #23 registers it upstream for documentation and
 round-tripping. No app change required when 0.9.1 lands.
 
-## Redundant legacy (simplification candidates, no upstream dependency)
+## Legacy cleanup (done)
 
-These predate smart-bus 0.9.0 and can be replaced by the standard parsed
-data at any time — the upstream parsers produce identical fields:
+Both smart-bus 0.7.0-era workarounds have been removed now that the 0.9.0
+parsers provide identical fields:
 
-- `drivers/floorheater/driver.js` — the raw byte fallbacks for valve
-  (offset 9 for `0x1C5F`, 8 for `0x1C5D`), work status (bytes 10/11) and
-  `PWD` duplicate fields that smart-bus 0.9.0 already parses
-  (`valve`, `work.status`, `PWD`, `watering.status`).
+- `drivers/floorheater/driver.js` — the raw byte re-reads for valve
+  (offset 9 for `0x1C5F`, 8 for `0x1C5D`), work status and `PWD` were
+  replaced by the standard parsed fields (`valve`, `work.status`, `PWD`,
+  `watering.status`).
 - `drivers/curtain/driver.js` — the manual `signal.parse(signal.payload)`
-  re-parse (and the matching curtain-only exception in `app.js`
-  `_signalReceived`) is unnecessary since smart-bus 0.9.0 ships parsers for
-  `0xE3E1`, `0xE3E3`, `0xE3E4` and `0xE801`.
+  re-parse was removed; the driver consumes `signal.data` directly.
+
+One related exception is kept intentionally: `app.js` `_signalReceived`
+still lets curtain signals without parsable data through, so curtain
+senders are recorded in the found-units list and remain pairable even
+when their current command carries an empty payload. The curtain driver
+itself ignores empty data.
 
 ## Supported upstream and used as-is
 

@@ -44,12 +44,9 @@ class FloorHeaterDriver extends Homey.Driver {
         if (signal.data.temperature && this.homey.app.valueOK("temperature", signal.data.temperature.normal)) {
           homeyDevice.updateLevel(signal.data.temperature.normal);
         }
-        const valueSource = bufferPayload;
-        const valveRaw =
-          Buffer.isBuffer(valueSource) && valueSource.length > 9
-            ? valueSource.readUInt8(signal.code === 0x1C5F ? 9 : 8)
-            : undefined;
-        const payloadHex = Buffer.isBuffer(valueSource) ? valueSource.toString("hex") : "";
+        // valve, work, PWD and watering are parsed by smart-bus 0.9.0
+        // (0x1C5D/0x1C5F); the raw byte re-reads from the smart-bus
+        // 0.7.0 era were redundant and have been removed
         const valveState = (() => {
           if (typeof signal.data.PWD !== "undefined") return Boolean(signal.data.PWD);
           if (signal.data.watering && typeof signal.data.watering.status !== "undefined") {
@@ -57,12 +54,6 @@ class FloorHeaterDriver extends Homey.Driver {
           }
           if (signal.data.work && typeof signal.data.work.status !== "undefined") {
             return Boolean(signal.data.work.status);
-          }
-          if (Buffer.isBuffer(valueSource) && valueSource.length > 10) {
-            return valueSource.readUInt8(10) > 0;
-          }
-          if (Buffer.isBuffer(valueSource) && valueSource.length > 11) {
-            return valueSource.readUInt8(11) > 0;
           }
           if (typeof signal.data.valve !== "undefined") return Boolean(signal.data.valve);
           return undefined;
@@ -72,7 +63,7 @@ class FloorHeaterDriver extends Homey.Driver {
           const key = signature.id;
           const last = this._lastValveValue && this._lastValveValue.get(key);
           if (last !== valveState) {
-            homeyDevice.updateValve(valveState, { raw: valveRaw, payload: payloadHex });
+            homeyDevice.updateValve(valveState);
             this._lastValveValue.set(key, valveState);
           }
         }

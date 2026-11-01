@@ -7,25 +7,68 @@ class HdlUniversalSwitchDriver extends Homey.Driver {
     this.homey.app.log("HDL UniversalSwitchDriver has been initiated");
   }
 
+  // Record a universal switch signal in the troubleshooting log, if the
+  // user has enabled it in the app settings. Signals are logged with the
+  // outcome of the filters below, also when they are filtered out
+  async _logUvSignal(signal, note) {
+    if (this.homey.settings.get("hdl_uv_debug") !== true) return;
+
+    let log = this.homey.settings.get("hdl_uv_debug_log");
+    if (!Array.isArray(log)) log = [];
+
+    let sender = signal.sender || {};
+    log.push({
+      t: Date.now(),
+      sender: sender.subnet !== undefined && sender.id !== undefined
+        ? `${sender.subnet}.${sender.id}`
+        : undefined,
+      type: sender.type,
+      switch: signal.data !== undefined ? signal.data.switch : undefined,
+      status: signal.data !== undefined ? signal.data.status : undefined,
+      note: note
+    });
+
+    // Keep the buffer bounded; the log is stored in the Homey settings
+    this.homey.settings.set(
+      "hdl_uv_debug_log",
+      log.length > 100 ? log.slice(-100) : log
+    );
+  }
+
   async updateValues(signal) {
-    if (signal.data === undefined) return;  // RETURN IF NO DATA
-    if (signal.data.switch === undefined) return;  // RETURN IF NO CONTENT
+    if (signal.data === undefined) {
+      await this._logUvSignal(signal, "ignored: no data");
+      return;
+    }
+    if (signal.data.switch === undefined) {
+      await this._logUvSignal(signal, "ignored: no switch number");
+      return;
+    }
     if (
       signal.data.switch === parseInt(this.homey.settings.get("hdl_universal_motion"), 10)
-    )
-      return;  // RETURN IF THE SIGNAL IS FOR UNIVERSAL MOTION
+    ) {
+      await this._logUvSignal(signal, "ignored: motion universal switch");
+      return;
+    }
     if (
       signal.sender.id === parseInt(this.homey.settings.get("hdl_id"), 10)
-    )
-      return;  // RETURN IF THE SIGNAL IS FROM MYSELF
+    ) {
+      await this._logUvSignal(signal, "ignored: from the app itself");
+      return;
+    }
 
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
     let homeyDevice = this.getDevice({
       id: `${hdl_subnet}.${signal.data.switch}`,
       switch: signal.data.switch
     });
-    if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) return;
-    
+    if ( typeof homeyDevice === 'undefined' || homeyDevice instanceof Error ) {
+      await this._logUvSignal(signal, "ignored: no paired device for this switch");
+      return;
+    }
+
+    await this._logUvSignal(signal, "accepted");
+
     homeyDevice
       .setCapabilityValue("onoff", signal.data.status)
       .catch(this.error);

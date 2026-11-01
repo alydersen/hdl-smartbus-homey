@@ -318,6 +318,15 @@ stated otherwise. State labels:
   version #319: "Universal switch: broadcast + optional logic controller
   path"). Ghost-UV reports appear to be local to Fredrik's 2011
   installation/configuration and were never reproduced or resolved.
+- **In flight (pending release):** A UV send-mode setting (legacy spray /
+  broadcast + logic controller / broadcast only, legacy as default) lets
+  users drop the 255-packet-per-toggle spray; the default legacy mode
+  sends 254 unicast copies plus answerbacks and is a plausible
+  contributor to erratic behavior on large buses. A UV signal log
+  (last 100 signals incl. filtered ones, shown in the app settings)
+  turns future ghost reports from "never reproduced" into captured
+  data. Logic controller input validation was also fixed (non-numeric
+  input previously produced sends to `subnet.NaN`).
 
 ### D3. Configurable polling interval
 - **Status:** Done — implemented in PR #102, released in 1.5.0

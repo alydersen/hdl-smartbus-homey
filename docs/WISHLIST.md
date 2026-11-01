@@ -44,7 +44,7 @@ stated otherwise. State labels:
   only). A setup where the heating controller is master and the DLPs are
   slaves, all zones in Normal mode, makes changes to the heating controller
   reflect on the DLPs (TorbjornM #332) — this is the documented workaround,
-  and a setup guide has been requested (Nichel #333, see F1).
+  now described step by step in `GUIDE_HeatingDlpSync.md` (see F1).
 - **Context:** Covered by ojnordah's DLP driver effort (#335), see A1.
 
 ### A3. Reflect HDL-side mode/scene changes in Homey
@@ -359,12 +359,20 @@ stated otherwise. State labels:
 ## F. Documentation opportunities
 
 ### F1. Heating controller master + DLP slave setup guide
-- **Status:** Open
+- **Status:** Done — `GUIDE_HeatingDlpSync.md` (pending release)
 - **Asked for:** A step-by-step guide (Nichel #333); TorbjornM offered to
   write up his setup incl. HDL Setup Tool gotchas (#310).
-- **Current state:** TorbjornM's multisensor and floor-heating guides are in
-  the repo (`GUIDE_Multisensor.md`, `GUIDE_HeatingController.md`); the
-  master/slave DLP synchronization guide is still missing.
+- **Current state:** The guide documents the master/slave role switch:
+  heating controller as master, DLPs pointed at their zone's controller
+  channel, all zones in Normal mode, with the Setup Tool gotchas (refresh
+  before editing, save per heating ID, inner-sensor and
+  temperature-source choices, cycle time) and an explicit statement of the
+  trade-off (no Day/Night/Away mode control from Homey). Written from
+  TorbjornM's thread reports (#308, #332) and the existing
+  `GUIDE_HeatingController.md`; cross-linked from the sidebar, the front
+  page guides list, `DEVICES_PANELS.md` and `DEVICES_FLOORHEATERS.md`.
+  Not yet verified step-by-step on a live installation — TorbjornM's
+  promised screenshots (#310) would still make a good review pass.
 
 ### F2. Best-practice: moving HDL logic to Homey
 - **Status:** Done — `GUIDE_MovingLogicToHomey.md` (pending release)

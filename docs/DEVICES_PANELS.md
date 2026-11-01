@@ -8,3 +8,6 @@ First of all, temperature sensors are one-way only, meanings readings come from 
 
 ## Temperature scope
 The app will disregard any readings that are below -40 or above 70 degrees celsius.
+
+## Two-way heating sync with Homey
+Panels cannot be controlled from Homey, but if you pair your DLPs with a heating controller as master, temperature changes are reflected both ways. See [Heating controller master + DLP slave](GUIDE_HeatingDlpSync.md).

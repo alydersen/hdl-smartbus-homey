@@ -40,5 +40,6 @@ Every paired device shows its address on the HDL bus (subnet.device.channel) und
 - [Connecting the App to HDL](CONNECTING.md)
 - [Multisensor setup for stable motion events](GUIDE_Multisensor.md)
 - [Heating controller setup](GUIDE_HeatingController.md)
+- [Heating controller master + DLP slave](GUIDE_HeatingDlpSync.md)
 - [Moving HDL logic to Homey](GUIDE_MovingLogicToHomey.md)
 

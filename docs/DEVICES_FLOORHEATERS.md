@@ -13,3 +13,6 @@ Sensor devices are read-only: they only expose a measured temperature. The heati
 The sensor channels are mapped as follows:
 - **Channel 13** — Outdoor temperature sensor
 - **Channels 51-62** — Digital sensors (sensor ID + 50, so sensor ID 1 = channel 51, sensor ID 12 = channel 62)
+
+## DLP panels
+If DLP panels operate your floor heating, the heating controller can act as master for both Homey and the panels. See [Heating controller master + DLP slave](GUIDE_HeatingDlpSync.md) for how to keep the panels and Homey in sync.

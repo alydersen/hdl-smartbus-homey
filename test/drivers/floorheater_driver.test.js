@@ -173,9 +173,6 @@ describe('FloorHeaterDriver', () => {
 
     describe('valve tracking', () => {
       test('should update valve on first signal', async () => {
-        const payload = Buffer.alloc(11);
-        payload.writeUInt8(1, 0); // channel
-        payload.writeUInt8(1, 10); // valve open
         const signal = {
           code: 0x1C5F,
           sender: { id: 42, type: 207 },
@@ -183,13 +180,10 @@ describe('FloorHeaterDriver', () => {
             channel: 1,
             work: { status: true }
           },
-          payload: payload
+          payload: null
         };
         await driver.updateValues(signal);
-        expect(mockHomeyDevice.updateValve).toHaveBeenCalledWith(
-          true,
-          expect.objectContaining({ raw: expect.any(Number) })
-        );
+        expect(mockHomeyDevice.updateValve).toHaveBeenCalledWith(true);
       });
 
       test('should not update valve when value unchanged', async () => {

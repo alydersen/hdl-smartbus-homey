@@ -66,15 +66,13 @@ describe('CurtainDriver', () => {
       expect(mockHomeyDevice.updateDuration).not.toHaveBeenCalled();
     });
 
-    test('should parse payload when parse function is present', async () => {
+    test('should use signal data parsed by smart-bus', async () => {
       const signal = {
         code: 0xE3E1,
         sender: { id: 42 },
-        payload: Buffer.from([0x00]),
-        parse: jest.fn(() => ({ curtain: 1, status: 2 }))
+        data: { curtain: 1, status: 2 }
       };
       await driver.updateValues(signal);
-      expect(signal.parse).toHaveBeenCalledWith(signal.payload);
       expect(mockHomeyDevice.updateStatus).toHaveBeenCalledWith(2);
     });
 

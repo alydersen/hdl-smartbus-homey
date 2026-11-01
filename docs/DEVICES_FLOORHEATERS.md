@@ -8,7 +8,7 @@ Each heating zone exposes a target temperature, measured temperature, on/off swi
 ## Digital Temperature Sensors
 Floor heating controllers (device types 207-215) support up to 13 external digital temperature sensors wired in parallel. These sensors are available for pairing alongside the regular heating zones and appear as "HDL Floor Sensor" during pairing.
 
-Sensor devices are read-only: they only expose a measured temperature. The heating-zone capabilities (target temperature, on/off switch, valve status) are removed automatically for sensor channels.
+Sensor devices are read-only: they only expose a measured temperature. They are paired with only that capability, so the heating-zone capabilities (target temperature, on/off switch, valve status) never exist on the device and never appear in Insights. Sensor devices paired by earlier app versions lose the heating-zone capabilities automatically on the next app restart.
 
 The sensor channels are mapped as follows:
 - **Channel 13** — Outdoor temperature sensor

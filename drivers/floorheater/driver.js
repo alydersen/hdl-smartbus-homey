@@ -111,7 +111,11 @@ class FloorHeaterDriver extends Homey.Driver {
           }
         });
       }
-      // Digital temperature sensors connected to the floor heating controller
+      // Digital temperature sensors connected to the floor heating controller.
+      // They are read-only, so pair them with only the measured temperature
+      // capability: the heating-zone capabilities then never exist on the
+      // device and never show up in Insights. (Devices paired before this
+      // still lose the zone capabilities via FloorheaterDevice.onInit().)
       const sensorChannels = await devicelist.sensorChannels(device.type.toString());
       for (const sensorChannel of sensorChannels) {
         devices.push({
@@ -120,7 +124,8 @@ class FloorHeaterDriver extends Homey.Driver {
             id: `${hdl_subnet}.${device.id}.${sensorChannel}`,
             address: `${hdl_subnet}.${device.id}`,
             channel: sensorChannel
-          }
+          },
+          capabilities: ["measure_temperature"]
         });
       }
     }

@@ -21,3 +21,6 @@ Controllers report fixed sentinel values when a channel has no sensor attached, 
 - The 0x1C5F status response reports `0x80` as the current temperature of a channel without a sensor.
 
 Both sentinels fall outside the app's valid temperature range (-40..80 °C, see `valueOK()` in `app.js`), so they are silently discarded instead of being shown as readings. Do not widen the validation bounds to accommodate them; -50.0 and 0x80 mean "no sensor", not a real temperature.
+
+## DLP panels
+If DLP panels operate your floor heating, the heating controller can act as master for both Homey and the panels. See [Heating controller master + DLP slave](GUIDE_HeatingDlpSync.md) for how to keep the panels and Homey in sync.

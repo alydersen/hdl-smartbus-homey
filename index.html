@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>HDL SmartBus for Homey</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <meta
+      name="description"
+      content="Documentation for the HDL SmartBus app for Homey: devices, guides and troubleshooting."
+    />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"
+    />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      window.$docsify = {
+        name: "HDL SmartBus for Homey",
+        repo: "alydersen/hdl-smartbus-homey",
+        homepage: "index.md",
+        loadSidebar: true,
+        alias: {
+          "/.*/_sidebar.md": "/_sidebar.md"
+        },
+        subMaxLevel: 2,
+        auto2top: true,
+        search: {
+          maxAge: 86400000,
+          paths: "auto",
+          placeholder: "Search the documentation…",
+          noData: "No results",
+          depth: 3
+        }
+      };
+    </script>
+    <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  </body>
+</html>

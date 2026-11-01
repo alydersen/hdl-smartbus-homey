@@ -196,30 +196,27 @@ if (commandCode === 0x0031 && payload && payload.length >= 5) {
 
 ---
 
-#### 0x6F00 - Dry Contact Multi-Channel Status (New)
-**Location**: `drivers/dry-contact/driver.js:123-137`  
-**Status**: New command not in smart-bus
+#### 0x6F00 - Dry Contact Multi-Channel Status (Supported upstream)
+**Location**: `drivers/dry-contact/driver.js` (consumes `signal.data.channels`)  
+**Status**: Parsed by smart-bus 0.9.0+ — no local parser needed
 
-**Implementation**:
+smart-bus 0.9.0+ parses 0x6F00 payloads into:
+
 ```javascript
-if (commandCode === 0x6f00 && payload && payload.length >= 8) {
-  const declaredChannels = payload[3];
-  const channelTotal = Math.min(declaredChannels || maxChannels, maxChannels);
-  const statusMask = payload.readUInt16BE(4);
-  // Parse 16-bit mask for up to 16 channels
+{
+  subnet,            // optional, when present in the payload
+  declaredChannels,  // number of declared channels
+  statusMask,        // 16-bit mask, one bit per channel
+  channels: [        // one entry per channel (up to 16)
+    { number: 1, status: true },
+    ...
+  ]
 }
 ```
 
-**Buffer Format**:
-```
-[0-1]   = Command (0x6F00)
-[2]     = Subnet?
-[3]     = Number of declared channels
-[4-5]   = Status mask (16-bit, Big Endian)
-[6-7]   = Additional data
-```
-
-**Description**: Report status for multiple dry contact channels using a 16-bit bitfield where each bit represents one channel state.
+The app previously parsed the raw payload locally (and later expected the
+mask as `data.dryContacts`, which never matched the upstream parser shape).
+Since smart-bus 0.9.0 the driver consumes `signal.data.channels` directly.
 
 ---
 
@@ -475,7 +472,7 @@ These are the commands that truly don't have smart-bus equivalents and require c
 | **0xE800** | ❌ NEW | Curtain | Get duration request |
 | **0xE801** | ❌ NEW | Curtain | Get duration response |
 | **0xE3E3** | ⚠️ FIX | Curtain | Status with duration (fixed parser) |
-| **0x6F00** | ❌ NEW | Dry Contact | Multi-channel status mask |
+| 0x6F00 | ✅ Used | Dry Contact | Multi-channel status mask |
 | **0xE3D9** | ❌ NEW | Dry Contact | Acknowledge with dual parsing |
 | **0x0031** | ⚠️ CUSTOM | Dry Contact | Custom mask parsing variant |
 | 0xE3E0 | ✅ Used | Curtain | Set curtain state |

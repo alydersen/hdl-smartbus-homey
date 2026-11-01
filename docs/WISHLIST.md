@@ -155,6 +155,24 @@ stated otherwise. State labels:
 - **Notes:** App-side fixes may include more resilient UV handling (D2) or
   a shorter poll interval (D3).
 
+### B5. Floor heater control mode (Normal vs Heating power)
+- **Status:** Open (needs upstream smart-bus parser first)
+- **Asked for:** Expose the floor heating controller's control mode —
+  Normal vs "Heating power" (PWM) — as a read-only capability in Homey.
+  (Suggested from a bus capture by oktollefsen, PR #110 comment, 2026-11-01)
+- **Current state:** Not implemented, in the app or in smart-bus. The mode
+  flag lives in byte 1 of the 0x1C5F floor heating status response: bit
+  0x20 is set for a "Heating power" channel (0x21) and clear for Normal
+  (0x01), confirmed on a type 213 module (one sample; verify before
+  implementing). smart-bus 0.9.0 parses 0x1C5D/0x1C5F (valve, work, PWD,
+  watering) but not this flag.
+- **Notes:** First step is a smart-bus parser contribution — follow
+  `CONTRIBUTING_TO_SMART_BUS.md` (parser in `lib/commands.js`, fixtures,
+  verified wire format, single-topic PR). Only after that lands does a
+  Homey capability make sense; until then the app has no local override
+  to record. Byte 11 of the same response (output %, e.g. 20 % PWM) could
+  ride along in the same contribution.
+
 ## C. Device types
 
 ### C1. 12in1 multisensor relay output control
@@ -300,6 +318,15 @@ stated otherwise. State labels:
   version #319: "Universal switch: broadcast + optional logic controller
   path"). Ghost-UV reports appear to be local to Fredrik's 2011
   installation/configuration and were never reproduced or resolved.
+- **In flight (pending release):** A UV send-mode setting (legacy spray /
+  broadcast + logic controller / broadcast only, legacy as default) lets
+  users drop the 255-packet-per-toggle spray; the default legacy mode
+  sends 254 unicast copies plus answerbacks and is a plausible
+  contributor to erratic behavior on large buses. A UV signal log
+  (last 100 signals incl. filtered ones, shown in the app settings)
+  turns future ghost reports from "never reproduced" into captured
+  data. Logic controller input validation was also fixed (non-numeric
+  input previously produced sends to `subnet.NaN`).
 
 ### D3. Configurable polling interval
 - **Status:** Done — implemented in PR #102, released in 1.5.0
@@ -331,12 +358,23 @@ stated otherwise. State labels:
 ## E. Bugs and loose ends
 
 ### E1. DMX dimmer SB-DN-48DMX flashes to 100% before dim level
-- **Status:** Open
+- **Status:** Done (pending release)
 - **Asked for:** When a flow sets a dim level, the light flashes to 100%
   before going to the requested level. (Eivind_Bo #124)
-- **Current state:** No code error found at the time; never resolved.
-  Possibly related to gradual dimming (added later, #214) or the unit
-  handling on/off + level commands.
+- **Current state:** Root cause found in the dimmer driver. `onoff` and
+  `dim` had separate capability listeners, and the `onoff(true)` listener
+  always sent a hard-coded 100% level. When a flow or the Homey UI
+  changes both (e.g. "turn on" + "dim to 50%", or dragging the dim slider
+  on an off light), the bus received 100% followed by the target level —
+  an invisible transient on relay/triac dimmers, but a visible flash on
+  DMX dimmers, which apply their own fade processing to each command.
+  The fix follows the official Homey lights best practice: the two
+  listeners are replaced by one debounced
+  `registerMultipleCapabilityListener(["onoff", "dim"], …)` that sends a
+  single channel-control command for the final state. Turning on without
+  a dim value now restores the current dim level instead of always going
+  to 100%. (Homey's `setOnDim: false` capability option, set since 1.1.0,
+  already covered flows that dim without an explicit "turn on" card.)
 
 ### E2. Intermittent wrong device state in Homey
 - **Status:** Recurring / configuration-dependent

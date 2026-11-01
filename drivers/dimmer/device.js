@@ -15,16 +15,14 @@ class DimmerDevice extends Homey.Device {
     // Show the device's HDL bus address in the settings screen
     await this.setSettings({ hdl_address: this.getData().id }).catch(this.error);
 
-    // register a capability listener
-    this.registerCapabilityListener("onoff", this.onCapabilityOnoff.bind(this));
-    this.registerCapabilityListener("dim", async (value, options) => {
-      await this.onCapabilityDim({
-        level: value,
-        duration: typeof options.duration === "number"
-          ? options.duration
-          : DEFAULT_DIM_DURATION,
-      });
-    });
+    // Couple onoff and dim into one debounced listener, so a Flow or UI
+    // action that changes both (e.g. "turn on" + "dim to 50%") sends a
+    // single channel-control command instead of flashing to 100% first
+    this.registerMultipleCapabilityListener(
+      ["onoff", "dim"],
+      this.onCapabilityOnoffDim.bind(this),
+      500
+    );
 
     // Ask for channel status
     if (this.homey.app.isBusConnected()) { this.requestUpdate() }
@@ -65,23 +63,43 @@ class DimmerDevice extends Homey.Device {
     );
   }
 
-  async onCapabilityOnoff(value) {
-    let level = value === true ? 1 : 0;
+  // Homey debounces onoff and dim changes into one call; send a single
+  // HDL channel-control command for the resulting level
+  async onCapabilityOnoffDim(values, options) {
+    const dim = values.dim;
+    const onoff = values.onoff;
+
+    // A dim value decides the level, unless the device is turned off
+    if (typeof dim === "number") {
+      const level = onoff === false ? 0 : dim;
+      await this.setCapabilityValue("onoff", level > 0).catch(this.error);
+
+      const dimOptions = (options && options.dim) || {};
+      const duration = typeof dimOptions.duration === "number"
+        ? dimOptions.duration
+        : DEFAULT_DIM_DURATION;
+      if (duration === 0) {
+        this.updateDeviceByBus(level);
+      } else {
+        const current_level = await this.getCapabilityValue("dim");
+        const step = (level - current_level) / 10;
+        for (let i = 0; i < 10; i++) {
+          setTimeout(() => { this.updateDeviceByBus(current_level + (step * (i + 1))); }, (duration / 10) * i);
+        }
+      }
+      return;
+    }
+
+    // onoff only: restore the current dim level when switching on,
+    // full on when no level is known
+    let level = 0;
+    if (onoff === true) {
+      const current_level = await this.getCapabilityValue("dim");
+      if (typeof current_level === "number" && current_level > 0) level = current_level;
+      else level = 1;
+    }
     this.updateDeviceByBus(level);
     this.setCapabilityValue("dim", level).catch(this.error);
-  }
-
-  async onCapabilityDim(opts) {
-    await this.setCapabilityValue("onoff", opts.level > 0).catch(this.error);
-    if (opts.duration === 0) {
-      this.updateDeviceByBus(opts.level);
-    } else {
-      const current_level = await this.getCapabilityValue("dim");
-      const step = (opts.level - current_level) / 10;
-      for (let i = 0; i < 10; i++) {
-        setTimeout(() => { this.updateDeviceByBus(current_level + (step * (i + 1))); }, (opts.duration / 10) * i);
-      }
-    }
   }
 }
 

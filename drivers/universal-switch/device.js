@@ -73,17 +73,33 @@ class HdlUniversalSwitchDevice extends Homey.Device {
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
     let hdl_id = parseInt(this.homey.settings.get("hdl_id"), 10);
     let hdl_logic_controller = this.homey.settings.get("hdl_logic_controller");
+    let hdl_send_mode = this.homey.settings.get("hdl_uv_send_mode");
 
-    // Broadcast the change
+    // A valid logic controller address is 1-254; anything else (unset,
+    // empty or malformed) means no logic controller is configured
+    let logic = parseInt(hdl_logic_controller, 10);
+    let hasLogic = !isNaN(logic) && logic >= 1 && logic <= 254;
+
+    // Always broadcast the change
     await this.updateDeviceByBus("255.255", value);
 
-    // Treat sending differently if there is a logic controller present
-    if (hdl_logic_controller !== undefined) {
-      // If present - only send to the logiccontroller (broadcast already sent)
-      let logic = parseInt(hdl_logic_controller, 10);
+    // Broadcast only: nothing more to do
+    if (hdl_send_mode === "broadcast") return;
+
+    // Broadcast + the logic controller only
+    if (hdl_send_mode === "logic") {
+      if (hasLogic) {
+        await this.updateDeviceByBus(`${hdl_subnet}.${logic}`, value);
+      }
+      return;
+    }
+
+    // Default (legacy) behavior: if a logic controller is present, send to
+    // it in addition to the broadcast; otherwise send to all addresses
+    // individually (broadcast already sent)
+    if (hasLogic) {
       await this.updateDeviceByBus(`${hdl_subnet}.${logic}`, value);
     } else {
-      // If not present - send to all addresses individually (broadcast already sent)
       for (let i = 1; i < 256; i++) {
         if (i !== hdl_id) {
           await this.updateDeviceByBus(`${hdl_subnet}.${i}`, value);

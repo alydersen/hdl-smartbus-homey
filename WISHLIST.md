@@ -53,7 +53,8 @@ stated otherwise. State labels:
   (Bendik #289)
 - **Current capability:** Not possible today. HDL logic does not broadcast
   state changes; Homey relies on device broadcasts and the 60-second poll.
-  Recommended approach (documented in thread): move logic to Homey.
+  Recommended approach (documented in thread): move logic to Homey, see
+  `GUIDE_MovingLogicToHomey.md` (F2).
 
 ### A4. itouch series panel support
 - **Asked for:** Add itouch wall buttons/panels as devices. (Bendik #298, #314)
@@ -259,8 +260,13 @@ stated otherwise. State labels:
   master/slave DLP synchronization guide is still missing.
 
 ### F2. Best-practice: moving HDL logic to Homey
-- **Status:** Partially done
+- **Status:** Done — `GUIDE_MovingLogicToHomey.md` (pending release)
 - **Asked for:** Documented patterns for replacing the logic module
   (Fredrik #145 proposed; ojnordah supported #147).
-- **Current state:** Parts exist across `GUIDE_Multisensor.md` and the
-  thread (TorbjornM #308). Could be consolidated.
+- **Current state:** The patterns scattered across `GUIDE_Multisensor.md`
+  and the thread (TorbjornM #308) are consolidated in a dedicated guide:
+  what to keep on the HDL side (sensor→UV conversion, safety-critical and
+  real-time logic), what moves well (scenes/modes, timers, composite
+  conditions, notifications), a step-by-step migration with a
+  disable-don't-delete rollback strategy, and tips covering UV numbering,
+  the UV signal log (D2) and poll-interval latency.

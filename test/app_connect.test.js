@@ -216,4 +216,125 @@ describe('HDLSmartBus App - connect()', () => {
       clearInterval(mockInterval);
     });
   });
+
+  describe('poll interval setting', () => {
+    beforeEach(() => {
+      settings.hdl_ip_address = '192.168.1.10';
+      settings.hdl_subnet = '1';
+      settings.hdl_id = '100';
+    });
+
+    test('should set default poll interval to 60 when not configured', async () => {
+      await app.connect();
+      expect(app.homey.settings.set).toHaveBeenCalledWith('hdl_poll_interval', '60');
+    });
+
+    test('should not overwrite existing poll interval', async () => {
+      settings.hdl_poll_interval = '30';
+      await app.connect();
+      expect(app.homey.settings.set).not.toHaveBeenCalledWith('hdl_poll_interval', expect.anything());
+    });
+
+    test('should use the configured poll interval', async () => {
+      const spy = jest.spyOn(global, 'setInterval');
+      settings.hdl_poll_interval = '30';
+      await app.connect();
+      expect(spy).toHaveBeenCalledWith(expect.any(Function), 30000);
+      expect(app._pollIntervalMs).toBe(30000);
+      spy.mockRestore();
+    });
+
+    test('should fall back to 60 seconds when below the minimum', async () => {
+      const spy = jest.spyOn(global, 'setInterval');
+      settings.hdl_poll_interval = '5';
+      await app.connect();
+      expect(spy).toHaveBeenCalledWith(expect.any(Function), 60000);
+      spy.mockRestore();
+    });
+
+    test('should fall back to 60 seconds when above the maximum', async () => {
+      const spy = jest.spyOn(global, 'setInterval');
+      settings.hdl_poll_interval = '700';
+      await app.connect();
+      expect(spy).toHaveBeenCalledWith(expect.any(Function), 60000);
+      spy.mockRestore();
+    });
+
+    test('should fall back to 60 seconds when not a number', async () => {
+      const spy = jest.spyOn(global, 'setInterval');
+      settings.hdl_poll_interval = 'abc';
+      await app.connect();
+      expect(spy).toHaveBeenCalledWith(expect.any(Function), 60000);
+      spy.mockRestore();
+    });
+  });
+
+  describe('callForUpdate staggering', () => {
+    let devicesByDriver;
+
+    beforeEach(() => {
+      // onInit() is not called in these tests, so mirror its state
+      app._driverlist = [
+        'dimmer', 'relay', 'tempsensor', 'multisensor', 'dry-contact',
+        'universal-switch', 'floorheater', 'curtain', 'panel'
+      ];
+      app._updateTimeouts = [];
+      devicesByDriver = {};
+      app.homey.drivers.getDriver = jest.fn((name) => ({
+        getDevices: () => devicesByDriver[name] || []
+      }));
+    });
+
+    test('should stagger requests evenly across the poll interval', async () => {
+      jest.useFakeTimers();
+      const relayDevice = { requestUpdate: jest.fn() };
+      const dimmerDevices = [{ requestUpdate: jest.fn() }, { requestUpdate: jest.fn() }];
+      devicesByDriver['relay'] = [relayDevice];
+      devicesByDriver['dimmer'] = dimmerDevices;
+      app._pollIntervalMs = 60000;
+
+      await app.callForUpdate(app._bus);
+
+      // Nothing is sent as one burst: three requests are scheduled
+      const all = [relayDevice, ...dimmerDevices];
+      all.forEach((device) => expect(device.requestUpdate).not.toHaveBeenCalled());
+      expect(app._updateTimeouts.length).toBe(3);
+
+      // First request fires right away, the others follow at even spacing.
+      // Devices are collected in driverlist order (dimmer before relay)
+      jest.advanceTimersByTime(1);
+      expect(dimmerDevices[0].requestUpdate).toHaveBeenCalledTimes(1);
+
+      jest.advanceTimersByTime(20000);
+      expect(dimmerDevices[1].requestUpdate).toHaveBeenCalledTimes(1);
+      expect(relayDevice.requestUpdate).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(20000);
+      expect(relayDevice.requestUpdate).toHaveBeenCalledTimes(1);
+      expect(app._updateTimeouts.length).toBe(0);
+      jest.useRealTimers();
+    });
+
+    test('should not schedule anything when there are no devices', async () => {
+      jest.useFakeTimers();
+      await app.callForUpdate(app._bus);
+      expect(app._updateTimeouts.length).toBe(0);
+      jest.useRealTimers();
+    });
+
+    test('should cancel pending requests through _clearUpdateTimeouts', async () => {
+      jest.useFakeTimers();
+      const device = { requestUpdate: jest.fn() };
+      devicesByDriver['relay'] = [device];
+      app._pollIntervalMs = 60000;
+
+      await app.callForUpdate(app._bus);
+      app._clearUpdateTimeouts();
+
+      jest.advanceTimersByTime(60000);
+      expect(device.requestUpdate).not.toHaveBeenCalled();
+      expect(app._updateTimeouts.length).toBe(0);
+      jest.useRealTimers();
+    });
+  });
 });

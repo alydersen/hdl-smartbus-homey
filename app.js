@@ -11,6 +11,8 @@ class HDLSmartBus extends Homey.App {
     this._controller = null;
     this._hdlDevicelist = new HdlDevicelist();
     this._updateInterval = null;
+    this._updateTimeouts = [];
+    this._pollIntervalMs = 60000;
     // All new devicetypes must be added here
     this._driverlist = [
       "dimmer",
@@ -42,10 +44,16 @@ class HDLSmartBus extends Homey.App {
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
     let hdl_id = this.homey.settings.get("hdl_id");
     let hdl_motion = this.homey.settings.get("hdl_universal_motion");
+    let hdl_poll_interval = this.homey.settings.get("hdl_poll_interval");
 
     // Set the universal motion if not set
     if (hdl_motion === undefined || hdl_motion === "") {
       this.homey.settings.set("hdl_universal_motion", "212");
+    }
+
+    // Set the poll interval to the default (60 seconds) if not set
+    if (hdl_poll_interval === undefined || hdl_poll_interval === "") {
+      this.homey.settings.set("hdl_poll_interval", "60");
     }
 
     // Return if settings are not defined
@@ -90,11 +98,12 @@ class HDLSmartBus extends Homey.App {
       this._bus = null;
     }
 
-    // Clear any existing update interval
+    // Clear any existing update interval and pending staggered requests
     if (this._updateInterval !== null) {
       clearInterval(this._updateInterval);
       this._updateInterval = null;
     }
+    this._clearUpdateTimeouts();
 
     // Connect the bus
     this._bus = new SmartBus({
@@ -130,20 +139,57 @@ class HDLSmartBus extends Homey.App {
     this._busConnected = true;
     this.log("Homey HDL SmartBus is running...");
     this.log("Initializing recurring update...");
+    this._pollIntervalMs = this._getPollIntervalMs();
     this._updateInterval = setInterval(async () => {
       this.homey.app.callForUpdate(this._bus);
-    }, 60000);
+    }, this._pollIntervalMs);
+  }
+
+  // Get the poll interval in milliseconds from the app settings. Invalid
+  // values fall back to the default of 60 seconds, and the interval is
+  // limited to 10-600 seconds to protect the bus from too much traffic
+  _getPollIntervalMs() {
+    let hdl_poll_interval = this.homey.settings.get("hdl_poll_interval");
+    let seconds = parseInt(hdl_poll_interval, 10);
+    if (isNaN(seconds) || seconds < 10 || seconds > 600) return 60000;
+    return seconds * 1000;
+  }
+
+  // Cancel any pending staggered update requests
+  _clearUpdateTimeouts() {
+    if (this._updateTimeouts === undefined) {
+      this._updateTimeouts = [];
+      return;
+    }
+    this._updateTimeouts.forEach((timeout) => clearTimeout(timeout));
+    this._updateTimeouts = [];
   }
 
   async callForUpdate(_bus) {
     this.log("Update called - looping through drivers");
+    // Collect all devices so that their requests can be staggered across
+    // the poll interval instead of firing one burst on the bus
+    let devices = [];
     for (let i = 0; i < this._driverlist.length; i++) {
-      this.homey.drivers
-        .getDriver(this._driverlist[i])
-        .getDevices()
-        .forEach((device) => {
+      devices = devices.concat(
+        this.homey.drivers.getDriver(this._driverlist[i]).getDevices()
+      );
+    }
+    if (devices.length === 0) return;
+    const spacing = (this._pollIntervalMs || 60000) / devices.length;
+    for (let i = 0; i < devices.length; i++) {
+      const device = devices[i];
+      const timeout = setTimeout(() => {
+        try {
           device.requestUpdate();
-        });
+        } catch (err) {
+          this.log(`Could not request update: ${err}`);
+        }
+        this._updateTimeouts = this._updateTimeouts.filter(
+          (pending) => pending !== timeout
+        );
+      }, Math.round(i * spacing));
+      this._updateTimeouts.push(timeout);
     }
   }
 
@@ -258,6 +304,7 @@ class HDLSmartBus extends Homey.App {
       clearInterval(this._updateInterval);
       this._updateInterval = null;
     }
+    this._clearUpdateTimeouts();
     if (this._bus !== null) {
       this._bus.close();
       this._bus = null;

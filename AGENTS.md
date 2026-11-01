@@ -60,6 +60,16 @@ Device signatures use the format: `subnet.deviceId.channel`
 
 Source of truth for `app.json` (auto-generated at build), custom capability definitions, and flow trigger/condition/action definitions. Edit files here, not the root `app.json`.
 
+## Documentation
+
+User documentation lives in `docs/`, published on GitHub Pages (served
+from the `docs/` folder) and rendered by Docsify (`docs/index.html` +
+`docs/_sidebar.md` + search plugin, no build step). A new documentation
+page must be added to `docs/_sidebar.md`, or it is unreachable from the
+site's navigation. `docs/index.md` is the site front page; the root
+`README.md` is only the GitHub repository landing page. Device docs are
+named `DEVICES_<TYPE>.md`, guides `GUIDE_<Topic>.md`.
+
 ## Testing
 
 Tests live in `test/` and use Jest. The Homey SDK is mocked via `test/mocks/homey.js` (configured in `jest.config.js` moduleNameMapper). When adding mock functionality, extend `test/mocks/homey.js`.

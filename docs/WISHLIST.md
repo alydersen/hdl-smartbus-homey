@@ -53,7 +53,8 @@ stated otherwise. State labels:
   (Bendik #289)
 - **Current capability:** Not possible today. HDL logic does not broadcast
   state changes; Homey relies on device broadcasts and the 60-second poll.
-  Recommended approach (documented in thread): move logic to Homey.
+  Recommended approach (documented in thread): move logic to Homey, see
+  `GUIDE_MovingLogicToHomey.md` (F2).
 
 ### A4. itouch series panel support
 - **Asked for:** Add itouch wall buttons/panels as devices. (Bendik #298, #314)
@@ -63,15 +64,55 @@ stated otherwise. State labels:
 
 ## B. Sensors
 
-### B1. Digital sensors / magnetic contacts as read-only window-door status
-- **Status:** In progress
-- **Asked for:** Window/door contacts (via UV switches today) show as toggle
-  buttons in Homey; users want a read-only status ("open/closed"), alarm
-  capability, or a lockable switch. (Andreas_Pedersen #324;
-  GitHub issue #72)
-- **Current state:** Test version released 2026-04 (#327) attempted to
-  surface digital sensors; needs verification by someone with the units —
-  devices likely need to be re-added.
+### B1a. Digital sensors on floor heating controllers (read-only)
+- **Status:** Implemented; awaiting verification by a user with the units
+- **Asked for:** Read digital sensor probes on heating controllers:
+  channel 13 is the HDL-standard outside temperature, channels 50+probe ID
+  are other digital sensors — as read-only temperatures, not thermostats.
+  (kroaeg, GitHub issue #72)
+- **Current state:** Shipped in v1.4.4 (commit e6ba20a): `sensorChannels`
+  [13, 51-62] added to floorheater types 207-215 in `hdl_devicelist.js`;
+  sensor channels pair as read-only temperature-only devices (heating-zone
+  capabilities removed, write commands guarded, the 60-second poll only
+  reads temperature). Issue #72 is closed.
+- **Verification:** kroaeg has no Discourse presence — GitHub is the only
+  channel (issue #72 comment; maintainer asked for confirmation there,
+  2026-11-01). Devices likely need to be re-added for the new pairing to
+  take effect.
+
+### B1b. Magnetic contacts as read-only window/door status
+- **Status:** Needs info (input hardware unknown); design sketched
+- **Asked for:** Window/door magnetic contacts are set up as UV switches
+  and show in Homey as toggleable buttons; pressing the toggle writes to
+  the bus and falsifies the open/closed state. Wants a read-only status,
+  alarm capability, or a lockable switch. (Andreas_Pedersen #324)
+- **Current state:** Not implemented. The universal-switch driver is
+  inherently writable: its `onoff` listener broadcasts UV Switch Control
+  (0xE01C) to 255.255 plus every device address individually (or the logic
+  controller), so the contact state can be changed from Homey.
+- **Needs info — which input module are the contacts wired to?**
+  A magnetic contact is a plain reed switch, not an HDL device type; it
+  must be wired to an HDL input module, and #324 does not say which one.
+  - Standalone dry contact module (HDL-MSD): the `dry-contact` driver
+    already reads it read-only, with per-channel capabilities and flow
+    triggers — no new code needed, just pairing the module.
+  - Multisensor dry-contact inputs: the multisensor driver already
+    exposes `dry_contact_1..4` read-only with flow triggers.
+  - Only if the contacts genuinely exist only as UV switches is a new
+    UV-based read-only device type needed.
+  Asked Andreas_Pedersen in the forum (2026-11-01); awaiting reply.
+- **Design sketch (if UV-based read-only is needed):** new read-only
+  `contact` driver modeled on universal-switch: Homey's standard
+  `alarm_contact` capability (read-only by nature, correct open/closed
+  semantics for flows, zones and Insights), device class `sensor`, pairs
+  UV numbers 1-254 excluding the reserved motion UV (default 212). No
+  capability listener, ever; keeps `respondToSender()` (0xE01D is a
+  protocol acknowledgment, not a state write). `app.js`'s UV branch
+  dispatches to both drivers; no `hdl_devicelist.js` entry (UV-number
+  based, like universal-switch). Flow triggers `contact_true`/`false`.
+  Self-contained: no protocol or library work, no bus capture needed.
+  Generic bonus: also covers DLP panel buttons and any other UV-routed
+  state (cf. A1).
 
 ### B2. 8in1 lux values missing or stale
 - **Status:** Open (lux explained — protocol limitation on type 315;
@@ -79,7 +120,9 @@ stated otherwise. State labels:
 - **Asked for:** Reliable lux reporting from 8in1 multisensors; some users
   get no lux at all, others get values hours old. (Fredrik #113, #299, #306)
 - **Current state:** Confirmed against the official HDL-BUS Pro operation
-  codes document. The two 8in1 models differ fundamentally: type 314 reports
+  codes document (in-repo:
+  `assets/HDL-BUS Pro operation codes(Eng) Jan 08 2013.pdf`). The two 8in1
+  models differ fundamentally: type 314 reports
   brightness (0-5000 lux) in its status feedback and works in the app, while
   type 315 has no brightness measurement at all — its status feedback
   (`0xDB01`) only carries an "In LUX range" flag (0/1) relative to the range
@@ -112,25 +155,95 @@ stated otherwise. State labels:
 - **Notes:** App-side fixes may include more resilient UV handling (D2) or
   a shorter poll interval (D3).
 
+### B5. Floor heater control mode (Normal vs Heating power)
+- **Status:** Open (needs upstream smart-bus parser first)
+- **Asked for:** Expose the floor heating controller's control mode —
+  Normal vs "Heating power" (PWM) — as a read-only capability in Homey.
+  (Suggested from a bus capture by oktollefsen, PR #110 comment, 2026-11-01)
+- **Current state:** Not implemented, in the app or in smart-bus. The mode
+  flag lives in byte 1 of the 0x1C5F floor heating status response: bit
+  0x20 is set for a "Heating power" channel (0x21) and clear for Normal
+  (0x01), confirmed on a type 213 module (one sample; verify before
+  implementing). smart-bus 0.9.0 parses 0x1C5D/0x1C5F (valve, work, PWD,
+  watering) but not this flag.
+- **Notes:** First step is a smart-bus parser contribution — follow
+  `CONTRIBUTING_TO_SMART_BUS.md` (parser in `lib/commands.js`, fixtures,
+  verified wire format, single-topic PR). Only after that lands does a
+  Homey capability make sense; until then the app has no local override
+  to record. Byte 11 of the same response (output %, e.g. 20 % PWM) could
+  ride along in the same contribution.
+
 ## C. Device types
 
 ### C1. 12in1 multisensor relay output control
-- **Status:** Open
+- **Status:** Open (investigated; implementation not started)
 - **Asked for:** Control the relay output (e.g. garage door opener) on
   12in1 multisensors from Homey. (Eivind_Bo #261, #278, #283)
 - **Current state:** Multisensors are read-only in the app. AndreasL
   assessed it as doable (#262) — the difference vs. the relay driver is one
   device with 2 channels rather than one Homey device per channel. Never
   implemented.
+- **Investigation (2026-11-01, no code changes yet):**
+  - The 12in1 is device type **321** (HDL-MS12.2C / SB-CMS-12in1), with
+    type **308** (HDL-MS12) as the older variant (per
+    `assets/defDeviceType.xlsx`). Both are already registered as
+    `multisensor` in `hdl/hdl_devicelist.js`, so their signals already
+    reach the multisensor driver.
+  - **Protocol/library: supported.** The relay output is controlled with
+    the standard Single Channel Control command (`0x0031`, channel 1/2),
+    confirmed by Eivind_Bo (#261: DLPs and switches trigger it that way).
+    `smart-bus` fully supports `0x0031`, its response `0x0032`, and Read
+    Status of Channels `0x0033` — the same commands `drivers/relay/`
+    already uses. No upstream work needed; the gap is purely app-side.
+  - **App-side gap:** the multisensor driver is passive —
+    `driver.js:updateValues()` only looks for movement/temperature/
+    humidity/brightness/dry-contact payloads and ignores
+    `data.channel`/`level`; `device.js` has no capability listeners and only
+    polls sensor status (0xdb00, 0x1645, 0x1604).
+  - **Design sketch:** keep one Homey device per unit and add per-channel
+    relay capabilities (`relay_1`/`relay_2`), following the dry-contact
+    driver's lazy-capability pattern (custom capabilities in
+    `.homeycompose/capabilities/` plus per-channel flow cards). Capability
+    listeners in `device.js` send `0x0031` with the channel; `updateValues()`
+    additionally handles `data.channel`/`data.channels` for feedback, and
+    `requestUpdate()` can add an `0x0033` poll. The standard `onoff`
+    capability cannot be used (only one per device, and there are two
+    relay channels). Per-channel sub-devices relay-style would break the
+    unit-level pairing model.
+  - **Per-type gating:** only the 12in1 types have relay outputs, but all
+    multisensor types share this driver — the devicelist needs per-type
+    relay-channel metadata (e.g. a new field on entries 321/308) so relay
+    capabilities are only added for those types (AndreasL's point in #262).
+  - **Feedback path (per the official operation codes doc, in-repo
+    `assets/HDL-BUS Pro operation codes(Eng) Jan 08 2013.pdf`):** the
+    12in1 Read Status feedback (`0x1646`) carries only temperature,
+    brightness, PIR, sonic and two dry contacts — **no relay state**. So
+    the sensor status poll can never reflect the relay outputs. If the
+    12in1 implements the standard single-channel command family, feedback
+    arrives via `0x0032` answerbacks, which are broadcasts carrying the
+    switch status of every channel, or `0x0034`/`0x0039` responses
+    (`0x0038` reads actual status). The bus capture should target these.
+  - **Open unknown (needs a bus capture):** whether the 12in1 actually
+    *reports* relay channel state back the way relay modules do (see the
+    feedback path above). Only the control direction is confirmed. Control
+    would work without feedback, but state sync when the relay is switched
+    from a DLP depends on this. Capture with a `DEBUG=smart-bus` listener
+    (see `.agents/skills/hdl-device-development/`) before finalizing the
+    feedback design.
+  - Details also documented in `DEVICES_MULTISENSORS.md`, section
+    "Relay outputs (12in1)".
 
 ### C2. Generic/customizable relay or dimmer device
-- **Status:** Open (design question)
+- **Status:** Rejected by maintainer (2026-11-01)
 - **Asked for:** A "manual" device where the user enters subnet, device ID,
   channel count and selects relay/dimmer — covering odd units without app
   updates. (Eivind_Bo #263)
 - **Current state:** Rejected at the time as it required a rewrite of the
   signal handling. With the device-registry architecture
   (`hdl/hdl_devicelist.js`) this may be easier now.
+- **Decision:** Not pursued — maintainer prefers supporting devices
+  explicitly through the device registry (see C1 for the 12in1 relay
+  outputs). Revisit only if unregistered-device requests keep recurring.
 
 ### C3. IR module (HDL-MIR) support
 - **Status:** Blocked (library)
@@ -245,12 +358,23 @@ stated otherwise. State labels:
 ## E. Bugs and loose ends
 
 ### E1. DMX dimmer SB-DN-48DMX flashes to 100% before dim level
-- **Status:** Open
+- **Status:** Done (pending release)
 - **Asked for:** When a flow sets a dim level, the light flashes to 100%
   before going to the requested level. (Eivind_Bo #124)
-- **Current state:** No code error found at the time; never resolved.
-  Possibly related to gradual dimming (added later, #214) or the unit
-  handling on/off + level commands.
+- **Current state:** Root cause found in the dimmer driver. `onoff` and
+  `dim` had separate capability listeners, and the `onoff(true)` listener
+  always sent a hard-coded 100% level. When a flow or the Homey UI
+  changes both (e.g. "turn on" + "dim to 50%", or dragging the dim slider
+  on an off light), the bus received 100% followed by the target level —
+  an invisible transient on relay/triac dimmers, but a visible flash on
+  DMX dimmers, which apply their own fade processing to each command.
+  The fix follows the official Homey lights best practice: the two
+  listeners are replaced by one debounced
+  `registerMultipleCapabilityListener(["onoff", "dim"], …)` that sends a
+  single channel-control command for the final state. Turning on without
+  a dim value now restores the current dim level instead of always going
+  to 100%. (Homey's `setOnDim: false` capability option, set since 1.1.0,
+  already covered flows that dim without an explicit "turn on" card.)
 
 ### E2. Intermittent wrong device state in Homey
 - **Status:** Recurring / configuration-dependent
@@ -281,8 +405,13 @@ stated otherwise. State labels:
   master/slave DLP synchronization guide is still missing.
 
 ### F2. Best-practice: moving HDL logic to Homey
-- **Status:** Partially done
+- **Status:** Done — `GUIDE_MovingLogicToHomey.md` (pending release)
 - **Asked for:** Documented patterns for replacing the logic module
   (Fredrik #145 proposed; ojnordah supported #147).
-- **Current state:** Parts exist across `GUIDE_Multisensor.md` and the
-  thread (TorbjornM #308). Could be consolidated.
+- **Current state:** The patterns scattered across `GUIDE_Multisensor.md`
+  and the thread (TorbjornM #308) are consolidated in a dedicated guide:
+  what to keep on the HDL side (sensor→UV conversion, safety-critical and
+  real-time logic), what moves well (scenes/modes, timers, composite
+  conditions, notifications), a step-by-step migration with a
+  disable-don't-delete rollback strategy, and tips covering UV numbering,
+  the UV signal log (D2) and poll-interval latency.

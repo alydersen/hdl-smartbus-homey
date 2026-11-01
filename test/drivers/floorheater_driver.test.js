@@ -171,7 +171,7 @@ describe('FloorHeaterDriver', () => {
       });
     });
 
-    describe('valve tracking', () => {
+  describe('valve tracking', () => {
       test('should update valve on first signal', async () => {
         const signal = {
           code: 0x1C5F,
@@ -200,6 +200,33 @@ describe('FloorHeaterDriver', () => {
         await driver.updateValues(signal);
         expect(mockHomeyDevice.updateValve).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('onPairListDevices', () => {
+    beforeEach(() => {
+      driver.homey.app.getDevicesOfType.mockReturnValue({
+        42: { subnet: 1, id: 42, type: 213 }
+      });
+    });
+
+    test('pairs heating zones without a capability override', async () => {
+      const devices = await driver.onPairListDevices();
+      const zones = devices.filter((d) => d.name.startsWith('HDL Floorheater'));
+      expect(zones).toHaveLength(6);
+      for (const zone of zones) {
+        expect(zone.capabilities).toBeUndefined();
+      }
+    });
+
+    test('pairs sensor channels with only the temperature capability', async () => {
+      const devices = await driver.onPairListDevices();
+      const sensors = devices.filter((d) => d.name.startsWith('HDL Floor Sensor'));
+      expect(sensors).toHaveLength(13);
+      for (const sensor of sensors) {
+        expect(sensor.capabilities).toEqual(['measure_temperature']);
+        expect(sensor.data.channel).toBeGreaterThanOrEqual(13);
+      }
     });
   });
 });

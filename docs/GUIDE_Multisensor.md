@@ -40,14 +40,14 @@ In my house, we use three sensors. Each sensor has logic for both PIR and Ultras
     Especially useful for rooms where people watch TV or dining rooms, where you want to know if someone is in the room or not. Where PIR has a tendency to turn off after someone has sat down on a couch, ultrasonic can still detect the person which enables some really powerful automations in Homey later on. 
 
 💡 LED Indicators on some sensors, especially older 12-in-1 sensors, cause a small “buzzing” sound when enabled. Disabling the LED indicators solves this problem.
-![alt text](assets/images/MultisensorImage1.png)
+![alt text](images/MultisensorImage1.png)
 
 * Go to the “Logic” Tab.   
   * Enable a logic number, give it a name and choose which sensor that should be activated.   
   * In this example, we PIR **OR** Utrasonic. If it senses something on PIR or Ultrasonic, it will trigger.   
   * When using **OR**: The sensor will trigger if one or both are sensing something. We therefore recommend using **OR** instead of **AND** which requires both.
 
-![alt text](assets/images/MultisensorImage2.png)
+![alt text](images/MultisensorImage2.png)
 
 * If you want to separate PIR and Ultrasonic to different UV-switches, I recommend creating two logics.  
 
@@ -55,7 +55,7 @@ In my house, we use three sensors. Each sensor has logic for both PIR and Ultras
 
 * For “True targets configuration”, send a UV-switch to the address of the logic-controller, define the UV-switch number and state (ON)  
 
-![alt text](assets/images/MultisensorImage3.png)
+![alt text](images/MultisensorImage3.png)
 
 * Do the same for “False targets configuration”, but turn the same switch off. 
 
@@ -70,11 +70,11 @@ In my house, we use three sensors. Each sensor has logic for both PIR and Ultras
     * Status: ON  
     * Action every time
 
-![alt text](assets/images/MultisensorImage4.png)
+![alt text](images/MultisensorImage4.png)
 
 * Add Command and broadcast to index 1, subnet 255, device 255 the UV-switch with the “ON” status. This address is reserved for broadcasting signals across the entire bus. 
 
-![alt text](assets/images/MultisensorImage5.png)
+![alt text](images/MultisensorImage5.png)
 
 💡 You can create similar tables for OFF-status, but in my experience, as long as a broadcast has been completed from the logic-controller, the UV-switches OFF-status is handled pretty quickly without the need for a broadcast. Your experience may differ, but I suggest trying this method first. 
 

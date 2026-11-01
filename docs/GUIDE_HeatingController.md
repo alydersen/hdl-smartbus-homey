@@ -82,10 +82,10 @@ When you bring in Homey Pro, things change:
 👉 Double-check that the DLP’s **master address** points to your heating controller and with the corresponding ID. 
 
 Figure 1: Typical Floor Heating tab. Inner sensor enabled to report the temperatur on the bus. Temperature range set to force an upper and lower limit. Mode: All modes except “Normal” is checked. My heating must always be on (remember to also set this in Homey\!) and I require PID in my heating syste,.   
-![alt text](assets/images/HeatingGuideImage1.png)
+![alt text](images/HeatingGuideImage1.png)
 
 Figure 2: When clicking the “Master” button as seen in figure 1, this menu appears. Subnet and Device ID is self-explanatory. Channel is the heating channel.   
-![alt text](assets/images/HeatingGuideImage2.png)
+![alt text](images/HeatingGuideImage2.png)
 
 
 ### Step 3 – Configure the Heating Controller
@@ -108,7 +108,7 @@ Figure 2: When clicking the “Master” button as seen in figure 1, this menu a
 
    * Save before moving to the next one\! If you do several each time, please save for each ID completed. 
 
-![alt text](assets/images/HeatingGuideImage3.png)
+![alt text](images/HeatingGuideImage3.png)
 
 ### Step 4 \- Testing
 

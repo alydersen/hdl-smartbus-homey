@@ -9,7 +9,7 @@ body:
         * Have you searched for similar issues?
         * Have you updated Homey, all apps, and the development tools?
         * Is the problem in this App, or in one of the devices on your bus?
-        * Capable programmers should attempt to fix the problem themselves and submit a pull request instead of an issue. See [CONTRIBUTING.md](../CONTRIBUTING.md) and [AGENTS.md](../AGENTS.md).
+        * Capable programmers should attempt to fix the problem themselves and submit a pull request instead of an issue. See [CONTRIBUTING.md](../docs/CONTRIBUTING.md) and [AGENTS.md](../AGENTS.md).
   - type: textarea
     id: context
     attributes:

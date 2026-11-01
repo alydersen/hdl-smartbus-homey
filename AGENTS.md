@@ -62,12 +62,13 @@ Source of truth for `app.json` (auto-generated at build), custom capability defi
 
 ## Documentation
 
-User documentation is the `.md` files in the repository root, published on
-GitHub Pages and rendered by Docsify (`index.html` + `_sidebar.md` + search
-plugin, no build step). A new documentation page must be added to
-`_sidebar.md`, or it is unreachable from the site's navigation. `index.md` is
-the site front page; `README.md` is only the GitHub repository landing page.
-Device docs are named `DEVICES_<TYPE>.md`, guides `GUIDE_<Topic>.md`.
+User documentation lives in `docs/`, published on GitHub Pages (served
+from the `docs/` folder) and rendered by Docsify (`docs/index.html` +
+`docs/_sidebar.md` + search plugin, no build step). A new documentation
+page must be added to `docs/_sidebar.md`, or it is unreachable from the
+site's navigation. `docs/index.md` is the site front page; the root
+`README.md` is only the GitHub repository landing page. Device docs are
+named `DEVICES_<TYPE>.md`, guides `GUIDE_<Topic>.md`.
 
 ## Testing
 

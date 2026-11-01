@@ -4,7 +4,7 @@
 
 ## Checklist
 
-Before submitting, confirm all of the following (see [CONTRIBUTING.md](CONTRIBUTING.md) and [AGENTS.md](AGENTS.md)):
+Before submitting, confirm all of the following (see [CONTRIBUTING.md](docs/CONTRIBUTING.md) and [AGENTS.md](AGENTS.md)):
 
 - [ ] Changes are minimal and relevant to a single issue
 - [ ] Commits squashed to a single commit, rebased off latest `master`, no conflicts

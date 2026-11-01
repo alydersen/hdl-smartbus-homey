@@ -6,7 +6,7 @@ The App is free and open source and built by people on their spare time, so plea
 
 ## AI-assisted contributions
 
-If you use an AI coding agent (Claude Code, Codex, Cursor, etc.) to work on this repository, have it read [AGENTS.md](AGENTS.md) before it starts. That file is the authoritative guide to the codebase: build/test commands, architecture, conventions, and the version bump procedure. It applies to all contributors, not just agents.
+If you use an AI coding agent (Claude Code, Codex, Cursor, etc.) to work on this repository, have it read [AGENTS.md](https://github.com/alydersen/hdl-smartbus-homey/blob/master/AGENTS.md) before it starts. That file is the authoritative guide to the codebase: build/test commands, architecture, conventions, and the version bump procedure. It applies to all contributors, not just agents.
 
 ## Before submitting a bug, feature request or pull request
 

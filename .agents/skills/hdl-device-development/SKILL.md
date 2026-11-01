@@ -92,7 +92,7 @@ Take the reported `sender.type` and:
 4. If the hardware belongs to an existing driver family (e.g. another dimmer
    model), support may only need a new entry in `hdl_devicelist.js`
    (`type`, `channels`, `zones`, `main_capability`, optional `exclude`).
-   See index.md, "How devices are recognized".
+   See `docs/index.md`, "How devices are recognized".
 5. Otherwise the device needs a new driver — continue to section 4.
 
 ## 3. Missing command support: contribute upstream first
@@ -132,10 +132,10 @@ For a new driver:
 5. Tests in `test/drivers/<type>_driver.test.js`, following the existing
    pattern (Homey SDK is mocked via `test/mocks/homey.js`; extend the mock if
    needed). Cover `updateValues` and pairing.
-6. Documentation: add `DEVICES_<TYPE>.md`, link it from `index.md`, and
-   add it to `_sidebar.md` — the sidebar is the only navigation on the
-   Docsify-published documentation site, so a page missing from it is
-   unreachable (see AGENTS.md, "Documentation").
+6. Documentation: add `docs/DEVICES_<TYPE>.md`, link it from
+   `docs/index.md`, and add it to `docs/_sidebar.md` — the sidebar is the
+   only navigation on the Docsify-published documentation site, so a page
+   missing from it is unreachable (see AGENTS.md, "Documentation").
 
 Conventions that reviewers check: `'use strict'` in every file, value bounds
 via `valueOK` in `app.js` (temperature -40..80, humidity 0..100,
@@ -150,7 +150,7 @@ authenticated on the development machine. Do not attempt the GitHub REST API,
 agent environment.
 
 1. Work on a task branch off the latest `master`; squash to a single commit
-   and rebase to avoid conflicts (see CONTRIBUTING.md, "A great pull request
+   and rebase to avoid conflicts (see `docs/CONTRIBUTING.md`, "A great pull request
    contains").
 2. Push the branch: `git push -u origin <branch>`.
 3. Copy `.github/PULL_REQUEST_TEMPLATE.md`, fill in the Description, and check

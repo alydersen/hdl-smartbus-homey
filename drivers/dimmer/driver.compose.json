@@ -7,6 +7,12 @@
     "dim",
     "onoff"
   ],
+  "energy": {
+    "approximation": {
+      "usageOn": 0,
+      "usageOff": 0
+    }
+  },
   "capabilitiesOptions": {
     "dim": { "duration": true },
     "onoff": { "setOnDim": false } 

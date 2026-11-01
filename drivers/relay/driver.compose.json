@@ -6,6 +6,12 @@
   "capabilities": [
     "onoff"
   ],
+  "energy": {
+    "approximation": {
+      "usageOn": 0,
+      "usageOff": 0
+    }
+  },
   "icon": "/drivers/relay/assets/icon.svg",
   "settings": [
     {

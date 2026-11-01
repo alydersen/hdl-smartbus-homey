@@ -66,7 +66,12 @@ Tests live in `test/` and use Jest. The Homey SDK is mocked via `test/mocks/home
 
 ## Dependencies
 
-All runtime dependencies are in `smart-bus` (currently the only one). Everything else is dev/test tooling. One advisory is knowingly accepted: `sprintf-js` (GHSA-hp3w-g68c-fv3c, dev-only via jest coverage tooling) has no fixed version upstream — do not re-investigate or override it unless the advisory gains a fix. Check dependencies with `osv-scanner --lockfile=package-lock.json`.
+All runtime dependencies are in `smart-bus` (currently the only one). Everything else is dev/test tooling. Two advisories are knowingly accepted (both dev-only, no fixed version upstream — do not re-investigate or override them unless the advisory gains a fix):
+
+- `sprintf-js` (GHSA-hp3w-g68c-fv3c, via jest coverage tooling)
+- `deepmerge` 4.3.1 (GHSA-gcqx-w48m-w2h4, via jest-config)
+
+The `overrides` in `package.json` force `minimatch ^11.0.1` and `glob ^14.0.2` onto eslint/jest, which do not declare the fixed majors yet. When a released eslint or jest pulls those ranges natively, the overrides are redundant and should be dropped. Check dependencies with `osv-scanner --lockfile=package-lock.json` (expect only the two accepted advisories above).
 
 ## Version Bumps
 

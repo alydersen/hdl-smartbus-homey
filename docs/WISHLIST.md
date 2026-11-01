@@ -155,6 +155,24 @@ stated otherwise. State labels:
 - **Notes:** App-side fixes may include more resilient UV handling (D2) or
   a shorter poll interval (D3).
 
+### B5. Floor heater control mode (Normal vs Heating power)
+- **Status:** Open (needs upstream smart-bus parser first)
+- **Asked for:** Expose the floor heating controller's control mode —
+  Normal vs "Heating power" (PWM) — as a read-only capability in Homey.
+  (Suggested from a bus capture by oktollefsen, PR #110 comment, 2026-11-01)
+- **Current state:** Not implemented, in the app or in smart-bus. The mode
+  flag lives in byte 1 of the 0x1C5F floor heating status response: bit
+  0x20 is set for a "Heating power" channel (0x21) and clear for Normal
+  (0x01), confirmed on a type 213 module (one sample; verify before
+  implementing). smart-bus 0.9.0 parses 0x1C5D/0x1C5F (valve, work, PWD,
+  watering) but not this flag.
+- **Notes:** First step is a smart-bus parser contribution — follow
+  `CONTRIBUTING_TO_SMART_BUS.md` (parser in `lib/commands.js`, fixtures,
+  verified wire format, single-topic PR). Only after that lands does a
+  Homey capability make sense; until then the app has no local override
+  to record. Byte 11 of the same response (output %, e.g. 20 % PWM) could
+  ride along in the same contribution.
+
 ## C. Device types
 
 ### C1. 12in1 multisensor relay output control

@@ -140,12 +140,48 @@ stated otherwise. State labels:
 
 ## D. Platform / architecture
 
-### D1. Multiple HDL buses per Homey
-- **Status:** Blocked (library)
-- **Asked for:** Support two HDL systems/subnets (wired + wireless, house +
-  apartment) from one Homey. (Yngvi #79, Martin #293)
-- **Current state:** One bus per Homey. Workaround: install the app twice
-  under different IDs (fragile) or add a second Homey.
+### D1a. Multiple subnets through one gateway
+- **Status:** Open (app-side rework; no library changes needed)
+- **Asked for:** Use devices on several HDL subnets (wired + wireless,
+  house + apartment) that are behind the same IP gateway, from one Homey.
+  (Yngvi #79, Martin #293)
+- **Current state:** Not the `smart-bus` library's fault — it does no subnet
+  filtering and already delivers every subnet's traffic to the app. The
+  blocker is the app's single-subnet assumptions:
+  - `_signalReceived()` in `app.js` drops signals whose sender subnet is
+    not the one configured setting (`hdl_subnet`)
+  - `devSignChnld()` builds device signatures with the configured subnet
+    instead of the signal sender's actual subnet
+  - `_hdlFoundUnits` (discovery) is keyed by device id only, so the same
+    device number on two subnets collides; pairing also stamps the
+    configured subnet into device ids/names
+  - The universal-switch broadcast loop uses the configured subnet
+- **Implementation:** Accept a list of subnets instead of one
+  (`hdl_subnet` → `hdl_subnets`, seeded from the old key on first run),
+  route everywhere by the sender's actual subnet. Device data format
+  (`subnet.deviceId.channel`) is unchanged, so existing installations and
+  pairings keep working without re-pairing.
+
+### D1b. Multiple IP gateways
+- **Status:** Open (app-side; builds on D1a)
+- **Asked for:** Support two separate HDL systems, each with its own IP
+  gateway, from one Homey. (Yngvi #79, Martin #293)
+- **Current state:** Gateway traffic is broadcast over UDP on the LAN
+  (port 6000), so a Homey receives all gateways' streams on one socket.
+  The library already supports this: each `SmartBus` instance filters
+  datagrams by its configured gateway's embedded source IP, and its
+  socket uses `reuseAddr`, so one instance per gateway can share port
+  6000 with no cross-talk. The remaining work is sending: commands must
+  be unicast to the gateway that can reach the target device, so the app
+  needs a subnet → gateway routing map (explicit config, or learnable
+  from observed traffic since every signal carries both the sender's
+  subnet and the source gateway IP).
+- **Implementation:** Config becomes a list of buses
+  (`{gateway, subnets, controllerId}`); D1a is the single-entry case, so
+  the same routing refactor serves both.
+- **Constraint (both D1a and D1b):** The two systems must use distinct
+  subnet numbers — device data is `subnet.deviceId.channel` and cannot
+  disambiguate two systems numbering themselves the same subnet.
 
 ### D2. Universal Switch robustness and addressing
 - **Status:** Partially done

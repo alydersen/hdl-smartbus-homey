@@ -64,15 +64,55 @@ stated otherwise. State labels:
 
 ## B. Sensors
 
-### B1. Digital sensors / magnetic contacts as read-only window-door status
-- **Status:** In progress
-- **Asked for:** Window/door contacts (via UV switches today) show as toggle
-  buttons in Homey; users want a read-only status ("open/closed"), alarm
-  capability, or a lockable switch. (Andreas_Pedersen #324;
-  GitHub issue #72)
-- **Current state:** Test version released 2026-04 (#327) attempted to
-  surface digital sensors; needs verification by someone with the units —
-  devices likely need to be re-added.
+### B1a. Digital sensors on floor heating controllers (read-only)
+- **Status:** Implemented; awaiting verification by a user with the units
+- **Asked for:** Read digital sensor probes on heating controllers:
+  channel 13 is the HDL-standard outside temperature, channels 50+probe ID
+  are other digital sensors — as read-only temperatures, not thermostats.
+  (kroaeg, GitHub issue #72)
+- **Current state:** Shipped in v1.4.4 (commit e6ba20a): `sensorChannels`
+  [13, 51-62] added to floorheater types 207-215 in `hdl_devicelist.js`;
+  sensor channels pair as read-only temperature-only devices (heating-zone
+  capabilities removed, write commands guarded, the 60-second poll only
+  reads temperature). Issue #72 is closed.
+- **Verification:** kroaeg has no Discourse presence — GitHub is the only
+  channel (issue #72 comment; maintainer asked for confirmation there,
+  2026-11-01). Devices likely need to be re-added for the new pairing to
+  take effect.
+
+### B1b. Magnetic contacts as read-only window/door status
+- **Status:** Needs info (input hardware unknown); design sketched
+- **Asked for:** Window/door magnetic contacts are set up as UV switches
+  and show in Homey as toggleable buttons; pressing the toggle writes to
+  the bus and falsifies the open/closed state. Wants a read-only status,
+  alarm capability, or a lockable switch. (Andreas_Pedersen #324)
+- **Current state:** Not implemented. The universal-switch driver is
+  inherently writable: its `onoff` listener broadcasts UV Switch Control
+  (0xE01C) to 255.255 plus every device address individually (or the logic
+  controller), so the contact state can be changed from Homey.
+- **Needs info — which input module are the contacts wired to?**
+  A magnetic contact is a plain reed switch, not an HDL device type; it
+  must be wired to an HDL input module, and #324 does not say which one.
+  - Standalone dry contact module (HDL-MSD): the `dry-contact` driver
+    already reads it read-only, with per-channel capabilities and flow
+    triggers — no new code needed, just pairing the module.
+  - Multisensor dry-contact inputs: the multisensor driver already
+    exposes `dry_contact_1..4` read-only with flow triggers.
+  - Only if the contacts genuinely exist only as UV switches is a new
+    UV-based read-only device type needed.
+  Asked Andreas_Pedersen in the forum (2026-11-01); awaiting reply.
+- **Design sketch (if UV-based read-only is needed):** new read-only
+  `contact` driver modeled on universal-switch: Homey's standard
+  `alarm_contact` capability (read-only by nature, correct open/closed
+  semantics for flows, zones and Insights), device class `sensor`, pairs
+  UV numbers 1-254 excluding the reserved motion UV (default 212). No
+  capability listener, ever; keeps `respondToSender()` (0xE01D is a
+  protocol acknowledgment, not a state write). `app.js`'s UV branch
+  dispatches to both drivers; no `hdl_devicelist.js` entry (UV-number
+  based, like universal-switch). Flow triggers `contact_true`/`false`.
+  Self-contained: no protocol or library work, no bus capture needed.
+  Generic bonus: also covers DLP panel buttons and any other UV-routed
+  state (cf. A1).
 
 ### B2. 8in1 lux values missing or stale
 - **Status:** Open (lux explained — protocol limitation on type 315;

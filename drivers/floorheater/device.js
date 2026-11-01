@@ -22,6 +22,9 @@ class FloorheaterDevice extends Homey.Device {
   _lastExtendedTimestamp = null;
 
   async onInit() {
+    // Show the device's HDL bus address in the settings screen
+    await this.setSettings({ hdl_address: this.getData().id }).catch(this.error);
+
     try {
       const storedFlag = await this.getStoreValue("supportsExtendedTemperature");
       if (typeof storedFlag === "boolean") {

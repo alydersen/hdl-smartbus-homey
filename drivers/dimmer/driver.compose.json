@@ -12,6 +12,19 @@
     "onoff": { "setOnDim": false } 
   },
   "icon": "/drivers/dimmer/assets/icon.svg",
+  "settings": [
+    {
+      "id": "hdl_address",
+      "type": "label",
+      "label": {
+        "en": "HDL bus address"
+      },
+      "value": "",
+      "hint": {
+        "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+      }
+    }
+  ],
   "images": {
     "large": "/drivers/dimmer/assets/images/large.png",
     "small": "/drivers/dimmer/assets/images/small.png"

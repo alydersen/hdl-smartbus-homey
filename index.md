@@ -22,6 +22,9 @@ The App will listen to signals on the bus. For each signal, it will look into th
 ### How the device state is set
 Devices broadcasts their state on the bus and the Homey App reads them and updates the state on your Homey device if it is added. Sometimes, state is not published as it is happening (for various reasons). The app will reach out to every device every minute with a signal on the bus to make it publish its state. This means that sometimes, you'll have to wait a minute before you have an updated state.
 
+### Finding a device's bus address
+Every paired device shows its address on the HDL bus (subnet.device.channel) under the device's settings page in the Homey app. This makes it easy to tell devices apart even after you have renamed them in Homey.
+
 ### Supported devices and best practice for them:
 - [Relays](DEVICES_RELAYS.md)
 - [Dimmers](DEVICES_DIMMERS.md)

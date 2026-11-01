@@ -87,6 +87,7 @@ class MockDevice {
     this._capabilityValues = {};
     this._capabilityListeners = {};
     this._store = {};
+    this._settings = {};
   }
   
   getData() {
@@ -133,6 +134,15 @@ class MockDevice {
     return Object.prototype.hasOwnProperty.call(this._capabilityValues, capability)
       ? this._capabilityValues[capability]
       : null;
+  }
+
+  async getSettings() {
+    return this._settings;
+  }
+
+  async setSettings(settings) {
+    this._settings = Object.assign({}, this._settings, settings);
+    return Promise.resolve();
   }
 
   async getStoreValue(key) {

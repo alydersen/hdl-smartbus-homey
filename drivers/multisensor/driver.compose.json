@@ -13,6 +13,19 @@
     "measure_luminance",
     "measure_humidity"
   ],
+  "settings": [
+    {
+      "id": "hdl_address",
+      "type": "label",
+      "label": {
+        "en": "HDL bus address"
+      },
+      "value": "",
+      "hint": {
+        "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+      }
+    }
+  ],
   "images": {
     "large": "/drivers/multisensor/assets/images/large.png",
     "small": "/drivers/multisensor/assets/images/small.png"

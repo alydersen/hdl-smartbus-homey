@@ -116,6 +116,11 @@ For a new driver:
    `driver.js` handles pairing (`onPairListDevices`), signal-to-device mapping
    (`getDeviceFromSignal`) and state updates (`updateValues`). `device.js`
    registers capability listeners in `onInit()` and sends commands to the bus.
+   Keep the `hdl_address` settings label: `driver.compose.json` declares a
+   read-only label setting with `type: "label"`, an empty `value` default and
+   id `hdl_address`; `device.js` sets it from `this.getData().id` in
+   `onInit()`. The empty default is required — without it `setSettings()`
+   throws `invalid_setting_type` on devices paired before the setting existed.
 4. Custom capabilities go in `.homeycompose/capabilities/`, flow triggers in
    `.homeycompose/flow/triggers/`. Never edit the generated root `app.json` —
    `.homeycompose/` is the source of truth.

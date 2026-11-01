@@ -5,6 +5,10 @@ const Homey = require("homey");
 class DryContactDevice extends Homey.Device {
   async onInit() {
     this.homey.app.log(`Initated "${this.getName()}" (DryContact/${this.getClass()}) ${this.getData().id}`);
+
+    // Show the device's HDL bus address in the settings screen
+    await this.setSettings({ hdl_address: this.getData().id }).catch(this.error);
+
     try {
       const history = await this.getStoreValue("history");
       if (!Array.isArray(history)) {

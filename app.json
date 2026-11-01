@@ -660,6 +660,19 @@
         "windowcoverings_state"
       ],
       "icon": "/drivers/curtain/assets/icon.svg",
+      "settings": [
+        {
+          "id": "hdl_address",
+          "type": "label",
+          "label": {
+            "en": "HDL bus address"
+          },
+          "value": "",
+          "hint": {
+            "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+          }
+        }
+      ],
       "images": {
         "large": "/drivers/curtain/assets/images/large.png",
         "small": "/drivers/curtain/assets/images/small.png"
@@ -697,6 +710,19 @@
         }
       },
       "icon": "/drivers/dimmer/assets/icon.svg",
+      "settings": [
+        {
+          "id": "hdl_address",
+          "type": "label",
+          "label": {
+            "en": "HDL bus address"
+          },
+          "value": "",
+          "hint": {
+            "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+          }
+        }
+      ],
       "images": {
         "large": "/drivers/dimmer/assets/images/large.png",
         "small": "/drivers/dimmer/assets/images/small.png"
@@ -733,6 +759,19 @@
         "measure_temperature"
       ],
       "icon": "/drivers/dry-contact/assets/icon.svg",
+      "settings": [
+        {
+          "id": "hdl_address",
+          "type": "label",
+          "label": {
+            "en": "HDL bus address"
+          },
+          "value": "",
+          "hint": {
+            "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+          }
+        }
+      ],
       "images": {
         "large": "/drivers/dry-contact/assets/images/large.png",
         "small": "/drivers/dry-contact/assets/images/small.png"
@@ -765,6 +804,19 @@
         "meter_valve_number"
       ],
       "icon": "/drivers/floorheater/assets/icon.svg",
+      "settings": [
+        {
+          "id": "hdl_address",
+          "type": "label",
+          "label": {
+            "en": "HDL bus address"
+          },
+          "value": "",
+          "hint": {
+            "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+          }
+        }
+      ],
       "images": {
         "large": "/drivers/floorheater/assets/images/large.png",
         "small": "/drivers/floorheater/assets/images/small.png"
@@ -799,6 +851,19 @@
         "measure_luminance",
         "measure_humidity"
       ],
+      "settings": [
+        {
+          "id": "hdl_address",
+          "type": "label",
+          "label": {
+            "en": "HDL bus address"
+          },
+          "value": "",
+          "hint": {
+            "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+          }
+        }
+      ],
       "images": {
         "large": "/drivers/multisensor/assets/images/large.png",
         "small": "/drivers/multisensor/assets/images/small.png"
@@ -827,6 +892,19 @@
         "measure_temperature"
       ],
       "connectivity": [],
+      "settings": [
+        {
+          "id": "hdl_address",
+          "type": "label",
+          "label": {
+            "en": "HDL bus address"
+          },
+          "value": "",
+          "hint": {
+            "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+          }
+        }
+      ],
       "images": {
         "small": "/drivers/panel/assets/images/small.png",
         "large": "/drivers/panel/assets/images/large.png",
@@ -856,6 +934,19 @@
         "onoff"
       ],
       "icon": "/drivers/relay/assets/icon.svg",
+      "settings": [
+        {
+          "id": "hdl_address",
+          "type": "label",
+          "label": {
+            "en": "HDL bus address"
+          },
+          "value": "",
+          "hint": {
+            "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+          }
+        }
+      ],
       "images": {
         "large": "/drivers/relay/assets/images/large.png",
         "small": "/drivers/relay/assets/images/small.png"
@@ -884,6 +975,19 @@
         "measure_temperature"
       ],
       "icon": "/drivers/tempsensor/assets/icon.svg",
+      "settings": [
+        {
+          "id": "hdl_address",
+          "type": "label",
+          "label": {
+            "en": "HDL bus address"
+          },
+          "value": "",
+          "hint": {
+            "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+          }
+        }
+      ],
       "images": {
         "large": "/drivers/tempsensor/assets/images/large.png",
         "small": "/drivers/tempsensor/assets/images/small.png"
@@ -912,6 +1016,19 @@
         "onoff"
       ],
       "icon": "/drivers/universal-switch/assets/icon.svg",
+      "settings": [
+        {
+          "id": "hdl_address",
+          "type": "label",
+          "label": {
+            "en": "HDL bus address"
+          },
+          "value": "",
+          "hint": {
+            "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+          }
+        }
+      ],
       "images": {
         "large": "/drivers/universal-switch/assets/images/large.png",
         "small": "/drivers/universal-switch/assets/images/small.png"

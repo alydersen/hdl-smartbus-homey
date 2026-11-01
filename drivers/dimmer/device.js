@@ -11,7 +11,10 @@ class DimmerDevice extends Homey.Device {
 
   async onInit() {
     this.homey.app.log(`Initated "${this.getName()}" (Dimmer/${this.getClass()}) ${this.getData().id}`);
- 
+
+    // Show the device's HDL bus address in the settings screen
+    await this.setSettings({ hdl_address: this.getData().id }).catch(this.error);
+
     // register a capability listener
     this.registerCapabilityListener("onoff", this.onCapabilityOnoff.bind(this));
     this.registerCapabilityListener("dim", async (value, options) => {

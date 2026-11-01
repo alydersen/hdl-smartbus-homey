@@ -7,6 +7,19 @@
     "onoff"
   ],
   "icon": "/drivers/universal-switch/assets/icon.svg",
+  "settings": [
+    {
+      "id": "hdl_address",
+      "type": "label",
+      "label": {
+        "en": "HDL bus address"
+      },
+      "value": "",
+      "hint": {
+        "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+      }
+    }
+  ],
   "images": {
     "large": "/drivers/universal-switch/assets/images/large.png",
     "small": "/drivers/universal-switch/assets/images/small.png"

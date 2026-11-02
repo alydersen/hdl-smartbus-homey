@@ -229,4 +229,88 @@ describe('FloorHeaterDriver', () => {
       }
     });
   });
+
+  describe('onPair', () => {
+    let handlers;
+
+    const startPairSession = async () => {
+      handlers = {};
+      const session = {
+        setHandler: jest.fn((event, callback) => {
+          handlers[event] = callback;
+        })
+      };
+      await driver.onPair(session);
+      return session;
+    };
+
+    beforeEach(async () => {
+      driver.homey.app.getDevicesOfType.mockReturnValue({
+        42: { subnet: 1, id: 42, type: 213 }
+      });
+      await startPairSession();
+    });
+
+    test('registers the pairing session handlers', () => {
+      expect(Object.keys(handlers).sort()).toEqual([
+        'list_controllers',
+        'list_devices',
+        'pair_mode',
+        'pair_probe'
+      ]);
+    });
+
+    test('lists discovered devices by default', async () => {
+      const devices = await handlers.list_devices();
+      expect(devices).toHaveLength(19);
+      expect(devices.filter((d) => d.name.startsWith('HDL Floorheater'))).toHaveLength(6);
+    });
+
+    test('lists discovered floor heating controllers with bus addresses', async () => {
+      const controllers = await handlers.list_controllers();
+      expect(controllers).toEqual([{ address: '1.42' }]);
+    });
+
+    test('switches to probe mode after a valid probe ID is submitted', async () => {
+      const device = await handlers.pair_probe({ address: '1.42', probeId: 133 });
+      expect(device).toEqual({
+        name: 'HDL Floor Sensor (1.42 probe 133)',
+        data: {
+          id: '1.42.183',
+          address: '1.42',
+          channel: 183
+        },
+        capabilities: ['measure_temperature']
+      });
+
+      const devices = await handlers.list_devices();
+      expect(devices).toEqual([device]);
+    });
+
+    test('rejects probe IDs outside the supported range', async () => {
+      await expect(handlers.pair_probe({ address: '1.42', probeId: 0 })).rejects.toThrow('whole number');
+      await expect(handlers.pair_probe({ address: '1.42', probeId: 301 })).rejects.toThrow('whole number');
+      await expect(handlers.pair_probe({ address: '1.42', probeId: 12.5 })).rejects.toThrow('whole number');
+      await expect(handlers.pair_probe({ address: '1.42' })).rejects.toThrow('whole number');
+
+      // A rejected probe must not leave the session in probe mode
+      const devices = await handlers.list_devices();
+      expect(devices).toHaveLength(19);
+    });
+
+    test('rejects controllers that were not discovered', async () => {
+      await expect(handlers.pair_probe({ address: '1.99', probeId: 42 })).rejects.toThrow('Unknown floor heating controller');
+    });
+
+    test('rejects probe pairing when the bus is not connected', async () => {
+      driver.homey.app.isBusConnected.mockReturnValue(false);
+      await expect(handlers.pair_probe({ address: '1.42', probeId: 42 })).rejects.toThrow('Please configure the app settings first.');
+      await expect(handlers.list_controllers()).rejects.toThrow('Please configure the app settings first.');
+    });
+
+    test('accepts a probe ID matching a built-in sensor channel', async () => {
+      const device = await handlers.pair_probe({ address: '1.42', probeId: 1 });
+      expect(device.data.channel).toBe(51);
+    });
+  });
 });

@@ -6,13 +6,16 @@ A floor heater controller has one or more heating zones as channels. Different H
 Each heating zone exposes a target temperature, measured temperature, on/off switch, and valve status in Homey.
 
 ## Digital Temperature Sensors
-Floor heating controllers (device types 207-215) support up to 13 external digital temperature sensors wired in parallel. These sensors are available for pairing alongside the regular heating zones and appear as "HDL Floor Sensor" during pairing.
+Floor heating controllers (device types 207-215) support external digital temperature sensors wired in parallel. These sensors are read-only: they only expose a measured temperature, so they are paired with only that capability — the heating-zone capabilities (target temperature, on/off switch, valve status) never exist on the device and never appear in Insights. Sensor devices paired by earlier app versions lose the heating-zone capabilities automatically on the next app restart.
 
-Sensor devices are read-only: they only expose a measured temperature. They are paired with only that capability, so the heating-zone capabilities (target temperature, on/off switch, valve status) never exist on the device and never appear in Insights. Sensor devices paired by earlier app versions lose the heating-zone capabilities automatically on the next app restart.
+When you add a floor heater device, you first choose how to continue:
+
+- **Search for devices** — shows the heating zones and the controller's built-in sensor channels (channel 13, plus channels 51-62 for probe IDs 1-12).
+- **Add a digital temperature sensor probe** — lets you pick the controller and type in the probe ID. Use this for any probe: digital sensor probes have a factory-set ID, typically two or three digits (roughly 1-300), and probes with IDs above 12 are only reachable this way.
 
 The sensor channels are mapped as follows:
 - **Channel 13** — Outdoor temperature sensor
-- **Channels 51-62** — Digital sensors (sensor ID + 50, so sensor ID 1 = channel 51, sensor ID 12 = channel 62)
+- **Channels 51+** — Digital sensors (50 + sensor probe ID, so probe ID 1 = channel 51, probe ID 133 = channel 183)
 
 ## Missing sensor values
 Controllers report fixed sentinel values when a channel has no sensor attached, so a paired sensor channel may never show a reading. These values are not bugs:

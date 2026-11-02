@@ -3,6 +3,14 @@
 const Homey = require("homey");
 const HdlDevicelist = require("./../../hdl/hdl_devicelist");
 
+// Digital sensor probes report on channel 50 + the factory-set probe ID.
+// The probe ID is typically two or three digits (roughly 1-300), so the
+// fixed channels 51-62 in the device list only cover a small subset; the
+// custom pairing views let the user type any probe ID instead (issue #72).
+const PROBE_ID_MIN = 1;
+const PROBE_ID_MAX = 300;
+const PROBE_CHANNEL_OFFSET = 50;
+
 // interface Signal {
 //   code,
 //   sender,
@@ -130,6 +138,70 @@ class FloorHeaterDriver extends Homey.Driver {
       }
     }
     return devices.sort(FloorHeaterDriver._compareHomeyDevice);
+  }
+
+  // Custom pairing flow. The first two views are defined in
+  // drivers/floorheater/pair/ and drive the mode: "discovered" shows the
+  // zones and built-in sensor channels from onPairListDevices(), "probe"
+  // shows a single read-only device for a typed-in sensor probe ID.
+  async onPair(session) {
+    let pairMode = "discovered";
+    let probeDevice = null;
+
+    session.setHandler("pair_mode", async (mode) => {
+      if (mode === "discovered" || mode === "probe") pairMode = mode;
+    });
+
+    session.setHandler("list_controllers", async () => {
+      return this._discoveredControllers();
+    });
+
+    session.setHandler("pair_probe", async ({ address, probeId } = {}) => {
+      this._requireBusConnection();
+      const addresses = this._discoveredControllers().map((controller) => controller.address);
+      if (!addresses.includes(address)) {
+        throw new Error("Unknown floor heating controller. Select one from the list.");
+      }
+      probeDevice = this._buildProbeDevice(address, probeId);
+      pairMode = "probe";
+      return probeDevice;
+    });
+
+    session.setHandler("list_devices", async () => {
+      if (pairMode === "probe" && probeDevice !== null) return [probeDevice];
+      return this.onPairListDevices();
+    });
+  }
+
+  _requireBusConnection() {
+    if (!this.homey.app.isBusConnected()) {
+      throw new Error("Please configure the app settings first.");
+    }
+  }
+
+  _discoveredControllers() {
+    this._requireBusConnection();
+    const hdl_subnet = this.homey.settings.get("hdl_subnet");
+    return Object.values(this.homey.app.getDevicesOfType("floorheater")).map((device) => ({
+      address: `${hdl_subnet}.${device.id}`
+    }));
+  }
+
+  _buildProbeDevice(address, probeId) {
+    const id = Number(probeId);
+    if (!Number.isInteger(id) || id < PROBE_ID_MIN || id > PROBE_ID_MAX) {
+      throw new Error(`The sensor probe ID must be a whole number between ${PROBE_ID_MIN} and ${PROBE_ID_MAX}.`);
+    }
+    const channel = PROBE_CHANNEL_OFFSET + id;
+    return {
+      name: `HDL Floor Sensor (${address} probe ${id})`,
+      data: {
+        id: `${address}.${channel}`,
+        address: address,
+        channel: channel
+      },
+      capabilities: ["measure_temperature"]
+    };
   }
 
   static _compareHomeyDevice(a, b) {

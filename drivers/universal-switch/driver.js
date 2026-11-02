@@ -44,6 +44,13 @@ class HdlUniversalSwitchDriver extends Homey.Driver {
       await this._logUvSignal(signal, "ignored: no switch number");
       return;
     }
+    // Read requests (e.g. 0xE018 Read Status of UV Switch, 0x15CE Read Dry
+    // Contact Status) carry a switch number but no status; they are not
+    // switch controls and must not be written to the onoff capability
+    if (typeof signal.data.status !== "boolean") {
+      await this._logUvSignal(signal, "ignored: no switch status");
+      return;
+    }
     if (
       signal.data.switch === parseInt(this.homey.settings.get("hdl_universal_motion"), 10)
     ) {

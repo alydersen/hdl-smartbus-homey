@@ -48,6 +48,16 @@ describe('UniversalSwitchDriver', () => {
       expect(driver.getDevice).not.toHaveBeenCalled();
     });
 
+    test('should return when status is undefined (read request, not control)', async () => {
+      // 0xE018 Read Status of UV Switch and 0x15CE Read Dry Contact Status
+      // are routed here because they carry a switch number, but they have
+      // no status field
+      const signal = { sender: { id: 42 }, data: { switch: 5 } };
+      await driver.updateValues(signal);
+      expect(mockHomeyDevice.setCapabilityValue).not.toHaveBeenCalled();
+      expect(mockHomeyDevice.respondToSender).not.toHaveBeenCalled();
+    });
+
     test('should return when signal is for universal motion', async () => {
       const signal = {
         sender: { id: 42 },
@@ -215,6 +225,20 @@ describe('UniversalSwitchDriver signal logging', () => {
     const log = settingsStore.hdl_uv_debug_log;
     expect(log).toHaveLength(1);
     expect(log[0]).toMatchObject({ sender: '1.42', note: 'ignored: no data' });
+  });
+
+  test('should log status-less read requests with the reason', async () => {
+    const signal = {
+      sender: { subnet: 1, id: 42, type: 51 },
+      data: { switch: 5 }
+    };
+    await driver.updateValues(signal);
+    expect(settingsStore.hdl_uv_debug_log[0]).toMatchObject({
+      sender: '1.42',
+      switch: 5,
+      status: undefined,
+      note: 'ignored: no switch status'
+    });
   });
 
   test('should log unknown switches as unpaired', async () => {

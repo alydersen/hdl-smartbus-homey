@@ -149,17 +149,52 @@ describe('CurtainDriver', () => {
         expect(mockHomeyDevice.updateStatus).toHaveBeenCalledWith(3);
         expect(mockHomeyDevice.updateDuration).not.toHaveBeenCalled();
       });
+
+      test('should skip duration when not in response', async () => {
+        const signal = {
+          code: 0xE3E3,
+          sender: { id: 42 },
+          data: { curtain: 1, status: 3 }
+        };
+        await driver.updateValues(signal);
+        expect(mockHomeyDevice.updateStatus).toHaveBeenCalledWith(3);
+        expect(mockHomeyDevice.updateDuration).not.toHaveBeenCalled();
+      });
     });
 
-    test('should update duration on 0xE801', async () => {
-      const signal = {
-        code: 0xE801,
-        sender: { id: 42 },
-        data: { curtain: 1, duration: 500 }
-      };
-      await driver.updateValues(signal);
-      expect(mockHomeyDevice.updateDuration).toHaveBeenCalledWith(500);
-      expect(mockHomeyDevice.updateStatus).not.toHaveBeenCalled();
+    describe('0xE801 - duration response', () => {
+      test('should update duration on 0xE801', async () => {
+        const signal = {
+          code: 0xE801,
+          sender: { id: 42 },
+          data: { curtain: 1, duration: 500 }
+        };
+        await driver.updateValues(signal);
+        expect(mockHomeyDevice.updateDuration).toHaveBeenCalledWith(500);
+        expect(mockHomeyDevice.updateStatus).not.toHaveBeenCalled();
+      });
+
+      test('should ignore real full 0xE801 payloads', async () => {
+        const Command = require('smart-bus/lib/command');
+        const signal = new Command(0xE801, {
+          sender: { id: 42 },
+          payload: Buffer.from('01001388', 'hex')
+        });
+        await driver.updateValues(signal);
+        expect(mockHomeyDevice.updateDuration).toHaveBeenCalledWith(5000);
+      });
+
+      test('should ignore real short 0xE801 payloads smart-bus cannot parse', async () => {
+        const Command = require('smart-bus/lib/command');
+        const signal = new Command(0xE801, {
+          sender: { id: 42 },
+          payload: Buffer.from('01001E', 'hex')
+        });
+        // Accessing signal.data on this payload throws a Buffer range
+        // error in smart-bus 0.9.0; the driver must skip it silently
+        await expect(driver.updateValues(signal)).resolves.toBeUndefined();
+        expect(mockHomeyDevice.updateDuration).not.toHaveBeenCalled();
+      });
     });
 
     test('should skip unknown command codes', async () => {

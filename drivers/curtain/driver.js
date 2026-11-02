@@ -22,6 +22,13 @@ class CurtainDriver extends Homey.Driver {
   }
 
   async updateValues(signal) {
+      // Some curtain modules answer the duration request (0xE800) with a
+      // payload shorter than the 4 bytes smart-bus's 0xE801 parser
+      // expects; parsing it throws a Buffer range error. Treat such
+      // responses as "duration unknown" and skip them before any
+      // signal.data access.
+      if (signal.code === 0xE801 && signal.payload && signal.payload.length < 4) return;
+
       // signal.data is parsed by smart-bus itself (0.9.0+ ships the
       // curtain command parsers); a manual re-parse is no longer needed
       if (signal.data) {
@@ -50,7 +57,8 @@ class CurtainDriver extends Homey.Driver {
 
               case 0xE3E3:
                 device.updateStatus(signal.data.status);
-                if (signal.data.duration !== null) // in some cases duration is not in response
+                // in some cases duration is not in response (undefined)
+                if (typeof signal.data.duration === "number")
                   device.updateDuration(signal.data.duration);
                 break;
 

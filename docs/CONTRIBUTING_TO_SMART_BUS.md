@@ -18,6 +18,10 @@ the local implementation should be removed and this document updated.
   (8in1 DeviceType315 sensors status feedback). No app-local override exists
   for these fields; the app consumes them when the PR is merged and released.
   Awaiting review/merge.
+- **[PR #26](https://github.com/caligo-mentis/smart-bus/pull/26)** — makes
+  the `0xE801` parser length-tolerant so short curtain duration responses
+  parse to `{ channel }` instead of throwing a Buffer range error (see the
+  local guard below). Awaiting review/merge.
 - **[Issue #24](https://github.com/caligo-mentis/smart-bus/issues/24)** —
   design discussion for the dry-contact payload variants of `0x0031` and
   `0xE3D9` (see below). No implementation until the maintainer picks a
@@ -80,6 +84,26 @@ contact modules send acknowledgements in two other layouts:
 
 Same upstream constraint as `0x0031` — tracked in
 [issue #24](https://github.com/caligo-mentis/smart-bus/issues/24).
+
+### 0xE801 — short curtain duration response variant
+
+`drivers/curtain/driver.js` (`updateValues`, guard before `signal.data`)
+
+Some curtain modules answer the `0xE800` duration request with a payload
+shorter than the 4 bytes (`[channel, reserved, duration_hi, duration_lo]`)
+smart-bus's `0xE801` parser assumes. Observed: a 3-byte payload, which makes
+`readUInt16BE(2)` throw `The value of "offset" is out of range. It must be
+>= 0 and <= 1. Received 2` — logged by the app on every 60-second poll as
+`Error for curtain <id>`.
+
+The driver skips any `0xE801` payload shorter than 4 bytes, treating the
+duration as unknown (same as no response). The upstream fix is
+[PR #26](https://github.com/caligo-mentis/smart-bus/pull/26): a
+length-tolerant `0xE801` parser that returns only `{ channel }` for short
+payloads. When it is merged and released, remove this guard and the
+matching tests. The exact meaning of the 3-byte variant is unknown —
+verify with a real bus capture (`DEBUG=smart-bus`) before proposing field
+semantics upstream.
 
 ### 0x7262 / 0x7263 — floor heating extended temperature
 

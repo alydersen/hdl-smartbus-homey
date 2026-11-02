@@ -170,7 +170,8 @@ stated otherwise. State labels:
   a shorter poll interval (D3).
 
 ### B5. Floor heater control mode (Normal vs Heating power)
-- **Status:** Open (needs upstream smart-bus parser first)
+- **Status:** Open — awaiting bus captures (GitHub issue #116), then
+  upstream smart-bus parser
 - **Asked for:** Expose the floor heating controller's control mode —
   Normal vs "Heating power" (PWM) — as a read-only capability in Homey.
   (Suggested from a bus capture by oktollefsen, PR #110 comment, 2026-11-01)
@@ -186,6 +187,17 @@ stated otherwise. State labels:
   Homey capability make sense; until then the app has no local override
   to record. Byte 11 of the same response (output %, e.g. 20 % PWM) could
   ride along in the same contribution.
+- **Cross-check (2026-11-02, GitHub issue #116):** the in-repo operation
+  codes PDF does not document the 0x1C5x family at all — its floor
+  heating section covers only 0x1944-0x1949 (the panel/DLP family) — so
+  it cannot serve as the wire-format reference for the upstream PR.
+  smart-bus's 0x1C5F test fixture has byte 1 = 0x21 (bit 0x20 set),
+  consistent with the single capture, but fixtures are authored to match
+  the parser: corroboration, not proof. Byte 11 is ambiguous — 0x14 fits
+  both "20 % PWM output" and smart-bus's `watering` parse. Issue #116
+  asks oktollefsen for Normal-mode and known-output captures, and for the
+  fuller HDL protocol document that smart-bus's "11.2" section numbering
+  refers to.
 
 ### B6. MSW01.4C wave roof sensor support
 - **Status:** Needs info

@@ -144,10 +144,12 @@ before submitting.
 
 ## 5. Submit a pull request
 
-Always open PRs with the GitHub CLI (`gh`) — it is installed and already
-authenticated on the development machine. Do not attempt the GitHub REST API,
-`curl`, or web automation: they fail because no API token is available to the
-agent environment.
+Always open PRs and issues with the GitHub CLI (`gh`) — it is installed and
+already authenticated on the development machine. Do not attempt the GitHub
+REST API, `curl`, or web automation: they fail because no API token is
+available to the agent environment. (Issues have no template requirement:
+`gh issue create --title "<short summary>" --body-file <body.md>`, plus
+labels such as `feature request` / `help wanted` where they fit.)
 
 1. Work on a task branch off the latest `master`; squash to a single commit
    and rebase to avoid conflicts (see `docs/CONTRIBUTING.md`, "A great pull request

@@ -30,6 +30,14 @@
   },
   "pair": [
     {
+      "id": "start",
+      "template": "custom"
+    },
+    {
+      "id": "probe_id",
+      "template": "custom"
+    },
+    {
       "id": "list_devices",
       "template": "list_devices",
       "navigation": {

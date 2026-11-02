@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 24px;
+      color: #222;
+    }
+    h2 {
+      margin: 0 0 8px;
+      font-size: 1.2em;
+    }
+    p.intro {
+      margin: 0 0 20px;
+      color: #666;
+    }
+    label {
+      display: block;
+      margin: 16px 0 6px;
+      font-weight: bold;
+    }
+    select,
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    button {
+      display: block;
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      background: #07436b;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #09568c;
+    }
+  </style>
+</head>
+<body>
+  <h2>Digital temperature sensor probe</h2>
+  <p class="intro">Digital sensor probes have a factory-set ID, usually two or three digits. Enter the ID of the probe wired to your floor heating controller and it will be added as a read-only temperature sensor.</p>
+
+  <label for="controller">Floor heating controller</label>
+  <select id="controller"></select>
+
+  <label for="probeId">Sensor probe ID</label>
+  <input id="probeId" type="number" min="1" max="300" step="1" value="1" inputmode="numeric" />
+
+  <button id="continue">Continue</button>
+
+  <script type="application/javascript">
+    (function () {
+      var controllerSelect = document.getElementById("controller");
+
+      function fail(err) {
+        Homey.alert((err && err.message) || String(err), "error");
+      }
+
+      Homey.emit("list_controllers")
+        .then(function (controllers) {
+          controllers.forEach(function (controller) {
+            var option = document.createElement("option");
+            option.value = controller.address;
+            option.textContent = controller.address;
+            controllerSelect.appendChild(option);
+          });
+        })
+        .catch(fail);
+
+      document.getElementById("continue").addEventListener("click", function () {
+        var address = controllerSelect.value;
+        var probeId = parseInt(document.getElementById("probeId").value, 10);
+        Homey.emit("pair_probe", { address: address, probeId: probeId })
+          .then(function () { Homey.showView("list_devices"); })
+          .catch(fail);
+      });
+    })();
+  </script>
+</body>
+</html>

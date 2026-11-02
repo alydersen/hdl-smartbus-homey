@@ -1,6 +1,7 @@
 # Wish List
 
-Thread reviewed: 2026-11-01 (last post read: #335, ojnordah, 2026-10-23)
+Thread reviewed: 2026-11-01 (last post read: #335, ojnordah, 2026-10-23).
+Closed GitHub issues reviewed 2026-11-02.
 
 This is a working list of feature requests and open issues collected from the
 [Homey community forum thread](https://community.homey.app/t/app-pro-hdl-smartbus/26575)
@@ -65,7 +66,8 @@ stated otherwise. State labels:
 ## B. Sensors
 
 ### B1a. Digital sensors on floor heating controllers (read-only)
-- **Status:** Implemented; awaiting verification by a user with the units
+- **Status:** Done — channel 13 verified; probe-ID pairing merged,
+  pending release
 - **Asked for:** Read digital sensor probes on heating controllers:
   channel 13 is the HDL-standard outside temperature, channels 50+probe ID
   are other digital sensors — as read-only temperatures, not thermostats.
@@ -74,11 +76,23 @@ stated otherwise. State labels:
   [13, 51-62] added to floorheater types 207-215 in `hdl_devicelist.js`;
   sensor channels pair as read-only temperature-only devices (heating-zone
   capabilities removed, write commands guarded, the 60-second poll only
-  reads temperature). Issue #72 is closed.
-- **Verification:** kroaeg has no Discourse presence — GitHub is the only
-  channel (issue #72 comment; maintainer asked for confirmation there,
-  2026-11-01). Devices likely need to be re-added for the new pairing to
-  take effect.
+  reads temperature). Issue #72 is closed. Types 213-215 themselves were
+  only added after issue #97 (a newer MFH06.432 module reported type 213,
+  which the app silently dropped); fixed via PR #98, which also explained
+  the "phantom" channels 13/51-62 offered during pairing as these sensor
+  inputs.
+- **Verification:** kroaeg confirmed on GitHub (2026-11-02): pairing
+  channel 13 on a controller with a digital sensor set as outdoor
+  temperature adds it as a read-only temperature device, as intended.
+- **Follow-up — probe-ID pairing (PR #115, pending release):** the same
+  confirmation flagged that the hard-coded channels 51-62 only cover
+  probe IDs 1-12. Probe IDs are factory-set (typically two or three
+  digits), so users would have had to order custom low-ID probes.
+  PR #115 adds a floor-heater pairing flow where the user picks a
+  discovered controller and types the probe ID; the probe is paired as a
+  read-only `measure_temperature` device on channel 50 + probe ID.
+  Merged to master 2026-11-02; awaiting release and real-world
+  verification.
 
 ### B1b. Magnetic contacts as read-only window/door status
 - **Status:** Needs info (input hardware unknown); design sketched
@@ -173,6 +187,17 @@ stated otherwise. State labels:
   to record. Byte 11 of the same response (output %, e.g. 20 % PWM) could
   ride along in the same contribution.
 
+### B6. MSW01.4C wave roof sensor support
+- **Status:** Needs info
+- **Asked for:** The MSW01.4C wave roof sensor should be discoverable; it
+  works in HDL Bus Pro tool 2 and is listed in `defDeviceType.xlsx`, but
+  the app cannot find it. (bellimo, GitHub issue #73, closed 2025)
+- **Current state:** Not supported — the sensor's type ID was never added
+  to `hdl/hdl_devicelist.js`, so its packets are dropped silently. The
+  issue was closed with a request for a contributor with the hardware.
+  Needs the unit's device type ID plus someone with the sensor to verify
+  it works with the multisensor driver.
+
 ## C. Device types
 
 ### C1. 12in1 multisensor relay output control
@@ -237,7 +262,8 @@ stated otherwise. State labels:
 - **Status:** Rejected by maintainer (2026-11-01)
 - **Asked for:** A "manual" device where the user enters subnet, device ID,
   channel count and selects relay/dimmer — covering odd units without app
-  updates. (Eivind_Bo #263)
+  updates. (Eivind_Bo #263; also asked in GitHub issue #78, closed with
+  "devices can only be recognized, not added manually")
 - **Current state:** Rejected at the time as it required a rewrite of the
   signal handling. With the device-registry architecture
   (`hdl/hdl_devicelist.js`) this may be easier now.
@@ -355,6 +381,20 @@ stated otherwise. State labels:
 - **Current state:** Impossible: the Bridge does not allow apps to access
   the local network. Closed unless Athom changes this.
 
+### D6. HDL Bus Pro Wireless support
+- **Status:** Needs info (closed for lack of response)
+- **Asked for:** Discover and control HDL Bus Pro Wireless devices behind a
+  Mesh IP gateway — same protocol as the wired bus. (OferHomeControl,
+  GitHub issue #77, closed 2025-11)
+- **Current state:** Not supported. The reporter could reach the wireless
+  system's universal switches from the app, but scanning found no relays
+  or panels. Since UVs are not type-based, this points at missing or
+  different device type IDs in the device registry rather than a subnet
+  problem (cf. D1a) — but it was never confirmed; the issue was closed
+  after the reporter stopped responding. Needs a bus capture
+  (`DEBUG=smart-bus` listener) from a wireless installation to identify
+  the type IDs.
+
 ## E. Bugs and loose ends
 
 ### E1. DMX dimmer SB-DN-48DMX flashes to 100% before dim level
@@ -393,6 +433,40 @@ stated otherwise. State labels:
 - **Current state:** Extensive debugging (including a patched driver for
   logging); conclusion was local configuration/bus issues. HDL support had
   not heard of the problem. No app-side action identified.
+
+### E4. Floor heating relays stuck permanently ON
+- **Status:** Needs info (uninvestigated)
+- **Asked for:** Occasionally, adjusting the temperature from Homey left
+  the heating relays permanently ON, ignoring the setpoint, until manually
+  corrected — a potential overheating hazard. (kroaeg, GitHub issue #71,
+  closed 2024-09 without a reply)
+- **Current state:** Never investigated — closed with no comments and no
+  reproducer. Possibly related to the intermittent state problems in E2
+  (busy bus / missed status reports). Needs a report from a user with a
+  heating controller: app version, logs, and whether the controller's own
+  display also showed the stuck state.
+
+### E5. Undiscovered second relay module and multisensors
+- **Status:** Needs info (reporter never followed up)
+- **Asked for:** Help getting a second relay module, the floor heating
+  modules and the sensor modules discovered; also asked whether
+  temperature from non-DLP panels can reach Homey. (Strandabrygg, GitHub
+  issue #86, closed 2026-03)
+- **Current state:** No resolution — closed with a pointer to the docs and
+  forum. The floor heating part was most likely the same root cause as
+  #97 (missing device types 213-215, since fixed via PR #98); the
+  undiscovered relay and multisensor modules were never explained. Needs
+  the device type IDs (from HDL Setup Tool or `defDeviceType.xlsx`) from
+  the reporter to register them.
+
+### E6. Show the Universal Switch number in device settings
+- **Status:** Done (via the standard settings label)
+- **Asked for:** Display the Universal Switch number in the device's
+  settings, so users can see which number a switch has. (harboeknut,
+  GitHub issue #70, closed 2024 as an edge case)
+- **Current state:** Solved by the app-wide read-only `hdl_address`
+  settings label that every driver now declares — the UV's address
+  (`subnet.switchNumber`) is visible on the device's settings page.
 
 ## F. Documentation opportunities
 

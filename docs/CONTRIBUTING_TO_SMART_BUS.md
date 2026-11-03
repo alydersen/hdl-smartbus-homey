@@ -22,6 +22,17 @@ the local implementation should be removed and this document updated.
   the `0xE801` parser length-tolerant so short curtain duration responses
   parse to `{ channel }` instead of throwing a Buffer range error (see the
   local guard below). Awaiting review/merge.
+- **[PR #31](https://github.com/caligo-mentis/smart-bus/pull/31)** — fixes
+  the `0x1C5F` (Read Floor Heating Status response) parser from the type 213
+  bus captures in
+  [issue #116](https://github.com/alydersen/hdl-smartbus-homey/issues/116):
+  byte 1 bit `0x20` is exposed as `heatingPowerMode` (Normal vs "Heating
+  power"/PWM) and byte 11 as `output` (current output percentage).
+  **BREAKING:** `work.type` and `watering` are removed from the parse output.
+  When a release lands, the `floorheater` driver's `watering.status`
+  fallback in the on/off detection becomes inert (the field no longer
+  exists) and can be removed along with `work.type`-based code, if any.
+  Awaiting review/merge.
 - **[Issue #24](https://github.com/caligo-mentis/smart-bus/issues/24)** —
   design discussion for the dry-contact payload variants of `0x0031` and
   `0xE3D9` (see below). No implementation until the maintainer picks a

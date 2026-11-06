@@ -1,6 +1,6 @@
 {
   "id": "com.github.alydersen.hdl-smartbus-homey",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "name": {
@@ -53,6 +53,6 @@
   },
   "source": "https://github.com/alydersen/hdl-smartbus-homey",
   "changelog": {
-    "en": "Configurable polling interval (10-600 seconds) with status requests spread evenly across the interval to reduce traffic on the HDL bus. Relays and dimmers now support approximated power usage in Homey Energy. All devices show their HDL bus address in the device settings. Fixed dry contact status updates not being processed."
+    "en": "Floor heaters: pair digital sensor probes by typing the probe ID, and pair sensor channels as read-only temperature devices. Added UV send modes and universal switch signal logging. Fixed dimmers flashing to 100% before the requested dim level, universal switch errors on status-less signals, and unparsable curtain duration responses. Updated to smart-bus 0.10.0 and relicensed the app to MIT."
   }
 }

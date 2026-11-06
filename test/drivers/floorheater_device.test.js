@@ -161,5 +161,16 @@ describe('FloorheaterDevice', () => {
       const commands = device._sendCommand.mock.calls.map((call) => call[0]);
       expect(commands).toEqual([0x1C5E, 0x1948, 0xE3E7, 0x7262]);
     });
+
+    test('should send 0x7262 via the standard smart-bus encoder, not a raw payload', async () => {
+      const device = makeDevice({ id: '1.10.2', address: '1.10', channel: 2 });
+      device._isSensorChannel = false;
+
+      await device._performPoll();
+
+      const poll = device._sendCommand.mock.calls.find((call) => call[0] === 0x7262);
+      expect(poll[1]).toEqual({ channel: 2 });
+      expect(poll[2]).toBeUndefined();
+    });
   });
 });

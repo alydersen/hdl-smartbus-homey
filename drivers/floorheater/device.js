@@ -182,7 +182,6 @@ class FloorheaterDevice extends Homey.Device {
 
   async _performPoll() {
     const payload = { channel: this.getData().channel };
-    const rawPayload = Buffer.from([this.getData().channel]);
     const commands = [];
 
     // Sensor channels only support temperature reads; skip the
@@ -198,7 +197,7 @@ class FloorheaterDevice extends Homey.Device {
     }
 
     if (!this._isSensorChannel) {
-      commands.push({ command: 0x7262, payload: rawPayload });
+      commands.push({ command: 0x7262, data: payload });
     }
 
     for (const entry of commands) {

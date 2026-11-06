@@ -6,22 +6,10 @@ are parsed or encoded locally because smart-bus lacks (or lacked) support, and
 the upstream contribution status of each. When a command lands in smart-bus,
 the local implementation should be removed and this document updated.
 
-**Current state**: app v1.4.4, smart-bus 0.9.0.
+**Current state**: app v1.5.0, smart-bus 0.10.0.
 
 ## Upstream activity in flight
 
-- **[PR #23](https://github.com/caligo-mentis/smart-bus/pull/23)** — adds
-  `0x000E` (device discovery broadcast) and `0x7262`/`0x7263` (floor heating
-  extended temperature), version bump to **0.9.1**. Awaiting review/merge.
-- **[PR #25](https://github.com/caligo-mentis/smart-bus/pull/25)** — parses
-  the previously skipped `luxRange` and `uvSwitches` fields of `0xDB01`
-  (8in1 DeviceType315 sensors status feedback). No app-local override exists
-  for these fields; the app consumes them when the PR is merged and released.
-  Awaiting review/merge.
-- **[PR #26](https://github.com/caligo-mentis/smart-bus/pull/26)** — makes
-  the `0xE801` parser length-tolerant so short curtain duration responses
-  parse to `{ channel }` instead of throwing a Buffer range error (see the
-  local guard below). Awaiting review/merge.
 - **[PR #31](https://github.com/caligo-mentis/smart-bus/pull/31)** — fixes
   the `0x1C5F` (Read Floor Heating Status response) parser from the type 213
   bus captures in
@@ -33,31 +21,30 @@ the local implementation should be removed and this document updated.
   fallback in the on/off detection becomes inert (the field no longer
   exists) and can be removed along with `work.type`-based code, if any.
   Awaiting review/merge.
+- **[PR #26](https://github.com/caligo-mentis/smart-bus/pull/26)** —
+  **closed without merge** (November 2026). The length-tolerant `0xE801`
+  parser was not accepted, so the app-local short-payload guard in
+  `drivers/curtain/driver.js` stays (see below).
 - **[Issue #24](https://github.com/caligo-mentis/smart-bus/issues/24)** —
   design discussion for the dry-contact payload variants of `0x0031` and
   `0xE3D9` (see below). No implementation until the maintainer picks a
   direction.
 
-## When smart-bus 0.9.1 is released
+## Released in smart-bus 0.10.0 (November 2026)
 
-We are waiting for the 0.9.1 release (merge + npm publish of PR #23). Once it
-is out:
+Both of our pending PRs were merged and shipped in
+[v0.10.0](https://github.com/caligo-mentis/smart-bus/releases/tag/v0.10.0):
 
-1. Bump the dependency: `smart-bus: ^0.9.1` in `package.json`, update
-   `package-lock.json` (`npm install`), and keep the four-file version-bump
-   procedure in mind only if the app version itself changes (see AGENTS.md).
-2. Replace the raw `0x7262` send in `drivers/floorheater/device.js`
-   (`_performPoll`: currently `payload: Buffer.from([channel])`) with the
-   standard data form `data: { channel }` and remove the `rawPayload` variable.
-3. Replace the raw `0x7263` channel extraction in
-   `drivers/floorheater/driver.js` (`updateValues`: currently
-   `bufferPayload.readUInt8(0)`) with `signal.data.channel`. The
-   `_delayAfterCommand` case for `0x7262` stays as-is — only the payload
-   construction changes, not the command code.
-4. Run `npm run lint && npm test`, and update the floorheater tests that
-   assert the raw buffer send.
-5. Update this document: move `0x000E`, `0x7262` and `0x7263` to the
-   "supported upstream" list.
+- **[PR #23](https://github.com/caligo-mentis/smart-bus/pull/23)** — `0x000E`
+  (device discovery broadcast) and `0x7262`/`0x7263` (floor heating extended
+  temperature). The app's raw-payload workarounds were removed: the poll now
+  sends `data: { channel }` and the driver reads the response channel from
+  `signal.data`. No local overrides remain for these commands.
+- **[PR #25](https://github.com/caligo-mentis/smart-bus/pull/25)** — parses
+  the previously skipped `luxRange` and `uvSwitches` fields of `0xDB01` (8in1
+  DeviceType315 sensors status feedback). No app-local override ever existed;
+  the fields now arrive via `signal.data` and can be consumed by the
+  `multisensor` driver whenever a use for them is decided.
 
 ## App-local implementations (still needed)
 
@@ -108,35 +95,12 @@ smart-bus's `0xE801` parser assumes. Observed: a 3-byte payload, which makes
 `Error for curtain <id>`.
 
 The driver skips any `0xE801` payload shorter than 4 bytes, treating the
-duration as unknown (same as no response). The upstream fix is
-[PR #26](https://github.com/caligo-mentis/smart-bus/pull/26): a
-length-tolerant `0xE801` parser that returns only `{ channel }` for short
-payloads. When it is merged and released, remove this guard and the
-matching tests. The exact meaning of the 3-byte variant is unknown —
-verify with a real bus capture (`DEBUG=smart-bus`) before proposing field
-semantics upstream.
-
-### 0x7262 / 0x7263 — floor heating extended temperature
-
-`drivers/floorheater/device.js` (`_performPoll`, raw `Buffer` payload),
-`drivers/floorheater/driver.js` (`updateValues`, raw byte 0)
-
-Used alongside the standard `0x1948`/`0x1949` temperature read:
-
-- `0x7262` request: single channel byte
-- `0x7263` response: channel byte at offset 0 (only observed field so far)
-
-**Pending upstream**: [PR #23](https://github.com/caligo-mentis/smart-bus/pull/23)
-registers both commands; when 0.9.1 is released, follow the checklist above.
-
-### 0x000E — device discovery broadcast
-
-`app.js` (`connect`)
-
-Sent with an empty payload to `255.255`; devices announce themselves and are
-identified by the bus frame header. Already works today (empty payload means
-no encoder is needed); PR #23 registers it upstream for documentation and
-round-tripping. No app change required when 0.9.1 lands.
+duration as unknown (same as no response). The upstream attempt to make
+the parser length-tolerant
+([PR #26](https://github.com/caligo-mentis/smart-bus/pull/26)) was closed
+without merge, so this guard is the accepted long-term implementation. The
+exact meaning of the 3-byte variant is unknown — verify with a real bus
+capture (`DEBUG=smart-bus`) before proposing field semantics upstream.
 
 ## Legacy cleanup (done)
 
@@ -168,10 +132,12 @@ All of these go through smart-bus's standard parsers/encoders via
 | `0xE3E0`–`0xE3E4` | Curtain | Control and status, incl. duration |
 | `0xE800`/`0xE801` | Curtain | Curtain duration (since 0.9.0) |
 | `0x1C5C`–`0x1C5F` | Floor heater | Status/control incl. valve, work, PWD |
+| `0x7262`/`0x7263` | Floor heater | Extended temperature read (since 0.10.0, PR #23) |
+| `0x000E` | App | Device discovery broadcast (since 0.10.0, PR #23) |
 | `0xE3E7`/`0xE3E8` | Sensors, floor heater | Legacy temperature read |
 | `0x1948`/`0x1949` | Sensors, floor heater | Extended temperature read |
 | `0x1944` | Panel | Additional panel data |
-| `0xDB00`, `0x1645`, `0x1604` | Multisensor, dry contact | Sensor status requests |
+| `0xDB00`, `0x1645`, `0x1604` | Multisensor, dry contact | Sensor status requests; the `0xDB01` response now also parses `luxRange` and `uvSwitches` (since 0.10.0, PR #25) |
 | `0x6F00` | Dry contact | Multi-channel status mask (since 0.9.0) |
 | `0xE018`, `0xE01C`, `0xE01D` | Universal switch | Status request/set/response |
 
@@ -191,11 +157,11 @@ All of these go through smart-bus's standard parsers/encoders via
 ## References
 
 - [smart-bus Repository](https://github.com/caligo-mentis/smart-bus)
-- [Upstream PR #23 — discovery + extended temperature (0.9.1)](https://github.com/caligo-mentis/smart-bus/pull/23)
+- [Upstream PR #23 — discovery + extended temperature (released in 0.10.0)](https://github.com/caligo-mentis/smart-bus/pull/23)
 - [Upstream issue #24 — 0x0031/0xE3D9 variants discussion](https://github.com/caligo-mentis/smart-bus/issues/24)
 - [HDL Automation Documentation](http://hdlautomation.com/)
 - [This App's GitHub](https://github.com/alydersen/hdl-smartbus-homey)
 
 ---
 
-*Last updated: November 2026 — app v1.4.4, smart-bus 0.9.0 (awaiting 0.9.1)*
+*Last updated: November 2026 — app v1.5.0, smart-bus 0.10.0*

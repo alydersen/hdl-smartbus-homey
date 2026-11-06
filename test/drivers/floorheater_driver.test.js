@@ -42,7 +42,7 @@ describe('FloorHeaterDriver', () => {
   });
 
   describe('updateValues', () => {
-    test('should return when channel is undefined and not 0x7263', async () => {
+    test('should return when channel is undefined', async () => {
       const signal = {
         code: 0x1C5F,
         sender: { id: 42, type: 207 },
@@ -157,14 +157,13 @@ describe('FloorHeaterDriver', () => {
       });
     });
 
-    describe('0x7263 - channel from payload', () => {
-      test('should extract channel from buffer payload when missing from data', async () => {
-        const payload = Buffer.from([3]);
+    describe('0x7263 - extended temperature response', () => {
+      test('should use the channel parsed by smart-bus from signal data', async () => {
         const signal = {
           code: 0x7263,
           sender: { id: 42, type: 207 },
-          data: {},
-          payload: payload
+          data: { channel: 3 },
+          payload: Buffer.from([3])
         };
         await driver.updateValues(signal);
         expect(driver.homey.app.devSignChnld).toHaveBeenCalledWith(42, 3);

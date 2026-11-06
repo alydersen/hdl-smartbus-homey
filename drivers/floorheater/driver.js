@@ -27,18 +27,10 @@ class FloorHeaterDriver extends Homey.Driver {
   }
 
   async updateValues(signal) {
-    const bufferPayload = (signal.payload && Buffer.isBuffer(signal.payload))
-      ? signal.payload
-      : (signal.raw && Buffer.isBuffer(signal.raw) ? signal.raw : null);
-
+    // 0x7263 (since smart-bus 0.10.0) and the other floor heating
+    // responses all expose the channel via signal.data
     let channel = signal.data && signal.data.channel;
-    if (typeof channel === "undefined") {
-      if (signal.code === 0x7263 && bufferPayload && bufferPayload.length > 0) {
-        channel = bufferPayload.readUInt8(0);
-      } else {
-        return;
-      }
-    }
+    if (typeof channel === "undefined") return;
 
     // Get the device from Homey, return if not found or error
     let signature = this.homey.app.devSignChnld(signal.sender.id, channel);

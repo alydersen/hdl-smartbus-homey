@@ -810,6 +810,11 @@
         "meter_valve_number"
       ],
       "icon": "/drivers/floorheater/assets/icon.svg",
+      "capabilitiesOptions": {
+        "measure_power": {
+          "approximated": true
+        }
+      },
       "settings": [
         {
           "id": "hdl_address",
@@ -820,6 +825,20 @@
           "value": "",
           "hint": {
             "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+          }
+        },
+        {
+          "id": "cable_wattage",
+          "type": "number",
+          "label": {
+            "en": "Heating cable size (W)"
+          },
+          "value": 0,
+          "min": 0,
+          "max": 100000,
+          "decimals": 0,
+          "hint": {
+            "en": "Power drawn by the heating cable connected to this zone. When set, the zone appears in Homey Energy and its approximated consumption follows the valve condition: full cable size while the valve is open, zero while it is closed. Set to 0 to stop energy reporting."
           }
         }
       ],

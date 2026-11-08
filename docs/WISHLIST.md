@@ -373,6 +373,33 @@ stated otherwise. State labels:
   (`DEBUG=smart-bus` listener) from a wireless installation to identify
   the type IDs.
 
+### D7. Energy tab support for floor heating zones (valve-driven)
+- **Status:** In progress — implemented (floorheater PR), pending release and
+  real-device verification
+- **Asked for:** Let users enter the size (watts) of the heating cable
+  connected to a floor heating channel, so the zone is listed in Homey's
+  Energy tab — and consumption should follow the valve condition, not just
+  the zone's on/off state. (Forum question, Nov 2026)
+- **Why D4's solution does not fit here:** relays and dimmers use
+  `energy.approximation` (`usageOn`/`usageOff`, D4), and Homey keys that
+  approximation on the `onoff` capability. A floor heating zone's `onoff`
+  is the heating *enable* switch, while the actual load only draws power
+  while the zone's valve is open — which is most of the difference on a
+  thermostat-controlled zone. Usage counts must therefore follow the
+  valve, which only the app itself can model.
+- **Implementation:** Homey's documented "dynamic power usage" pattern —
+  the zone reports an approximated `measure_power` capability
+  (`approximated: true` capability option). New per-zone device setting
+  `cable_wattage` ("Heating cable size (W)"): when >0 the zone gains the
+  `measure_power` capability lazily and reports the cable size when the
+  valve is open and 0 when it is closed; setting it to 0 removes the
+  capability again. Re-syncs on valve updates (`updateValve()`), settings
+  changes (`onSettings`), app restarts (`onInit`) and the status poll;
+  digital sensor channel devices never get it. Valve updates follow the
+  controller status (0x1C5D/0x1C5F) via the existing poll, so very short
+  openings/closings between polls are not reflected — the trade-off of an
+  approximation. Documented in `DEVICES_FLOORHEATERS.md`, "Energy".
+
 ## E. Bugs and loose ends
 
 ### E1. DMX dimmer SB-DN-48DMX flashes to 100% before dim level

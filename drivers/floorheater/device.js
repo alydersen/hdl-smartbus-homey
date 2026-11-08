@@ -57,6 +57,10 @@ class FloorheaterDevice extends Homey.Device {
       } catch (err) {
         this.error(err);
       }
+
+      // Bring the approximated power report in line with the configured
+      // heating cable size and the last known valve condition
+      await this.syncMeasurePower().catch(this.error);
     }
 
     // Ask for channel status
@@ -131,6 +135,12 @@ class FloorheaterDevice extends Homey.Device {
 
   updateValve(valve) {
     if (this._isSensorChannel) return;
+
+    // The approximated power report follows the valve condition, so it must
+    // also refresh while the valve state itself is unchanged (e.g. after the
+    // user changed the heating cable size)
+    this._lastMeasurePowerSync = this.syncMeasurePower(Boolean(valve)).catch(this.error);
+
     const label = valve ? "Open" : "Closed";
     const numeric = valve ? 1 : 0;
     const currentLabel = this.getCapabilityValue("meter_valve");
@@ -142,6 +152,52 @@ class FloorheaterDevice extends Homey.Device {
     this.setCapabilityValue("meter_valve_number", numeric).catch(() => {
       // nothing
     });
+  }
+
+  async onSettings(_oldSettings, newSettings, changedKeys) {
+    if (this._isSensorChannel) return;
+    if (!Array.isArray(changedKeys) || !changedKeys.includes("cable_wattage")) return;
+
+    await this.syncMeasurePower().catch(this.error);
+  }
+
+  // Approximate the zone's power usage for Homey Energy from the configured
+  // heating cable size: the cable draws power while the zone's valve is open.
+  // A cable size of 0 (or empty) disables the reporting and removes the
+  // capability again.
+  async syncMeasurePower(valveOpen) {
+    if (this._isSensorChannel) return;
+
+    const wattage = await this._cableWattage();
+    if (wattage <= 0) {
+      if (this.hasCapability("measure_power")) {
+        await this.removeCapability("measure_power").catch(this.error);
+      }
+      return;
+    }
+
+    if (typeof valveOpen !== "boolean") {
+      const numeric = this.getCapabilityValue("meter_valve_number");
+      valveOpen = numeric === 1 ? true : numeric === 0 ? false : undefined;
+    }
+    if (typeof valveOpen !== "boolean") return; // valve state not known yet
+
+    if (!this.hasCapability("measure_power")) {
+      await this.addCapability("measure_power").catch(this.error);
+      await this.setCapabilityOptions("measure_power", { approximated: true }).catch(this.error);
+    }
+
+    const watts = valveOpen ? wattage : 0;
+    if (this.getCapabilityValue("measure_power") === watts) return;
+
+    this.setCapabilityValue("measure_power", watts).catch(this.error);
+  }
+
+  async _cableWattage() {
+    const settings = await this.getSettings().catch(() => ({}));
+    const wattage = parseFloat(settings.cable_wattage);
+    if (!Number.isFinite(wattage) || wattage < 0) return 0;
+    return wattage;
   }
 
   async requestUpdate() {

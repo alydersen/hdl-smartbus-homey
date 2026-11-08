@@ -5,6 +5,11 @@ A floor heater controller has one or more heating zones as channels. Different H
 
 Each heating zone exposes a target temperature, measured temperature, on/off switch, and valve status in Homey.
 
+## Energy (heating cable power)
+To list a heating zone in Homey's Energy tab, set the zone device's **Heating cable size (W)** setting to the watts drawn by the cable connected to that zone. The zone then appears in Energy with an approximated power usage: the full cable size while the zone's valve is open, and zero while it is closed. The value follows the valve condition — the load is only drawn when the valve lets the heated water (or the cable's contactor) run — not the on/off switch, which only enables the zone. It is marked as an approximation; Homey shows it with a tilde (~) and it is never as accurate as a real power meter.
+
+The valve condition updates from the controller's status poll, so short openings and closings between polls may not be reflected. Setting the cable size to 0 removes the zone from Energy reporting again.
+
 ## Digital Temperature Sensors
 Floor heating controllers (device types 207-215) support external digital temperature sensors wired in parallel. These sensors are read-only: they only expose a measured temperature, so they are paired with only that capability — the heating-zone capabilities (target temperature, on/off switch, valve status) never exist on the device and never appear in Insights. Sensor devices paired by earlier app versions lose the heating-zone capabilities automatically on the next app restart.
 

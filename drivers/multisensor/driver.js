@@ -103,6 +103,48 @@ class MultisensorDriver extends Homey.Driver {
           .catch(this.error);
       }
     }
+
+    // Set relay outputs (only sensor types with relay channel metadata, e.g. the 12in1)
+    const relayChannels = await devicelist.relayChannels(signal.sender.type.toString());
+    if (relayChannels > 0) {
+      // Single Channel Control answerback (0x0032) carries one channel's status
+      if (signal.code === 0x0032 && signal.data.channel !== undefined && signal.data.level !== undefined) {
+        await this.updateRelayOutputs(homeyDevice, signal.sender.id, signal.data.channel, signal.data.level, relayChannels);
+      }
+
+      // Read Status of Channels responses (0x0034/0x0039) carry every channel's status
+      if ((signal.code === 0x0034 || signal.code === 0x0039) && signal.data.channels !== undefined) {
+        for (const channel of signal.data.channels) {
+          if (channel.number === undefined || channel.level === undefined) continue;
+          await this.updateRelayOutputs(homeyDevice, signal.sender.id, channel.number, channel.level, relayChannels);
+        }
+      }
+    }
+  }
+
+  async updateRelayOutputs(homeyDevice, senderId, channel, level, relayChannels) {
+    if (channel < 1 || channel > relayChannels) return;
+
+    const capability = `relay_${channel}`;
+    const newValue = level !== 0;
+
+    consoleLogging ? this.log(`Relay output for ${senderId}/${capability}: ${newValue}`) : null;
+    await this.checkCapabilityAdded(homeyDevice, capability);
+
+    // Homey fires the relay_<n>_true/false flow triggers on setCapabilityValue;
+    // skip unchanged values to avoid duplicate triggers
+    const previous = homeyDevice.getCapabilityValue(capability);
+    if (previous === newValue) return;
+
+    homeyDevice
+      .setCapabilityValue(capability, newValue)
+      .catch(this.error);
+
+    // The capability was just added to an already-running device; wire up its
+    // control listener so Homey can switch the relay output
+    if (typeof homeyDevice.registerRelayListener === "function") {
+      homeyDevice.registerRelayListener(capability, channel);
+    }
   }
 
   async onPairListDevices() {
@@ -117,10 +159,16 @@ class MultisensorDriver extends Homey.Driver {
       for (const device of Object.values(this.homey.app.getDevicesOfType("multisensor"))) {
         let devicelist = new HdlDevicelist();
         let cap = await devicelist.mainCapability(device.type.toString());
+        let relayChannels = await devicelist.relayChannels(device.type.toString());
+
+        const capabilities = [cap];
+        for (let channel = 1; channel <= relayChannels; channel++) {
+          capabilities.push(`relay_${channel}`);
+        }
 
         devices.push({
           name: `HDL Multisensor (${hdl_subnet}.${device.id})`,
-          capabilities: [cap],
+          capabilities: capabilities,
           data: {
             id: `${hdl_subnet}.${device.id}`
           }

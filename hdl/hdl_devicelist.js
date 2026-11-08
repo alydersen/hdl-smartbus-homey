@@ -46,6 +46,13 @@ class HdlTypelist {
         return this.list[id].sensorChannels;
     }
 
+    async relayChannels(id) {
+        if (this.list[id] == undefined) return 0;
+        if (this.list[id].relayChannels == undefined) return 0;
+
+        return this.list[id].relayChannels;
+    }
+
 
     get list() {
         return {
@@ -101,7 +108,7 @@ class HdlTypelist {
             "215": { type: "floorheater", channels: 6, sensorChannels: [13, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62] },
             "305": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
             "307": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
-            "308": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
+            "308": { type: "multisensor", main_capability: "alarm_motion", relayChannels: 2, exclude: []},
             "309": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
             "310": { type: "multisensor", main_capability: "measure_humidity", exclude: ["alarm_motion"]},
             "312": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
@@ -109,7 +116,7 @@ class HdlTypelist {
             "315": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
             "316": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
             "318": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
-            "321": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
+            "321": { type: "multisensor", main_capability: "alarm_motion", relayChannels: 2, exclude: []},
             "322": { type: "multisensor", main_capability: "alarm_motion", exclude: []},
             "323": { type: "multisensor", main_capability: "alarm_motion", exclude: ["measure_humidity"]},
             "327": { type: "multisensor", main_capability: "alarm_motion", exclude: ["measure_humidity", "measure_temperature"]},

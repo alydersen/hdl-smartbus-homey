@@ -1,0 +1,10 @@
+{
+    "type": "boolean",
+    "title": { "en": "Relay 1" },
+    "getable": true,
+    "setable": true,
+    "uiComponent": "toggle",
+    "uiQuickAction": true,
+    "icon": "/drivers/relay/assets/icon.svg",
+    "insights": true
+  }

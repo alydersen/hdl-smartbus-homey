@@ -1,11 +1,11 @@
 # Wish List
 
-Thread reviewed: 2026-11-01 (last post read: #335, ojnordah, 2026-10-23).
+Thread reviewed: 2026-11-08 (last post read: #346, Andreas_Pedersen, 2026-11-07).
 Closed GitHub issues reviewed 2026-11-02.
 
 This is a working list of feature requests and open issues collected from the
 [Homey community forum thread](https://community.homey.app/t/app-pro-hdl-smartbus/26575)
-(331 posts, 2020–2026), plus related GitHub issues. It is intended as a
+(346 posts, 2020–2026), plus related GitHub issues. It is intended as a
 maintainer's overview of what users are asking for, the current state, and
 what would be needed to move each item forward.
 
@@ -93,40 +93,6 @@ stated otherwise. State labels:
   read-only `measure_temperature` device on channel 50 + probe ID.
   Merged to master 2026-11-02; awaiting release and real-world
   verification.
-
-### B1b. Magnetic contacts as read-only window/door status
-- **Status:** Needs info (input hardware unknown); design sketched
-- **Asked for:** Window/door magnetic contacts are set up as UV switches
-  and show in Homey as toggleable buttons; pressing the toggle writes to
-  the bus and falsifies the open/closed state. Wants a read-only status,
-  alarm capability, or a lockable switch. (Andreas_Pedersen #324)
-- **Current state:** Not implemented. The universal-switch driver is
-  inherently writable: its `onoff` listener broadcasts UV Switch Control
-  (0xE01C) to 255.255 plus every device address individually (or the logic
-  controller), so the contact state can be changed from Homey.
-- **Needs info — which input module are the contacts wired to?**
-  A magnetic contact is a plain reed switch, not an HDL device type; it
-  must be wired to an HDL input module, and #324 does not say which one.
-  - Standalone dry contact module (HDL-MSD): the `dry-contact` driver
-    already reads it read-only, with per-channel capabilities and flow
-    triggers — no new code needed, just pairing the module.
-  - Multisensor dry-contact inputs: the multisensor driver already
-    exposes `dry_contact_1..4` read-only with flow triggers.
-  - Only if the contacts genuinely exist only as UV switches is a new
-    UV-based read-only device type needed.
-  Asked Andreas_Pedersen in the forum (2026-11-01); awaiting reply.
-- **Design sketch (if UV-based read-only is needed):** new read-only
-  `contact` driver modeled on universal-switch: Homey's standard
-  `alarm_contact` capability (read-only by nature, correct open/closed
-  semantics for flows, zones and Insights), device class `sensor`, pairs
-  UV numbers 1-254 excluding the reserved motion UV (default 212). No
-  capability listener, ever; keeps `respondToSender()` (0xE01D is a
-  protocol acknowledgment, not a state write). `app.js`'s UV branch
-  dispatches to both drivers; no `hdl_devicelist.js` entry (UV-number
-  based, like universal-switch). Flow triggers `contact_true`/`false`.
-  Self-contained: no protocol or library work, no bus capture needed.
-  Generic bonus: also covers DLP panel buttons and any other UV-routed
-  state (cf. A1).
 
 ### B2. 8in1 lux values missing or stale
 - **Status:** Open (lux explained — protocol limitation on type 315;
@@ -509,3 +475,30 @@ stated otherwise. State labels:
   conditions, notifications), a step-by-step migration with a
   disable-don't-delete rollback strategy, and tips covering UV numbering,
   the UV signal log (D2) and poll-interval latency.
+
+## G. Closed as misunderstandings
+
+> Requests that turned out not to need app changes — kept for reference,
+> so the same suggestion is not reinvestigated.
+
+### B1b. Magnetic contacts as read-only window/door status
+- **Status:** Closed — a misunderstanding (no app change needed)
+- **Asked for:** Window/door magnetic contacts are set up as UV switches
+  and show in Homey as toggleable buttons; pressing the toggle writes to
+  the bus and falsifies the open/closed state. Wants a read-only status,
+  alarm capability, or a lockable switch. (Andreas_Pedersen #324)
+- **Resolution:** Andreas_Pedersen confirmed the contacts are wired to a
+  dry-contacts module and that the UV routing was simply how his system
+  happened to be set up, not a deliberate choice (#346). Pairing the
+  dry-contact module directly gives the requested read-only per-channel
+  state with flow triggers, so the maintainer advised using it instead of
+  Universal Switches (closed in the forum thread, 2026-11-08). The
+  requested feature already existed; no code was written.
+- **Kept for reference (only if genuinely UV-only contacts ever surface):**
+  a read-only `contact` driver modeled on universal-switch was sketched —
+  Homey's standard `alarm_contact` capability (read-only by nature,
+  correct open/closed semantics for flows, zones and Insights), device
+  class `sensor`, pairing UV numbers 1-254 excluding the reserved motion
+  UV (default 212), no capability listener ever. Paths not needed today:
+  the `dry-contact` and multisensor drivers already read their inputs
+  read-only.

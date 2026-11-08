@@ -86,6 +86,7 @@ class MockDevice {
     this._capabilities = new Set();
     this._capabilityValues = {};
     this._capabilityListeners = {};
+    this._capabilityOptions = {};
     this._store = {};
     this._settings = {};
   }
@@ -126,7 +127,9 @@ class MockDevice {
     return Promise.resolve();
   }
 
-  async setCapabilityOptions(_capability, _options) {
+  async setCapabilityOptions(capability, options) {
+    this._capabilityOptions = this._capabilityOptions || {};
+    this._capabilityOptions[capability] = options;
     return Promise.resolve();
   }
   
@@ -135,7 +138,8 @@ class MockDevice {
     return Promise.resolve();
   }
   
-  async getCapabilityValue(capability) {
+  // The real SDK returns the value synchronously
+  getCapabilityValue(capability) {
     return Object.prototype.hasOwnProperty.call(this._capabilityValues, capability)
       ? this._capabilityValues[capability]
       : null;

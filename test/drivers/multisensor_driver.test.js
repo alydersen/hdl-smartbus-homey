@@ -11,7 +11,8 @@ describe('MultisensorDriver', () => {
       hasCapability: jest.fn().mockReturnValue(true),
       addCapability: jest.fn().mockResolvedValue(),
       setCapabilityValue: jest.fn().mockResolvedValue(),
-      getCapabilityValue: jest.fn().mockReturnValue(null)
+      getCapabilityValue: jest.fn().mockReturnValue(null),
+      registerRelayListener: jest.fn()
     };
 
     driver = new MultisensorDriver();
@@ -187,6 +188,116 @@ describe('MultisensorDriver', () => {
       await driver.updateValues(signal);
       expect(mockHomeyDevice.setCapabilityValue).toHaveBeenCalledWith('dry_contact_1', true);
       expect(mockHomeyDevice.setCapabilityValue).toHaveBeenCalledWith('dry_contact_2', false);
+    });
+  });
+
+  describe('updateValues relay outputs (12in1, types 308/321)', () => {
+    test('should set relay_1 from a single channel answerback (0x0032)', async () => {
+      const signal = {
+        sender: { type: 321, id: 42 },
+        code: 0x0032,
+        data: { channel: 1, success: true, level: 100 }
+      };
+      await driver.updateValues(signal);
+      expect(mockHomeyDevice.setCapabilityValue).toHaveBeenCalledWith('relay_1', true);
+    });
+
+    test('should set relay_2 off from a single channel answerback with level 0', async () => {
+      const signal = {
+        sender: { type: 308, id: 42 },
+        code: 0x0032,
+        data: { channel: 2, success: true, level: 0 }
+      };
+      await driver.updateValues(signal);
+      expect(mockHomeyDevice.setCapabilityValue).toHaveBeenCalledWith('relay_2', false);
+    });
+
+    test('should update both relays from a channel status response (0x0034)', async () => {
+      const signal = {
+        sender: { type: 321, id: 42 },
+        code: 0x0034,
+        data: {
+          channels: [
+            { number: 1, level: 100 },
+            { number: 2, level: 0 }
+          ]
+        }
+      };
+      await driver.updateValues(signal);
+      expect(mockHomeyDevice.setCapabilityValue).toHaveBeenCalledWith('relay_1', true);
+      expect(mockHomeyDevice.setCapabilityValue).toHaveBeenCalledWith('relay_2', false);
+    });
+
+    test('should update relays from a level status response (0x0039)', async () => {
+      const signal = {
+        sender: { type: 321, id: 42 },
+        code: 0x0039,
+        data: {
+          channels: [{ number: 1, level: 55 }]
+        }
+      };
+      await driver.updateValues(signal);
+      expect(mockHomeyDevice.setCapabilityValue).toHaveBeenCalledWith('relay_1', true);
+    });
+
+    test('should ignore relay feedback for sensor types without relay outputs', async () => {
+      const signal = {
+        sender: { type: 305, id: 42 },
+        code: 0x0032,
+        data: { channel: 1, success: true, level: 100 }
+      };
+      await driver.updateValues(signal);
+      expect(mockHomeyDevice.setCapabilityValue).not.toHaveBeenCalledWith('relay_1', expect.anything());
+    });
+
+    test('should ignore answerback channels beyond the relay count', async () => {
+      const signal = {
+        sender: { type: 321, id: 42 },
+        code: 0x0032,
+        data: { channel: 3, success: true, level: 100 }
+      };
+      await driver.updateValues(signal);
+      expect(mockHomeyDevice.setCapabilityValue).not.toHaveBeenCalledWith('relay_3', expect.anything());
+    });
+
+    test('should not update unchanged relay values', async () => {
+      mockHomeyDevice.getCapabilityValue.mockReturnValue(true);
+      const signal = {
+        sender: { type: 321, id: 42 },
+        code: 0x0032,
+        data: { channel: 1, success: true, level: 100 }
+      };
+      await driver.updateValues(signal);
+      expect(mockHomeyDevice.setCapabilityValue).not.toHaveBeenCalledWith('relay_1', expect.anything());
+    });
+
+    test('should add the relay capability and register its listener when missing', async () => {
+      mockHomeyDevice.hasCapability.mockReturnValue(false);
+      const signal = {
+        sender: { type: 321, id: 42 },
+        code: 0x0032,
+        data: { channel: 1, success: true, level: 100 }
+      };
+      await driver.updateValues(signal);
+      expect(mockHomeyDevice.addCapability).toHaveBeenCalledWith('relay_1');
+      expect(mockHomeyDevice.registerRelayListener).toHaveBeenCalledWith('relay_1', 1);
+      expect(mockHomeyDevice.setCapabilityValue).toHaveBeenCalledWith('relay_1', true);
+    });
+  });
+
+  describe('onPairListDevices relay outputs', () => {
+    test('should declare relay capabilities when pairing a 12in1 sensor', async () => {
+      driver.homey.app.getDevicesOfType.mockReturnValue({ 42: { id: 42, type: 321 } });
+      const devices = await driver.onPairListDevices();
+      expect(devices).toHaveLength(1);
+      expect(devices[0].capabilities).toEqual(['alarm_motion', 'relay_1', 'relay_2']);
+    });
+
+    test('should not declare relay capabilities for other multisensors', async () => {
+      driver.homey.app.getDevicesOfType.mockReturnValue({ 43: { id: 43, type: 305 } });
+      const devices = await driver.onPairListDevices();
+      expect(devices).toHaveLength(1);
+      expect(devices[0].capabilities).toEqual(['alarm_motion']);
     });
   });
 });

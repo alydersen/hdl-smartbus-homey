@@ -643,6 +643,58 @@
             }
           }
         ]
+      },
+      {
+        "id": "relay_1_false",
+        "title": {
+          "en": "Relay 1 turned off"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor"
+          }
+        ]
+      },
+      {
+        "id": "relay_1_true",
+        "title": {
+          "en": "Relay 1 turned on"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor"
+          }
+        ]
+      },
+      {
+        "id": "relay_2_false",
+        "title": {
+          "en": "Relay 2 turned off"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor"
+          }
+        ]
+      },
+      {
+        "id": "relay_2_true",
+        "title": {
+          "en": "Relay 2 turned on"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=multisensor"
+          }
+        ]
       }
     ]
   },
@@ -1204,6 +1256,30 @@
       "min": 0,
       "max": 1,
       "step": 1
+    },
+    "relay_1": {
+      "type": "boolean",
+      "title": {
+        "en": "Relay 1"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": "toggle",
+      "uiQuickAction": true,
+      "icon": "/drivers/relay/assets/icon.svg",
+      "insights": true
+    },
+    "relay_2": {
+      "type": "boolean",
+      "title": {
+        "en": "Relay 2"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": "toggle",
+      "uiQuickAction": true,
+      "icon": "/drivers/relay/assets/icon.svg",
+      "insights": true
     }
   }
 }

@@ -179,14 +179,15 @@ stated otherwise. State labels:
 ## C. Device types
 
 ### C1. 12in1 multisensor relay output control
-- **Status:** Open (investigated; implementation not started)
+- **Status:** In progress — implemented, pending real-device verification and
+  a bus capture of the feedback path
 - **Asked for:** Control the relay output (e.g. garage door opener) on
   12in1 multisensors from Homey. (Eivind_Bo #261, #278, #283)
-- **Current state:** Multisensors are read-only in the app. AndreasL
+- **Current state:** Implemented app-side (see below); pending real-device
+  verification. Originally: multisensors are read-only in the app. AndreasL
   assessed it as doable (#262) — the difference vs. the relay driver is one
-  device with 2 channels rather than one Homey device per channel. Never
-  implemented.
-- **Investigation (2026-11-01, no code changes yet):**
+  device with 2 channels rather than one Homey device per channel.
+- **Investigation (2026-11-01):**
   - The 12in1 is device type **321** (HDL-MS12.2C / SB-CMS-12in1), with
     type **308** (HDL-MS12) as the older variant (per
     `assets/defDeviceType.xlsx`). Both are already registered as
@@ -213,6 +214,18 @@ stated otherwise. State labels:
     capability cannot be used (only one per device, and there are two
     relay channels). Per-channel sub-devices relay-style would break the
     unit-level pairing model.
+  - **Implementation:** built as sketched — `relayChannels: 2` metadata on
+    devicelist entries 321/308 (gating all relay handling to the 12in1
+    types), `relay_1`/`relay_2` boolean capabilities plus their auto-fired
+    `relay_n_true/false` trigger cards (`setCapabilityValue` fires them),
+    capability listeners in `device.js` sending `0x0031`, `updateValues()`
+    handling `0x0032` answerbacks and `0x0034`/`0x0039` channel statuses
+    (unchanged values skipped so triggers only fire on real changes), an
+    `0x0033` poll for devices that have the relays, relay capabilities
+    declared at pairing for the 12in1 types, and lazy capability add +
+    listener wiring for sensors paired before the feature. If a 12in1
+    turns out not to report relay state, control still works — the
+    toggles just won't stay in sync after DLP/wall-switch toggles.
   - **Per-type gating:** only the 12in1 types have relay outputs, but all
     multisensor types share this driver — the devicelist needs per-type
     relay-channel metadata (e.g. a new field on entries 321/308) so relay
@@ -231,8 +244,9 @@ stated otherwise. State labels:
     feedback path above). Only the control direction is confirmed. Control
     would work without feedback, but state sync when the relay is switched
     from a DLP depends on this. Capture with a `DEBUG=smart-bus` listener
-    (see `.agents/skills/hdl-device-development/`) before finalizing the
-    feedback design.
+    (see `.agents/skills/hdl-device-development/`) with a 12in1 on the bus
+    — toggling its relay from Homey (control path) and from a DLP/wall
+    switch (feedback path) while listening settles it definitively.
   - Details also documented in `DEVICES_MULTISENSORS.md`, section
     "Relay outputs (12in1)".
 

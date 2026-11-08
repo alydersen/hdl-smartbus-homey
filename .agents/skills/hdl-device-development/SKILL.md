@@ -44,6 +44,14 @@ devices that announce themselves. Give it a few minutes.
 
 Before submitting changes: `npm run lint && npm test`.
 
+**Never publish.** The `homey` CLI is for local verification only (`app run`,
+`app install`, `app build`, `app validate`). Never run `homey app publish`
+or anything else that touches the Homey App Store (including test
+versions) — the maintainer handles all publishing personally, in
+coordination with Athom's review process (a version in review, e.g.
+awaiting promotion from test to general availability, must not be
+disturbed).
+
 ## 2. Listen to the bus and recognize devices
 
 How this app does it (all in `app.js`):

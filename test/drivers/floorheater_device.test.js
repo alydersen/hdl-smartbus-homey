@@ -173,4 +173,104 @@ describe('FloorheaterDevice', () => {
       expect(poll[2]).toBeUndefined();
     });
   });
+
+  describe('measure_power (valve-driven energy approximation)', () => {
+    test('should add measure_power and report the cable size when the valve opens', async () => {
+      const device = makeDevice({ id: '1.10.2', address: '1.10', channel: 2 });
+      await device.setSettings({ cable_wattage: 1500 });
+      device._isSensorChannel = false;
+
+      device.updateValve(true);
+      await device._lastMeasurePowerSync;
+
+      expect(device.hasCapability('measure_power')).toBe(true);
+      expect(device.getCapabilityValue('measure_power')).toBe(1500);
+      expect(device._capabilityOptions['measure_power']).toEqual({ approximated: true });
+    });
+
+    test('should report zero when the valve closes', async () => {
+      const device = makeDevice({ id: '1.10.2', address: '1.10', channel: 2 });
+      await device.setSettings({ cable_wattage: 1500 });
+      device._isSensorChannel = false;
+
+      device.updateValve(true);
+      await device._lastMeasurePowerSync;
+      device.updateValve(false);
+      await device._lastMeasurePowerSync;
+
+      expect(device.getCapabilityValue('measure_power')).toBe(0);
+    });
+
+    test('should not add measure_power without a configured cable size', async () => {
+      const device = makeDevice({ id: '1.10.2', address: '1.10', channel: 2 });
+      device._isSensorChannel = false;
+
+      device.updateValve(true);
+      await device._lastMeasurePowerSync;
+
+      expect(device.hasCapability('measure_power')).toBe(false);
+    });
+
+    test('should refresh the value when the cable size changes in settings', async () => {
+      const device = makeDevice({ id: '1.10.2', address: '1.10', channel: 2 });
+      await device.setSettings({ cable_wattage: 1500 });
+      device._isSensorChannel = false;
+
+      device.updateValve(true);
+      await device._lastMeasurePowerSync;
+      // The SDK saves the new settings before onSettings fires
+      await device.setSettings({ cable_wattage: 1200, hdl_address: '1.10.2' });
+      await device.onSettings(
+        { cable_wattage: 1500 },
+        { cable_wattage: 1200, hdl_address: '1.10.2' },
+        ['cable_wattage']
+      );
+
+      expect(device.getCapabilityValue('measure_power')).toBe(1200);
+    });
+
+    test('should remove measure_power when the cable size is cleared', async () => {
+      const device = makeDevice({ id: '1.10.2', address: '1.10', channel: 2 });
+      await device.setSettings({ cable_wattage: 1500 });
+      device._isSensorChannel = false;
+
+      device.updateValve(true);
+      await device._lastMeasurePowerSync;
+      // The SDK saves the new settings before onSettings fires
+      await device.setSettings({ cable_wattage: 0, hdl_address: '1.10.2' });
+      await device.onSettings(
+        { cable_wattage: 1500 },
+        { cable_wattage: 0, hdl_address: '1.10.2' },
+        ['cable_wattage']
+      );
+
+      expect(device.hasCapability('measure_power')).toBe(false);
+    });
+
+    test('should restore the approximated value on init from the known valve state', async () => {
+      const device = makeDevice({ id: '1.10.2', address: '1.10', channel: 2 });
+      await device.setSettings({ cable_wattage: 1500 });
+      await device.setCapabilityValue('meter_valve_number', 1);
+
+      await device.onInit();
+
+      expect(device.hasCapability('measure_power')).toBe(true);
+      expect(device.getCapabilityValue('measure_power')).toBe(1500);
+    });
+
+    test('should never add measure_power on sensor channels', async () => {
+      const device = makeDevice({ id: '1.10.13', address: '1.10', channel: 13 });
+      await device.setSettings({ cable_wattage: 1500 });
+      device._isSensorChannel = true;
+
+      device.updateValve(true);
+      await device.onSettings(
+        { cable_wattage: 0 },
+        { cable_wattage: 1500, hdl_address: '1.10.13' },
+        ['cable_wattage']
+      );
+
+      expect(device.hasCapability('measure_power')).toBe(false);
+    });
+  });
 });

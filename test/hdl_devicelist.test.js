@@ -66,6 +66,19 @@ describe('HdlDevicelist', () => {
     });
   });
 
+  describe('relayChannels', () => {
+    test('should return two relay channels for the 12in1 multisensors', async () => {
+      expect(await devicelist.relayChannels('308')).toBe(2);
+      expect(await devicelist.relayChannels('321')).toBe(2);
+    });
+
+    test('should return zero for multisensors and devices without relay outputs', async () => {
+      expect(await devicelist.relayChannels('314')).toBe(0);
+      expect(await devicelist.relayChannels('16')).toBe(0);
+      expect(await devicelist.relayChannels('9999')).toBe(0);
+    });
+  });
+
   describe('numberOfZones', () => {
     test('should return correct zone counts', async () => {
       expect(await devicelist.numberOfZones('4300')).toBe(16);

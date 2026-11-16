@@ -1,0 +1,11 @@
+{
+  "id": "relay_1_false",
+  "title": { "en": "Relay 1 turned off" },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=multisensor"
+    }
+  ]
+}

@@ -129,6 +129,14 @@
     </fieldset>
 
 
+    <fieldset>
+      <legend>DLP Troubleshooting</legend>
+      <div class="field row">
+        <label for="hdl_dlp_debug">Log detailed DLP signals to the app log</label>
+        <input id="hdl_dlp_debug" type="checkbox" />
+      </div>
+    </fieldset>
+
     <button id="save" class="right">Save changes</button>
 
     <script type="text/javascript">
@@ -140,6 +148,7 @@
         var logicElement = document.getElementById("hdl_logic_controller");
         var sendModeElement = document.getElementById("hdl_uv_send_mode");
         var pollElement = document.getElementById("hdl_poll_interval");
+        var dlpDebugElement = document.getElementById("hdl_dlp_debug");
         var uvDebugElement = document.getElementById("hdl_uv_debug");
         var uvLogRefreshElement = document.getElementById("uv_log_refresh");
         var uvLogClearElement = document.getElementById("uv_log_clear");
@@ -176,6 +185,11 @@
         Homey.get("hdl_uv_send_mode", function(err, hdl_uv_send_mode) {
           if (err) return Homey.alert(err);
           sendModeElement.value = hdl_uv_send_mode || "spray";
+        });
+
+        Homey.get("hdl_dlp_debug", function(err, enabled) {
+          if (err) return Homey.alert(err);
+          dlpDebugElement.checked = enabled === true;
         });
 
         Homey.get("hdl_uv_debug", function(err, hdl_uv_debug) {
@@ -369,6 +383,10 @@
           });
 
           Homey.set("hdl_uv_send_mode", sendModeElement.value, function(err) {
+            if (err) return Homey.alert(err);
+          });
+
+          Homey.set("hdl_dlp_debug", dlpDebugElement.checked, function(err) {
             if (err) return Homey.alert(err);
           });
 

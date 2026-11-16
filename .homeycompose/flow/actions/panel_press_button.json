@@ -1,0 +1,255 @@
+{
+  "title": {
+    "en": "Press DLP button",
+    "no": "Trykk DLP-knapp"
+  },
+  "titleFormatted": {
+    "en": "Press DLP button [[button]]",
+    "no": "Trykk DLP-knapp [[button]]"
+  },
+  "hint": {
+    "en": "Measured on DLP103. Test compatibility with other panels. Sends once; acknowledgement does not verify the programmed function.",
+    "no": "Målt på DLP103. Test kompatibilitet med andre paneler. Sender én gang; panelsvar bekrefter ikke sluttfunksjonen."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=panel"
+    },
+    {
+      "name": "button",
+      "type": "dropdown",
+      "title": {
+        "en": "Button",
+        "no": "Knapp"
+      },
+      "values": [
+        {
+          "id": "1",
+          "title": {
+            "en": "1",
+            "no": "1"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "2",
+            "no": "2"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "3",
+            "no": "3"
+          }
+        },
+        {
+          "id": "4",
+          "title": {
+            "en": "4",
+            "no": "4"
+          }
+        },
+        {
+          "id": "5",
+          "title": {
+            "en": "5",
+            "no": "5"
+          }
+        },
+        {
+          "id": "6",
+          "title": {
+            "en": "6",
+            "no": "6"
+          }
+        },
+        {
+          "id": "7",
+          "title": {
+            "en": "7",
+            "no": "7"
+          }
+        },
+        {
+          "id": "8",
+          "title": {
+            "en": "8",
+            "no": "8"
+          }
+        },
+        {
+          "id": "9",
+          "title": {
+            "en": "9",
+            "no": "9"
+          }
+        },
+        {
+          "id": "10",
+          "title": {
+            "en": "10",
+            "no": "10"
+          }
+        },
+        {
+          "id": "11",
+          "title": {
+            "en": "11",
+            "no": "11"
+          }
+        },
+        {
+          "id": "12",
+          "title": {
+            "en": "12",
+            "no": "12"
+          }
+        },
+        {
+          "id": "13",
+          "title": {
+            "en": "13",
+            "no": "13"
+          }
+        },
+        {
+          "id": "14",
+          "title": {
+            "en": "14",
+            "no": "14"
+          }
+        },
+        {
+          "id": "15",
+          "title": {
+            "en": "15",
+            "no": "15"
+          }
+        },
+        {
+          "id": "16",
+          "title": {
+            "en": "16",
+            "no": "16"
+          }
+        },
+        {
+          "id": "17",
+          "title": {
+            "en": "17",
+            "no": "17"
+          }
+        },
+        {
+          "id": "18",
+          "title": {
+            "en": "18",
+            "no": "18"
+          }
+        },
+        {
+          "id": "19",
+          "title": {
+            "en": "19",
+            "no": "19"
+          }
+        },
+        {
+          "id": "20",
+          "title": {
+            "en": "20",
+            "no": "20"
+          }
+        },
+        {
+          "id": "21",
+          "title": {
+            "en": "21",
+            "no": "21"
+          }
+        },
+        {
+          "id": "22",
+          "title": {
+            "en": "22",
+            "no": "22"
+          }
+        },
+        {
+          "id": "23",
+          "title": {
+            "en": "23",
+            "no": "23"
+          }
+        },
+        {
+          "id": "24",
+          "title": {
+            "en": "24",
+            "no": "24"
+          }
+        },
+        {
+          "id": "25",
+          "title": {
+            "en": "25",
+            "no": "25"
+          }
+        },
+        {
+          "id": "26",
+          "title": {
+            "en": "26",
+            "no": "26"
+          }
+        },
+        {
+          "id": "27",
+          "title": {
+            "en": "27",
+            "no": "27"
+          }
+        },
+        {
+          "id": "28",
+          "title": {
+            "en": "28",
+            "no": "28"
+          }
+        },
+        {
+          "id": "29",
+          "title": {
+            "en": "29",
+            "no": "29"
+          }
+        },
+        {
+          "id": "30",
+          "title": {
+            "en": "30",
+            "no": "30"
+          }
+        },
+        {
+          "id": "31",
+          "title": {
+            "en": "31",
+            "no": "31"
+          }
+        },
+        {
+          "id": "32",
+          "title": {
+            "en": "32",
+            "no": "32"
+          }
+        }
+      ]
+    }
+  ]
+}

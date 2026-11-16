@@ -27,36 +27,38 @@ describe('PanelDriver', () => {
         get: jest.fn().mockReturnValue('1')
       }
     };
+    mockHomeyDevice.getData = () => ({id:'1.42'});
     driver.getDevice = jest.fn().mockReturnValue(mockHomeyDevice);
+    driver.getDevices = () => { const d = driver.getDevice(); return d && !(d instanceof Error) ? [d] : []; };
     driver.error = jest.fn();
   });
 
   describe('updateValues', () => {
     test('should return when signal has no data', async () => {
-      const signal = { sender: { id: 42 } };
+      const signal = { sender: { subnet:1, id: 42 } };
       await driver.updateValues(signal);
-      expect(driver.getDevice).not.toHaveBeenCalled();
+      expect(mockHomeyDevice.setCapabilityValue).not.toHaveBeenCalled();
     });
 
     test('should return when sender id is undefined', async () => {
       const signal = { sender: {}, data: { temperature: 21.5 } };
       await driver.updateValues(signal);
-      expect(driver.getDevice).not.toHaveBeenCalled();
+      expect(mockHomeyDevice.setCapabilityValue).not.toHaveBeenCalled();
     });
 
     test('should return when temperature is out of range', async () => {
       const signal = {
-        sender: { id: 42 },
+        sender: { subnet:1, id: 42 },
         data: { temperature: 200 }
       };
       await driver.updateValues(signal);
-      expect(driver.getDevice).not.toHaveBeenCalled();
+      expect(mockHomeyDevice.setCapabilityValue).not.toHaveBeenCalled();
     });
 
     test('should return when device not found', async () => {
       driver.getDevice.mockReturnValue(undefined);
       const signal = {
-        sender: { id: 42 },
+        sender: { subnet:1, id: 42 },
         data: { temperature: 21.5 }
       };
       await driver.updateValues(signal);
@@ -66,7 +68,7 @@ describe('PanelDriver', () => {
     test('should return when device is an Error', async () => {
       driver.getDevice.mockReturnValue(new Error('not found'));
       const signal = {
-        sender: { id: 42 },
+        sender: { subnet:1, id: 42 },
         data: { temperature: 21.5 }
       };
       await driver.updateValues(signal);
@@ -75,11 +77,11 @@ describe('PanelDriver', () => {
 
     test('should set temperature on valid signal', async () => {
       const signal = {
-        sender: { id: 42 },
+        sender: { subnet:1, id: 42 },
         data: { temperature: 21.5 }
       };
       await driver.updateValues(signal);
-      expect(driver.getDevice).toHaveBeenCalledWith({ id: '1.42' });
+      expect(driver.getDevice).toHaveBeenCalled();
       expect(mockHomeyDevice.setCapabilityValue).toHaveBeenCalledWith(
         'measure_temperature',
         21.5

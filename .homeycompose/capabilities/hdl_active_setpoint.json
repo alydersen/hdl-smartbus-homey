@@ -1,0 +1,16 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Active setpoint",
+    "no": "Aktivt setpunkt"
+  },
+  "units": {
+    "en": "°C",
+    "no": "°C"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "decimals": 0,
+  "insights": false
+}

@@ -1,0 +1,24 @@
+{
+  "title": {
+    "en": "Set active setpoint",
+    "no": "Sett aktivt setpunkt"
+  },
+  "titleFormatted": {
+    "en": "Set active setpoint to [[temperature]] °C",
+    "no": "Sett aktivt setpunkt til [[temperature]] °C"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=dlpheater"
+    },
+    {
+      "name": "temperature",
+      "type": "number",
+      "min": 5,
+      "max": 26,
+      "step": 1
+    }
+  ]
+}

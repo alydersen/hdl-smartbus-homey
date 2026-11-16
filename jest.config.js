@@ -1,10 +1,9 @@
 module.exports = {
   testEnvironment: 'node',
+  testPathIgnorePatterns: ['/node_modules/', '/.homeybuild/'],
+  modulePathIgnorePatterns: ['<rootDir>/.homeybuild/'],
   testMatch: [
     '**/test/**/*.test.js'
-  ],
-  testPathIgnorePatterns: [
-    '<rootDir>/.homeybuild/'
   ],
   collectCoverageFrom: [
     'app.js',

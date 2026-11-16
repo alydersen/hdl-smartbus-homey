@@ -1,0 +1,215 @@
+{
+  "title": {
+    "en": "Press Heater panel button",
+    "no": "Trykk Heater-panelknapp"
+  },
+  "titleFormatted": {
+    "en": "Press panel button [[button]]",
+    "no": "Trykk panelknapp [[button]]"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=dlpheater"
+    },
+    {
+      "name": "button",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": {
+            "en": "1"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "2"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "3"
+          }
+        },
+        {
+          "id": "4",
+          "title": {
+            "en": "4"
+          }
+        },
+        {
+          "id": "5",
+          "title": {
+            "en": "5"
+          }
+        },
+        {
+          "id": "6",
+          "title": {
+            "en": "6"
+          }
+        },
+        {
+          "id": "7",
+          "title": {
+            "en": "7"
+          }
+        },
+        {
+          "id": "8",
+          "title": {
+            "en": "8"
+          }
+        },
+        {
+          "id": "9",
+          "title": {
+            "en": "9"
+          }
+        },
+        {
+          "id": "10",
+          "title": {
+            "en": "10"
+          }
+        },
+        {
+          "id": "11",
+          "title": {
+            "en": "11"
+          }
+        },
+        {
+          "id": "12",
+          "title": {
+            "en": "12"
+          }
+        },
+        {
+          "id": "13",
+          "title": {
+            "en": "13"
+          }
+        },
+        {
+          "id": "14",
+          "title": {
+            "en": "14"
+          }
+        },
+        {
+          "id": "15",
+          "title": {
+            "en": "15"
+          }
+        },
+        {
+          "id": "16",
+          "title": {
+            "en": "16"
+          }
+        },
+        {
+          "id": "17",
+          "title": {
+            "en": "17"
+          }
+        },
+        {
+          "id": "18",
+          "title": {
+            "en": "18"
+          }
+        },
+        {
+          "id": "19",
+          "title": {
+            "en": "19"
+          }
+        },
+        {
+          "id": "20",
+          "title": {
+            "en": "20"
+          }
+        },
+        {
+          "id": "21",
+          "title": {
+            "en": "21"
+          }
+        },
+        {
+          "id": "22",
+          "title": {
+            "en": "22"
+          }
+        },
+        {
+          "id": "23",
+          "title": {
+            "en": "23"
+          }
+        },
+        {
+          "id": "24",
+          "title": {
+            "en": "24"
+          }
+        },
+        {
+          "id": "25",
+          "title": {
+            "en": "25"
+          }
+        },
+        {
+          "id": "26",
+          "title": {
+            "en": "26"
+          }
+        },
+        {
+          "id": "27",
+          "title": {
+            "en": "27"
+          }
+        },
+        {
+          "id": "28",
+          "title": {
+            "en": "28"
+          }
+        },
+        {
+          "id": "29",
+          "title": {
+            "en": "29"
+          }
+        },
+        {
+          "id": "30",
+          "title": {
+            "en": "30"
+          }
+        },
+        {
+          "id": "31",
+          "title": {
+            "en": "31"
+          }
+        },
+        {
+          "id": "32",
+          "title": {
+            "en": "32"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -11,22 +11,23 @@ class PanelDriver extends Driver {
     this.log('HDL PanelDriver has been initialized');
   }
 
+  // H006S waits for matching button acknowledgements on the shared bus.
   async updateValues(signal) {
-      // Parse and check the incoming signal, return if missing or invalid
-      if (signal.data === undefined) return;
-      if (signal.sender.id === undefined) return;
-      if (!this.homey.app.valueOK("temperature", signal.data.temperature)) return;
-
-      // Get the device from Homey, return if not found or error
-      let hdl_subnet = this.homey.settings.get("hdl_subnet");
-      let homeyDevice = this.getDevice({id: `${hdl_subnet}.${signal.sender.id}`});
-      if (typeof homeyDevice === 'undefined' || homeyDevice instanceof Error) return;
-  
-      // Set temperature
-      homeyDevice
-        .setCapabilityValue("measure_temperature", signal.data.temperature)
-        .catch(this.error);
-    
+    if (!signal.sender) return;
+    const address = `${Number(signal.sender.subnet)}.${Number(signal.sender.id)}`;
+    const device = this.getDevices().find(candidate => candidate.getData().id === address);
+    if (!device) return;
+    let temperature;
+    if (signal.code === 0x1945 && Buffer.isBuffer(signal.payload)
+        && signal.payload.length >= 8 && signal.payload[0] === 0) {
+      temperature = (signal.payload[1] & 0x80 ? -1 : 1) * (signal.payload[1] & 0x7f);
+    } else {
+      let data;
+      try { data = signal.data; } catch (_) { return; }
+      if (data) temperature = data.temperature;
+    }
+    if (Number.isFinite(temperature) && this.homey.app.valueOK('temperature', temperature))
+      await device.setCapabilityValue('measure_temperature', temperature);
   }
 
   /**

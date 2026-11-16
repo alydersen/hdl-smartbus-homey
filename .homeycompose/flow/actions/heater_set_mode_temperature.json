@@ -1,0 +1,62 @@
+{
+  "title": {
+    "en": "Set setpoint for mode",
+    "no": "Sett setpunkt for modus"
+  },
+  "titleFormatted": {
+    "en": "Set [[mode]] setpoint to [[temperature]] °C",
+    "no": "Sett [[mode]]-setpunkt til [[temperature]] °C"
+  },
+  "hint": {
+    "en": "Keeps the actual active mode. Reads, writes once and verifies the presets.",
+    "no": "Beholder faktisk aktiv modus. Leser, skriver én gang og kontrollerer setpunktene."
+  },
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=dlpheater"
+    },
+    {
+      "type": "dropdown",
+      "name": "mode",
+      "values": [
+        {
+          "id": "1",
+          "title": {
+            "en": "Normal",
+            "no": "Normal"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "Day",
+            "no": "Dag"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "Night",
+            "no": "Natt"
+          }
+        },
+        {
+          "id": "4",
+          "title": {
+            "en": "Away",
+            "no": "Borte"
+          }
+        }
+      ]
+    },
+    {
+      "type": "number",
+      "name": "temperature",
+      "min": 5,
+      "max": 26,
+      "step": 1
+    }
+  ]
+}

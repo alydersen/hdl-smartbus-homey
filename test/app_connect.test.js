@@ -279,6 +279,7 @@ describe('HDLSmartBus App - connect()', () => {
         'universal-switch', 'floorheater', 'curtain', 'panel'
       ];
       app._updateTimeouts = [];
+      app._bus = {}; app._busConnected = true;
       devicesByDriver = {};
       app.homey.drivers.getDriver = jest.fn((name) => ({
         getDevices: () => devicesByDriver[name] || []

@@ -35,6 +35,7 @@ Every paired device shows its address on the HDL bus (subnet.device.channel) und
 - [Curtain Controllers](DEVICES_CURTAINS.md)
 - [Floor Heater Controllers](DEVICES_FLOORHEATERS.md), [Read the guide](GUIDE_HeatingController.md)
 - [DLP Panels](DEVICES_PANELS.md)
+- [DLP Heater](DEVICES_DLPHEATER_HANOY.md)
 
 ### Guides
 - [Connecting the App to HDL](CONNECTING.md)

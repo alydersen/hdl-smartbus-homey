@@ -1,29 +1,16 @@
 {
   "name": {
-    "en": "panel"
+    "en": "DLP Panel",
+    "no": "DLP Panel"
   },
   "class": "sensor",
   "capabilities": [
     "measure_temperature"
   ],
   "connectivity": [],
-  "settings": [
-    {
-      "id": "hdl_address",
-      "type": "label",
-      "label": {
-        "en": "HDL bus address"
-      },
-      "value": "",
-      "hint": {
-        "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
-      }
-    }
-  ],
   "images": {
     "small": "{{driverAssetsPath}}/images/small.png",
-    "large": "{{driverAssetsPath}}/images/large.png",
-    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+    "large": "{{driverAssetsPath}}/images/large.png"
   },
   "pair": [
     {
@@ -36,6 +23,19 @@
     {
       "id": "add_devices",
       "template": "add_devices"
+    }
+  ],
+  "settings": [
+    {
+      "id": "hdl_address",
+      "type": "label",
+      "label": {
+        "en": "HDL bus address"
+      },
+      "value": "",
+      "hint": {
+        "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+      }
     }
   ]
 }

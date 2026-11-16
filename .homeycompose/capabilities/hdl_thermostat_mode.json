@@ -1,0 +1,41 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "Thermostat mode",
+    "no": "Termostatmodus"
+  },
+  "getable": true,
+  "setable": true,
+  "uiComponent": "picker",
+  "insights": false,
+  "values": [
+    {
+      "id": "1",
+      "title": {
+        "en": "Normal",
+        "no": "Normal"
+      }
+    },
+    {
+      "id": "2",
+      "title": {
+        "en": "Day",
+        "no": "Dag"
+      }
+    },
+    {
+      "id": "3",
+      "title": {
+        "en": "Night",
+        "no": "Natt"
+      }
+    },
+    {
+      "id": "4",
+      "title": {
+        "en": "Away",
+        "no": "Borte"
+      }
+    }
+  ]
+}

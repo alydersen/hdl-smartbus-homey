@@ -1,0 +1,17 @@
+{
+  "title": {
+    "en": "Read DLP status again",
+    "no": "Les DLP-status på nytt"
+  },
+  "hint": {
+    "en": "Reads status only. Does not change power, mode or temperature.",
+    "no": "Leser bare status. Endrer ikke på/av, modus eller temperatur."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=dlpheater"
+    }
+  ]
+}

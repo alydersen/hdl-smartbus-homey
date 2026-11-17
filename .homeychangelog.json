@@ -238,5 +238,8 @@
   },
   "1.6.0": {
     "en": "Floor heaters: pair digital sensor probes by typing the probe ID, and pair sensor channels as read-only temperature devices. Added UV send modes and universal switch signal logging. Fixed dimmers flashing to 100% before the requested dim level, universal switch errors on status-less signals, and unparsable curtain duration responses. Updated to smart-bus 0.10.0 and relicensed the app to MIT."
+  },
+  "1.7.0": {
+    "en": "Added DLP Heater for supported DLP panels running floor heating: room temperature, active setpoint, mode and power are shown in Homey, and can be changed from Homey or Flows, including Flow cards to set the mode and setpoint, press a configured panel button, and a trigger when the thermostat mode changes. DLP panel buttons can also be pressed directly from Flows. The 12in1 multisensor relay outputs can now be controlled from Homey. Floor heating zones now show approximated power usage in Homey Energy."
   }
 }

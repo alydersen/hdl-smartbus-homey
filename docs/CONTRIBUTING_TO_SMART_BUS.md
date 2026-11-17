@@ -48,6 +48,16 @@ Both of our pending PRs were merged and shipped in
 
 ## App-local implementations (still needed)
 
+### DLP Heater and panel buttons
+
+The DLP Heater driver uses raw status and setpoint payloads (0x1944 to 0x1947)
+and checks DLP-specific power, mode and button replies to 0xE3D8. The matching
+0xE3D9 payload variants are handled locally. See the
+[upstream variants discussion](https://github.com/caligo-mentis/smart-bus/issues/24).
+The measured button payloads include a byte whose meaning is still unknown.
+Compatibility with other panel models needs testing before generalizing these
+payloads or proposing a smart-bus encoder.
+
 These are parsed from the raw `signal.payload` because smart-bus cannot
 provide them (yet). Keep this list accurate — it is the source of truth for
 what can be removed when upstream support arrives.

@@ -1,0 +1,75 @@
+{
+  "name": {
+    "en": "DLP Heater",
+    "no": "DLP Heater"
+  },
+  "class": "thermostat",
+  "capabilities": [
+    "measure_temperature",
+    "onoff",
+    "hdl_heating_mode",
+    "hdl_active_setpoint",
+    "hdl_thermostat_mode",
+    "target_temperature.active",
+    "measure_temperature.active"
+  ],
+  "connectivity": [],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "capabilitiesOptions": {
+    "target_temperature": {
+      "min": 5,
+      "max": 26,
+      "step": 1,
+      "decimals": 0,
+      "title": {
+        "en": "Normal setpoint",
+        "no": "Normal-setpunkt"
+      }
+    },
+    "target_temperature.active": {
+      "min": 5,
+      "max": 26,
+      "step": 1,
+      "decimals": 0,
+      "title": {
+        "en": "Active setpoint",
+        "no": "Aktivt setpunkt"
+      }
+    },
+    "measure_temperature.active": {
+      "title": {
+        "en": "Room temperature",
+        "no": "Romtemperatur"
+      }
+    }
+  },
+  "settings": [
+    {
+      "id": "hdl_address",
+      "type": "label",
+      "label": {
+        "en": "HDL bus address"
+      },
+      "value": "",
+      "hint": {
+        "en": "The address of this device on the HDL SmartBus (subnet.device[.channel])."
+      }
+    }
+  ]
+}

@@ -11,7 +11,9 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "lint": "eslint .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:legacy": "node --test test/*.test.cjs",
+    "test:all": "npm test -- --runInBand && npm run test:legacy"
   },
   "lint-staged": {
     "*.js": "eslint"

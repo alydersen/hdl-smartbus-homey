@@ -1,0 +1,11 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Active mode",
+    "no": "Aktiv modus"
+  },
+  "getable": true,
+  "setable": false,
+  "uiComponent": "sensor",
+  "insights": false
+}

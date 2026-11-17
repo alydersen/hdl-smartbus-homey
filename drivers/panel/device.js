@@ -1,37 +1,20 @@
 'use strict';
-
 const { Device } = require('homey');
-
 class PanelDevice extends Device {
-
   async onInit() {
-    this.homey.app.log(`Initated "${this.getName()}" (DLP Panel/${this.getClass()}) ${this.getData().id}`);
-
-    // Show the device's HDL bus address in the settings screen
-    await this.setSettings({ hdl_address: this.getData().id }).catch(this.error);
+    await this.setSettings({ hdl_address: this.getData().id }).catch(error => this.error(error));
+    if (!this.hasCapability('measure_temperature')) await this.addCapability('measure_temperature');
+    await this.setAvailable();
+    await this.requestUpdate();
   }
-
   async requestUpdate() {
-    let commands = [0xe3e7, 0x1948, 0x1944];
-
-    for (let i = 0; i < commands.length; i++) {
-      if (this.homey.app.isBusConnected()) {
-        this._controller().send(
-          { target: this.getData().id, command: commands[i] },
-          (err) => {
-            if (err) {
-              this.homey.app.log(err);
-            }
-          }
-        );
-      }
-    }
+    const app = this.homey.app;
+    if (!app.isBusConnected()) return;
+    // Heater already reads this physical address; its status also feeds Panel.
+    if (this.homey.drivers.getDriver('dlpheater').getDevices()
+        .some(device => device.getData().id === this.getData().id)) return;
+    app.controller().send({ target: this.getData().id, command: 0x1948,
+      data: { channel: 1 } }, error => { if (error) this.error(error); });
   }
-
-  _controller() {
-    return this.homey.app.controller();
-  }
-
 }
-
 module.exports = PanelDevice;

@@ -6,7 +6,7 @@ export default [
   },
   js.configs.recommended,
   {
-    files: ["**/*.js"],
+    files: ["**/*.js", "**/*.cjs"],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "commonjs",
@@ -21,6 +21,7 @@ export default [
         process: "readonly",
         setTimeout: "readonly",
         clearTimeout: "readonly",
+        setImmediate: "readonly",
         setInterval: "readonly",
         clearInterval: "readonly",
       },

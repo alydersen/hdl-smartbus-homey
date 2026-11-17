@@ -1,0 +1,80 @@
+{
+  "title": {
+    "en": "Thermostat mode changed to",
+    "no": "Termostatmodus er endret til"
+  },
+  "titleFormatted": {
+    "en": "Thermostat mode changed to [[mode]]",
+    "no": "Termostatmodus er endret til [[mode]]"
+  },
+  "hint": {
+    "en": "Confirmed transitions only. First read after restart is silent. Polling may delay detection. Mode tokens: 1 Normal, 2 Day, 3 Night, 4 Away, 5 Timer. Timer transitions are included.",
+    "no": "Bare bekreftede overganger. Første lesing etter restart er stille. Polling kan forsinke oppdagelsen. Modustokens: 1 Normal, 2 Dag, 3 Natt, 4 Borte, 5 Timer. Også overganger til Timer er med."
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=dlpheater"
+    },
+    {
+      "name": "mode",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": {
+            "en": "Normal",
+            "no": "Normal"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "Day",
+            "no": "Dag"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "Night",
+            "no": "Natt"
+          }
+        },
+        {
+          "id": "4",
+          "title": {
+            "en": "Away",
+            "no": "Borte"
+          }
+        },
+        {
+          "id": "5",
+          "title": {
+            "en": "Timer",
+            "no": "Timer"
+          }
+        }
+      ]
+    }
+  ],
+  "tokens": [
+    {
+      "name": "previous_mode",
+      "type": "string",
+      "title": {
+        "en": "Previous mode (ID)",
+        "no": "Forrige modus (ID)"
+      }
+    },
+    {
+      "name": "new_mode",
+      "type": "string",
+      "title": {
+        "en": "New mode (ID)",
+        "no": "Ny modus (ID)"
+      }
+    }
+  ]
+}

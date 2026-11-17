@@ -1,0 +1,51 @@
+{
+  "title": {
+    "en": "Set thermostat mode",
+    "no": "Velg termostatmodus"
+  },
+  "titleFormatted": {
+    "en": "Set thermostat mode to [[mode]]",
+    "no": "Velg termostatmodus [[mode]]"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=dlpheater"
+    },
+    {
+      "name": "mode",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "1",
+          "title": {
+            "en": "Normal",
+            "no": "Normal"
+          }
+        },
+        {
+          "id": "2",
+          "title": {
+            "en": "Day",
+            "no": "Dag"
+          }
+        },
+        {
+          "id": "3",
+          "title": {
+            "en": "Night",
+            "no": "Natt"
+          }
+        },
+        {
+          "id": "4",
+          "title": {
+            "en": "Away",
+            "no": "Borte"
+          }
+        }
+      ]
+    }
+  ]
+}

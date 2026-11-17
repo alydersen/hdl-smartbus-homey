@@ -17,6 +17,7 @@
   - [Curtain Controllers](DEVICES_CURTAINS.md)
   - [Floor Heater Controllers](DEVICES_FLOORHEATERS.md)
   - [DLP Panels](DEVICES_PANELS.md)
+  - [DLP Heater](DEVICES_DLPHEATER_HANOY.md)
 
 - **Development**
   - [Contributing](CONTRIBUTING.md)

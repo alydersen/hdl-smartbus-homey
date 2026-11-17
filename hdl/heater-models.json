@@ -1,0 +1,842 @@
+[
+  {
+    "type": 48,
+    "model": "HDL-MPL4.38-FH",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 16
+  },
+  {
+    "type": 149,
+    "model": "HDL-MPL4.38",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 16
+  },
+  {
+    "type": 154,
+    "model": "HDL-MPL4.38",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 16
+  },
+  {
+    "type": 155,
+    "model": "HDL-MPL4.38",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 1
+  },
+  {
+    "type": 156,
+    "model": "HDL-MPL4.38",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 16
+  },
+  {
+    "type": 157,
+    "model": "HDL-MPL4.38",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 16
+  },
+  {
+    "type": 158,
+    "model": "HDL-MPL8.48",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 160,
+    "model": "HDL-MPL4.38",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 16
+  },
+  {
+    "type": 162,
+    "model": "HDL-MPL8.48",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 165,
+    "model": "HDL-MPTL14.46",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 167,
+    "model": "HDL-MPL8.48",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 168,
+    "model": "HDL-MPTL14.46",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 170,
+    "model": "HDL-MPTL14.46",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 171,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 172,
+    "model": "HDL-MPTL14.46",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 173,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 174,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 175,
+    "model": "HDL-MPTL14.46",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 176,
+    "model": "HDL-MPL8.48",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 177,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 179,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 180,
+    "model": "HDL-MPL8.48",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 181,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 182,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 185,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 186,
+    "model": "HDL-MPL8.48-A",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 187,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 188,
+    "model": "HDL-MPTL14.46-A",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 190,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 191,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 192,
+    "model": "HDL-MPTLC43.46-A",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 193,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 194,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 196,
+    "model": "HDL-MPL8.48",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 198,
+    "model": "HDL-MPL8.48",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 199,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 2062,
+    "model": "HDL-MPT1.48",
+    "family": "temperature-buttons",
+    "heaterProtocol": false,
+    "buttons": 1
+  },
+  {
+    "type": 2063,
+    "model": "HDL-MPT2.48",
+    "family": "temperature-buttons",
+    "heaterProtocol": false,
+    "buttons": 2
+  },
+  {
+    "type": 2064,
+    "model": "HDL-MPT3.48",
+    "family": "temperature-buttons",
+    "heaterProtocol": false,
+    "buttons": 3
+  },
+  {
+    "type": 2065,
+    "model": "HDL-MPT4.48",
+    "family": "temperature-buttons",
+    "heaterProtocol": false,
+    "buttons": 4
+  },
+  {
+    "type": 2162,
+    "model": "HDL-MPTL4C.48",
+    "family": "granite",
+    "heaterProtocol": false,
+    "buttons": 1
+  },
+  {
+    "type": 2168,
+    "model": "HDL-MPL8.48-A",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 2169,
+    "model": "HDL-MPTL4C.48",
+    "family": "granite",
+    "heaterProtocol": false,
+    "buttons": 1
+  },
+  {
+    "type": 2170,
+    "model": "HDL-MPTL4C/JM.48",
+    "family": "granite",
+    "heaterProtocol": false,
+    "buttons": 1
+  },
+  {
+    "type": 2182,
+    "model": "HDL-MPTL4C.48",
+    "family": "granite",
+    "heaterProtocol": false,
+    "buttons": 1
+  },
+  {
+    "type": 2192,
+    "model": "HDL-MPTL4C.48",
+    "family": "granite",
+    "heaterProtocol": false,
+    "buttons": 1
+  },
+  {
+    "type": 2210,
+    "model": "HDL-MPL43C.46",
+    "family": "granite",
+    "heaterProtocol": false,
+    "buttons": 1
+  },
+  {
+    "type": 2211,
+    "model": "HDL-MPL43C.46",
+    "family": "granite",
+    "heaterProtocol": false,
+    "buttons": 1
+  },
+  {
+    "type": 2212,
+    "model": "HDL-MPL4CAI.48",
+    "family": "granite",
+    "heaterProtocol": false,
+    "buttons": 1
+  },
+  {
+    "type": 2237,
+    "model": "HDL-MPTL4C.48",
+    "family": "granite",
+    "heaterProtocol": false,
+    "buttons": 1
+  },
+  {
+    "type": 2250,
+    "model": "HDL-MPL43C.46",
+    "family": "granite",
+    "heaterProtocol": false,
+    "buttons": 1
+  },
+  {
+    "type": 2263,
+    "model": "HDL-MPTL4C.48",
+    "family": "granite",
+    "heaterProtocol": false,
+    "buttons": 1
+  },
+  {
+    "type": 2264,
+    "model": "HDL-MPTL4C.48",
+    "family": "granite",
+    "heaterProtocol": false,
+    "buttons": 1
+  },
+  {
+    "type": 5001,
+    "model": "HDL-MPL8-RF",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 5002,
+    "model": "HDL-MPL8-RF",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 5003,
+    "model": "HDL-MPE04-RF.18",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 4
+  },
+  {
+    "type": 5004,
+    "model": "HDL-MPL8-RF",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 1
+  },
+  {
+    "type": 5006,
+    "model": "HDL-MPL8-RF",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 1
+  },
+  {
+    "type": 5007,
+    "model": "HDL-MPL8-RF-A",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 1
+  },
+  {
+    "type": 5008,
+    "model": "HDL-MPL8-RF.18-A",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 1
+  },
+  {
+    "type": 5009,
+    "model": "HDL-MPL8-RF.16-A",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 1
+  },
+  {
+    "type": 9100,
+    "model": "HDL-MPTL14.46-A",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 9102,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9103,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9104,
+    "model": "HDL-MPTLC43.46-A",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9106,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9107,
+    "model": "HDL-MPTLC43.46-A",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9108,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9109,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9111,
+    "model": "HDL-MPTL14.46",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 9112,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9113,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9114,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9115,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9116,
+    "model": "HDL-MPTLC43.46-A",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9117,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9118,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9119,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9120,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9121,
+    "model": "HDL-MPL8.46-A",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 9122,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9123,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9124,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9125,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9126,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9127,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9128,
+    "model": "HDL-MPTLC43.46-A1",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9129,
+    "model": "HDL-MPTLC43.46-A1",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9130,
+    "model": "HDL-MPTLC43.46-A1",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9131,
+    "model": "HDL-MPTL14.46-B",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 9132,
+    "model": "HDL-MPTL14.46-B",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 9133,
+    "model": "HDL-MPTL14.46-B",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 9134,
+    "model": "HDL-MPTLC43.46-A1",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9135,
+    "model": "HDL-MPTLC43.46-A1",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9136,
+    "model": "HDL-MPTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9137,
+    "model": "HDL-MPTLC43.46-A",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9138,
+    "model": "HDL-MPTLC43.46-U",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9139,
+    "model": "HDL-MPTLC43.46-U",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9140,
+    "model": "HDL-MPTLC43.46-U",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9141,
+    "model": "HDL-MPTLC43.46-U",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9142,
+    "model": "HDL-MPTLC43.46-U",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9143,
+    "model": "HDL-MPTLC43.46-U",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9144,
+    "model": "HDL-MPTLC43.46-U",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9145,
+    "model": "HDL-MPTLC43.46-U",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9146,
+    "model": "HDL-MPTL14.46-C",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 9147,
+    "model": "HDL-MPTLC43.46-U",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9148,
+    "model": "HDL-MPTLC43.46-U",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9149,
+    "model": "HDL-MPTLC43.46-A",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9150,
+    "model": "HDL-MPL8.46-A",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 9151,
+    "model": "HDL-MPL8.48-A",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 9152,
+    "model": "HDL-MPTLC43.46-U",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9153,
+    "model": "HDL-MPTLC43.46-U",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 9154,
+    "model": "HDL-MPTLC43.46-A",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 10186,
+    "model": "HDL-APL8.48-A",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 19100,
+    "model": "HDL-APTL14.46-A",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 19107,
+    "model": "HDL-APTLC43.46-A",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 19116,
+    "model": "HDL-APTLC43.46-A",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 19117,
+    "model": "HDL-APTLC43.46",
+    "family": "enviro",
+    "heaterProtocol": false,
+    "buttons": 36
+  },
+  {
+    "type": 19121,
+    "model": "HDL-APL8.46-A",
+    "family": "legacy",
+    "heaterProtocol": true,
+    "buttons": 32
+  },
+  {
+    "type": 58042,
+    "model": "HDL-MPL4CAI.48",
+    "family": "granite",
+    "heaterProtocol": false,
+    "buttons": 0
+  }
+]

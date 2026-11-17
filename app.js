@@ -3,8 +3,15 @@
 const Homey = require("homey");
 const SmartBus = require("smart-bus");
 const HdlDevicelist = require("./hdl/hdl_devicelist");
+const { pressPanelButton } = require("./hdl/dlp-buttons");
+const { DlpHeaterService } = require("./hdl/dlp-heater-service");
+const { DlpReadQueue } = require('./hdl/dlp-read-queue');
 
 class HDLSmartBus extends Homey.App {
+  logDlpDebug(message) {
+    if (this.homey.settings.get('hdl_dlp_debug') === true) this.log(message());
+  }
+
   async onInit() {
     this._busConnected = false;
     this._bus = null;
@@ -13,6 +20,9 @@ class HDLSmartBus extends Homey.App {
     this._updateInterval = null;
     this._updateTimeouts = [];
     this._pollIntervalMs = 60000;
+    this._dlpServices = new Map();
+    this.homey.flow.getActionCard('panel_press_button')
+      .registerRunListener(async args => pressPanelButton(this, args.device, args.button));
     // All new devicetypes must be added here
     this._driverlist = [
       "dimmer",
@@ -24,6 +34,7 @@ class HDLSmartBus extends Homey.App {
       "floorheater",
       "curtain",
       "panel",
+      "dlpheater",
     ];
     this._hdlFoundUnits = {}
     for (let i = 0; i < this._driverlist.length; i++) {
@@ -40,20 +51,16 @@ class HDLSmartBus extends Homey.App {
   }
 
   async connect() {
+    if ([undefined, null, ''].includes(this.homey.settings.get('hdl_poll_interval')))
+      this.homey.settings.set('hdl_poll_interval', '60');
     let hdl_ip_address = this.homey.settings.get("hdl_ip_address");
     let hdl_subnet = this.homey.settings.get("hdl_subnet");
     let hdl_id = this.homey.settings.get("hdl_id");
     let hdl_motion = this.homey.settings.get("hdl_universal_motion");
-    let hdl_poll_interval = this.homey.settings.get("hdl_poll_interval");
 
     // Set the universal motion if not set
     if (hdl_motion === undefined || hdl_motion === "") {
       this.homey.settings.set("hdl_universal_motion", "212");
-    }
-
-    // Set the poll interval to the default (60 seconds) if not set
-    if (hdl_poll_interval === undefined || hdl_poll_interval === "") {
-      this.homey.settings.set("hdl_poll_interval", "60");
     }
 
     // Return if settings are not defined
@@ -70,7 +77,7 @@ class HDLSmartBus extends Homey.App {
     // Return if not proper ip, subnet or id
     const ipRegex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
     const subnetRegex = /^\d{1,3}$/;
-    
+
     // Validate IPv4 address and ensure each octet is 0-255
     if (!ipRegex.test(hdl_ip_address)) return;
     const ipOctets = hdl_ip_address.split('.');
@@ -78,12 +85,12 @@ class HDLSmartBus extends Homey.App {
       const octetValue = parseInt(octet, 10);
       if (octetValue < 0 || octetValue > 255) return;
     }
-    
+
     // Validate subnet (1-254)
     if (!subnetRegex.test(hdl_subnet)) return;
     let hdl_subnet_int = parseInt(hdl_subnet, 10);
     if (hdl_subnet_int < 1 || hdl_subnet_int > 254) return;
-    
+
     // Validate ID if provided (1-254)
     if (hdl_id !== undefined && hdl_id !== "") {
       if (!subnetRegex.test(hdl_id)) return;
@@ -98,12 +105,13 @@ class HDLSmartBus extends Homey.App {
       this._bus = null;
     }
 
-    // Clear any existing update interval and pending staggered requests
+    this._clearUpdateTimeouts();
+
+    // Clear any existing update interval
     if (this._updateInterval !== null) {
       clearInterval(this._updateInterval);
       this._updateInterval = null;
     }
-    this._clearUpdateTimeouts();
 
     // Connect the bus
     this._bus = new SmartBus({
@@ -166,6 +174,8 @@ class HDLSmartBus extends Homey.App {
   }
 
   async callForUpdate(_bus) {
+    this._clearUpdateTimeouts();
+    const connection = this._bus;
     this.log("Update called - looping through drivers");
     // Collect all devices so that their requests can be staggered across
     // the poll interval instead of firing one burst on the bus
@@ -181,7 +191,10 @@ class HDLSmartBus extends Homey.App {
       const device = devices[i];
       const timeout = setTimeout(() => {
         try {
-          device.requestUpdate();
+          if (connection !== this._bus || !this.isBusConnected()) return;
+          // Busy DLP operations are skipped by the shared transaction service.
+          Promise.resolve(device.requestUpdate({ periodic: true })).catch(err => this.log(
+            'Could not request update: ' + err.message));
         } catch (err) {
           this.log(`Could not request update: ${err}`);
         }
@@ -208,6 +221,26 @@ class HDLSmartBus extends Homey.App {
   controller() {
     return this._controller;
   }
+
+  dlpService(address) {
+    if (!this._dlpServices.has(address)) this._dlpServices.set(address, new DlpHeaterService(this, 5000, address));
+    return this._dlpServices.get(address);
+  }
+
+  queueDlpRead(device) {
+    this._dlpReadQueue ??= new DlpReadQueue({
+      connected: () => this.isBusConnected(),
+      busy: candidate => candidate.service().busy,
+      read: async candidate => {
+        const connection = this.bus();
+        const state = await candidate.service().readStatus({ retry: true });
+        return connection === this.bus() ? state : null;
+      },
+    });
+    return this._dlpReadQueue.enqueue(device);
+  }
+
+  cancelDlpRead(device) { this._dlpReadQueue?.cancel(device); }
 
   getDevicesOfType(drivername) {
     return this._hdlFoundUnits[drivername];
@@ -249,12 +282,12 @@ class HDLSmartBus extends Homey.App {
     // "Driver Not Initialized" can happen during app startup when signals arrive
     // before drivers have finished initializing - this is normal and resolves quickly
     const silentErrors = [
-      "invalid_device", 
-      "device is not defined", 
-      "Could not get device by device data", 
+      "invalid_device",
+      "device is not defined",
+      "Could not get device by device data",
       "Driver Not Initialized"
     ];
-    
+
     await this.homey.drivers.getDriver(hdlSenderType).updateValues(signal).catch((error) => {
       // Only log unexpected errors
       if (!silentErrors.includes(error.message)) {
@@ -287,24 +320,47 @@ class HDLSmartBus extends Homey.App {
     // Return if no type was found
     if (foundType === null) return;
 
-    // Tolerate signals without parsable data for curtain devices so their
-    // senders are still recorded for pairing (empty-payload curtain
-    // commands); the curtain driver ignores empty signal data
-    if (foundType !== "curtain" && dataFromSignal === undefined) return;
+    // Allow failing signal data only if the device is a curtain
+    // (curtains are extending the signal data)
+    const rawPanelStatus = foundType === 'panel'
+      && [0x1945, 0x1947, 0xe3d9].includes(signal.code)
+      && Buffer.isBuffer(signal.payload);
+    if (foundType !== "curtain" && dataFromSignal === undefined && !rawPanelStatus) return;
     if (signal.sender.id === undefined) return;
 
     // Add the device to the list of found devices
     this._hdlFoundUnits[foundType][signal.sender.id] = signal.sender;
 
     // Update the driver with the signal
+    if (foundType === 'panel') {
+      const thermostat = [0x1945, 0x1947].includes(signal.code)
+        || (signal.code === 0xe3d9 && Buffer.isBuffer(signal.payload)
+          && [0x14, 0x19].includes(signal.payload[0]));
+      if (thermostat) {
+        await this._updateDevice('dlpheater', signal);
+        if (signal.code === 0x1945) await this._updateDevice('panel', signal);
+      }
+      else if (signal.code === 0xe3d9) {
+        if (signal.payload?.[0] === 0x15) await this._updateDevice('dlpheater', signal);
+        await this._updateDevice('panel', signal);
+      }
+      else {
+        // Preserve legacy ambient-temperature notifications for Heater.
+        await this._updateDevice('dlpheater', signal);
+        await this._updateDevice('panel', signal);
+      }
+      return;
+    }
     await this._updateDevice(foundType, signal);
   }
   async onUninit() {
+    this._dlpReadQueue?.close();
+    this._clearUpdateTimeouts();
+    for (const service of this._dlpServices?.values() || []) service.cancelHeaterOperation();
     if (this._updateInterval !== null) {
       clearInterval(this._updateInterval);
       this._updateInterval = null;
     }
-    this._clearUpdateTimeouts();
     if (this._bus !== null) {
       this._bus.close();
       this._bus = null;

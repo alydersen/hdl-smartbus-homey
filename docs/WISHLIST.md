@@ -2,6 +2,9 @@
 
 Thread reviewed: 2026-11-08 (last post read: #346, Andreas_Pedersen, 2026-11-07).
 Closed GitHub issues reviewed 2026-11-02.
+Status refreshed 2026-11-19 against released v1.7.0: v1.6.0 and v1.7.0 shipped
+since the thread review, so items previously marked "pending release" are now
+released unless noted otherwise.
 
 This is a working list of feature requests and open issues collected from the
 [Homey community forum thread](https://community.homey.app/t/app-pro-hdl-smartbus/26575)
@@ -21,32 +24,50 @@ stated otherwise. State labels:
 ## A. DLP / panel integration
 
 > This section is kept as a record of what users are asking for and what the
-> app can do today. No app-side work is planned here; the DLP panels are
-> complex one-way devices and the standard solution is Universal Switches on
-> the HDL side (see the section's notes per item).
+> app can do today. Since v1.7.0 the app has a `dlpheater` driver (thermostat
+> read/write on supported DLP panels running floor heating) and can press DLP
+> panel buttons from Flows; starting Flows from physical panel buttons still
+> goes through Universal Switches on the HDL side (see the notes per item).
 
 ### A1. DLP panel buttons as flow triggers
 - **Asked for:** Trigger Homey flows directly from buttons on DLP/itouch
   panels, without routing through Universal Switches on the HDL side.
   (Tor-Oskar #21, Fredrik #97, Bendik #298, einarso #317)
-- **Current capability:** Panels are supported read-only as temperature
-  sensors (`panel` driver); button state cannot be read or set. Buttons can
-  be configured in HDL Setup Tool to switch a UV (typically 212), which
-  Homey picks up. This works reliably for many users (ojnordah #302,
-  TorbjornM #308) but requires HDL Setup Tool work and confuses some users.
-- **Context:** ojnordah is developing a DLP driver (panel buttons and
-  thermostat control) with AI assistance (#335).
+- **Status:** Partially done — button pressing from Flows released in v1.7.0
+  (PR #122); a native trigger for physical button presses is still open
+- **Current capability:** Since v1.7.0 a Flow can press a DLP panel button
+  directly (`panel_press_button` / `heater_press_button` action cards); the
+  panel runs the function configured for that button in HDL Buspro Setup
+  (see `DEVICES_PANELS.md`). Physical button presses still reach Homey only
+  indirectly: configure the button in HDL Setup Tool to switch a UV
+  (typically 212), which Homey picks up as a universal-switch device. This
+  works reliably for many users (ojnordah #302, TorbjornM #308) but requires
+  HDL Setup Tool work and confuses some users.
+- **Context:** ojnordah's DLP driver effort (#335) landed in v1.7.0 as the
+  `dlpheater` driver plus the button-press action cards; a flow trigger fired
+  by a physical button press would be the remaining gap.
 
 ### A2. DLP thermostat control (set/read target temperature and modes)
 - **Asked for:** Read and set target temperature and mode
   (Normal/Day/Night/Away) on DLP panels, so panels and Homey stay in sync.
   (Fredrik #213, #330; ojnordah #291, #335)
-- **Current capability:** Panel driver is one-way (temperature reading
-  only). A setup where the heating controller is master and the DLPs are
-  slaves, all zones in Normal mode, makes changes to the heating controller
-  reflect on the DLPs (TorbjornM #332) — this is the documented workaround,
-  now described step by step in `GUIDE_HeatingDlpSync.md` (see F1).
-- **Context:** Covered by ojnordah's DLP driver effort (#335), see A1.
+- **Status:** Done in v1.7.0 for supported DLP panels running floor heating
+  (PR #122); the master/slave workaround remains for other setups
+- **Current capability:** The new `dlpheater` driver (v1.7.0) reads and sets
+  the panel's built-in thermostat: room temperature, active setpoint,
+  thermostat mode (Normal/Day/Night/Away via `hdl_thermostat_mode`), heating
+  on/off, plus Flow cards to set the mode and setpoint, press a panel button,
+  and a `heater_mode_changed_to` trigger. Changes made on the panel are
+  reflected in Homey when the status update arrives. Supported panel models
+  are listed in `hdl/heater-models.json`; see `DEVICES_DLPHEATER_HANOY.md`.
+  The plain `panel` driver stays temperature-only and skips its own poll when
+  the same address is also paired as a DLP Heater. For setups where a
+  separate heating controller is master and the DLPs are slaves, all zones in
+  Normal mode, changes to the heating controller still reflect on the DLPs
+  (TorbjornM #332) — documented step by step in `GUIDE_HeatingDlpSync.md`
+  (see F1).
+- **Context:** This was ojnordah's DLP driver effort (#335), see A1 — shipped
+  in v1.7.0.
 
 ### A3. Reflect HDL-side mode/scene changes in Homey
 - **Asked for:** When a user changes day/night/away mode from an HDL panel
@@ -58,6 +79,8 @@ stated otherwise. State labels:
   `GUIDE_MovingLogicToHomey.md` (F2).
 
 ### A4. itouch series panel support
+- **Status:** Needs info (the v1.7.0 DLP button/heater support covers DLP
+  panels; itouch models are not covered yet)
 - **Asked for:** Add itouch wall buttons/panels as devices. (Bendik #298, #314)
 - **Current capability:** Not supported. Would need a contributor with the
   hardware to verify what the panel sends on the bus; the UV workaround in
@@ -66,8 +89,8 @@ stated otherwise. State labels:
 ## B. Sensors
 
 ### B1a. Digital sensors on floor heating controllers (read-only)
-- **Status:** Done — channel 13 verified; probe-ID pairing merged,
-  pending release
+- **Status:** Done — released in v1.6.0 (channel 13 verified on GitHub;
+  probe-ID pairing shipped via PR #115)
 - **Asked for:** Read digital sensor probes on heating controllers:
   channel 13 is the HDL-standard outside temperature, channels 50+probe ID
   are other digital sensors — as read-only temperatures, not thermostats.
@@ -84,15 +107,15 @@ stated otherwise. State labels:
 - **Verification:** kroaeg confirmed on GitHub (2026-11-02): pairing
   channel 13 on a controller with a digital sensor set as outdoor
   temperature adds it as a read-only temperature device, as intended.
-- **Follow-up — probe-ID pairing (PR #115, pending release):** the same
+- **Follow-up — probe-ID pairing (PR #115, released in v1.6.0):** the same
   confirmation flagged that the hard-coded channels 51-62 only cover
   probe IDs 1-12. Probe IDs are factory-set (typically two or three
   digits), so users would have had to order custom low-ID probes.
   PR #115 adds a floor-heater pairing flow where the user picks a
   discovered controller and types the probe ID; the probe is paired as a
   read-only `measure_temperature` device on channel 50 + probe ID.
-  Merged to master 2026-11-02; awaiting release and real-world
-  verification.
+  Merged to master 2026-11-02 (PR #115) and released in v1.6.0 (2026-11-06);
+  real-world verification of probe-ID pairing is still welcome.
 
 ### B2. 8in1 lux values missing or stale
 - **Status:** Open (lux explained — protocol limitation on type 315;
@@ -136,8 +159,9 @@ stated otherwise. State labels:
   a shorter poll interval (D3).
 
 ### B5. Floor heater control mode (Normal vs Heating power)
-- **Status:** Open — awaiting bus captures (GitHub issue #116), then
-  upstream smart-bus parser
+- **Status:** Open — upstream parser landed (smart-bus 0.10.0, in the app
+  since v1.6.0 via PR #117); the Homey capability is still not implemented
+  and Normal-mode captures are still needed (GitHub issue #116)
 - **Asked for:** Expose the floor heating controller's control mode —
   Normal vs "Heating power" (PWM) — as a read-only capability in Homey.
   (Suggested from a bus capture by oktollefsen, PR #110 comment, 2026-11-01)
@@ -145,14 +169,15 @@ stated otherwise. State labels:
   flag lives in byte 1 of the 0x1C5F floor heating status response: bit
   0x20 is set for a "Heating power" channel (0x21) and clear for Normal
   (0x01), confirmed on a type 213 module (one sample; verify before
-  implementing). smart-bus 0.9.0 parses 0x1C5D/0x1C5F (valve, work, PWD,
-  watering) but not this flag.
-- **Notes:** First step is a smart-bus parser contribution — follow
-  `CONTRIBUTING_TO_SMART_BUS.md` (parser in `lib/commands.js`, fixtures,
-  verified wire format, single-topic PR). Only after that lands does a
-  Homey capability make sense; until then the app has no local override
-  to record. Byte 11 of the same response (output %, e.g. 20 % PWM) could
-  ride along in the same contribution.
+  implementing). smart-bus 0.10.0 (in the app since v1.6.0) parses
+  0x1C5D/0x1C5F including byte 1 as `work.type`/`work.status`, so the 0x20
+  flag surfaces as `work.type` — but not as a semantic control-mode field.
+- **Notes:** The upstream parser step is done: smart-bus 0.10.0 landed via
+  upstream PR #31 and the app upgraded in v1.6.0 (PR #117). What remains is
+  the Homey capability itself; until then the app has no local override to
+  record. Byte 11 of the same response is still parsed as `watering` in
+  smart-bus 0.10.0, so the output-% ambiguity (20 % PWM vs. watering) from
+  issue #116 is unresolved.
 - **Cross-check (2026-11-02, GitHub issue #116):** the in-repo operation
   codes PDF does not document the 0x1C5x family at all — its floor
   heating section covers only 0x1944-0x1949 (the panel/DLP family) — so
@@ -179,8 +204,8 @@ stated otherwise. State labels:
 ## C. Device types
 
 ### C1. 12in1 multisensor relay output control
-- **Status:** In progress — implemented, pending real-device verification and
-  a bus capture of the feedback path
+- **Status:** Done — released in v1.7.0 (PR #120); real-device verification
+  and a bus capture of the feedback path still pending
 - **Asked for:** Control the relay output (e.g. garage door opener) on
   12in1 multisensors from Homey. (Eivind_Bo #261, #278, #283)
 - **Current state:** Implemented app-side (see below); pending real-device
@@ -328,7 +353,8 @@ stated otherwise. State labels:
   disambiguate two systems numbering themselves the same subnet.
 
 ### D2. Universal Switch robustness and addressing
-- **Status:** Partially done
+- **Status:** Done — released in v1.6.0; ghost-UV reports remain unresolved
+  (see E3)
 - **Asked for:** Send UVs to a specific logic controller address instead of
   broadcast only (#58); fix "ghost" UV switches triggering flows on their
   own (Fredrik #131, #176, #178, #184).
@@ -336,7 +362,7 @@ stated otherwise. State labels:
   version #319: "Universal switch: broadcast + optional logic controller
   path"). Ghost-UV reports appear to be local to Fredrik's 2011
   installation/configuration and were never reproduced or resolved.
-- **In flight (pending release):** A UV send-mode setting (legacy spray /
+- **Shipped in v1.6.0:** A UV send-mode setting (legacy spray /
   broadcast + logic controller / broadcast only, legacy as default) lets
   users drop the 255-packet-per-toggle spray; the default legacy mode
   sends 254 unicast copies plus answerbacks and is a plausible
@@ -388,8 +414,8 @@ stated otherwise. State labels:
   the type IDs.
 
 ### D7. Energy tab support for floor heating zones (valve-driven)
-- **Status:** In progress — implemented (floorheater PR), pending release and
-  real-device verification
+- **Status:** Done — released in v1.7.0 (PR #121); real-device verification
+  still pending
 - **Asked for:** Let users enter the size (watts) of the heating cable
   connected to a floor heating channel, so the zone is listed in Homey's
   Energy tab — and consumption should follow the valve condition, not just
@@ -417,7 +443,7 @@ stated otherwise. State labels:
 ## E. Bugs and loose ends
 
 ### E1. DMX dimmer SB-DN-48DMX flashes to 100% before dim level
-- **Status:** Done (pending release)
+- **Status:** Done — released in v1.6.0
 - **Asked for:** When a flow sets a dim level, the light flashes to 100%
   before going to the requested level. (Eivind_Bo #124)
 - **Current state:** Root cause found in the dimmer driver. `onoff` and
@@ -490,7 +516,8 @@ stated otherwise. State labels:
 ## F. Documentation opportunities
 
 ### F1. Heating controller master + DLP slave setup guide
-- **Status:** Done — `GUIDE_HeatingDlpSync.md` (pending release)
+- **Status:** Done — `GUIDE_HeatingDlpSync.md` published on the docs site
+  (v1.7.0 also cross-links it from `DEVICES_DLPHEATER_HANOY.md`)
 - **Asked for:** A step-by-step guide (Nichel #333); TorbjornM offered to
   write up his setup incl. HDL Setup Tool gotchas (#310).
 - **Current state:** The guide documents the master/slave role switch:
@@ -506,7 +533,7 @@ stated otherwise. State labels:
   promised screenshots (#310) would still make a good review pass.
 
 ### F2. Best-practice: moving HDL logic to Homey
-- **Status:** Done — `GUIDE_MovingLogicToHomey.md` (pending release)
+- **Status:** Done — `GUIDE_MovingLogicToHomey.md` published on the docs site
 - **Asked for:** Documented patterns for replacing the logic module
   (Fredrik #145 proposed; ojnordah supported #147).
 - **Current state:** The patterns scattered across `GUIDE_Multisensor.md`
